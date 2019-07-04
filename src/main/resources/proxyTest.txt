@@ -1,0 +1,27 @@
+104.153.47.74:3575
+104.153.47.82:5533
+104.153.47.74:5352
+104.153.47.89:5649
+104.153.47.123:7509
+104.153.47.78:1021
+104.153.47.124:2516
+
+
+ - urls:
+      - https://www.off---white.com/en/US/men/products/omia100f187990151001
+      proxyList: nike.txt
+      site: offwhiteatc
+      sku: "111332;111333;111334;111335;111336;111328;111329;111330;111331"
+      name: "OFF WHITE BOOT CART TEST"
+      locale: GB
+      delay: 2000
+
+
+  - urls:
+    - https://www.bstn.com/footwear/nike
+    proxyList: cookie8.txt
+    site: bstn
+    sku: "+max,-plus,-90/1"
+    name: “OFF-WHITE X NIKE AIR PRESTO Black”
+    locale: US
+    delay: 4000

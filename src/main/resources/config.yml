@@ -1,0 +1,48 @@
+url: https://restocktime-dash.herokuapp.com/api/test
+apiKey: Nio5PlI3KHkiZyZ6LEY9I1puKSdWVUgvd11uL202VUpIWkwlUyEpS0Z4SGNOJkMqTG5Xd3tfRjtDU0dDUEduSA==
+numInCluster: 1
+totalClusterSize: 1
+
+notifications:
+  slack:
+    restocktime:
+      color: "#1132D8"
+      footerUrl: https://f4.bcbits.com/img/0010452082_10.jpg
+      footer: Restocktime AIO v2
+    restocktime-unfiltered:
+      color: "#1132D8"
+      footerUrl: https://f4.bcbits.com/img/0010452082_10.jpg
+      footer: Restocktime AIO v2
+    solefood:
+      color: "#ff2247"
+      footerUrl: https://f4.bcbits.com/img/0010452082_10.jpg
+      footer: RST X SF Monitor
+    solefood-unfiltered:
+      color: "#ff2247"
+      footerUrl: https://f4.bcbits.com/img/0010452082_10.jpg
+      footer: RST X SF Monitor
+    endurance:
+      color: "#1132D8"
+      footerUrl: https://cdn.discordapp.com/attachments/517789589826699264/551884554625875989/logo_ecnarudne.png
+      footer: RestockTime x Endurance
+  discord:
+    restocktime:
+      color: "1127128"
+      footerUrl: https://f4.bcbits.com/img/0010452082_10.jpg
+      footer: Restocktime AIO v2
+    restocktime-unfiltered:
+      color: "1127128"
+      footerUrl: https://f4.bcbits.com/img/0010452082_10.jpg
+      footer: Restocktime AIO v2
+    solefood:
+      color: "16720455"
+      footerUrl: https://f4.bcbits.com/img/0010452082_10.jpg
+      footer: RST X SF Monitor
+    solefood-unfiltered:
+      color: "16720455"
+      footerUrl: https://f4.bcbits.com/img/0010452082_10.jpg
+      footer: RST X SF Monitor
+    endurance:
+      color: "1127128"
+      footerUrl: https://cdn.discordapp.com/attachments/517789589826699264/551884554625875989/logo_ecnarudne.png
+      footer: RestockTime x Endurance
