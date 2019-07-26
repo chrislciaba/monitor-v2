@@ -740,6 +740,10 @@ public class ConfigDataTransformer {
             notificationConfig = siteNotificationsConfig.getBodega();
         } else if(url.contains("yeezysupply")){
             notificationConfig = siteNotificationsConfig.getYeezysupply();
+        } else if(url.contains("travis")){
+            notificationConfig = siteNotificationsConfig.getTravis();
+        } else if(url.contains("china")){
+            notificationConfig = siteNotificationsConfig.getChinatown();
         }
 
         return notificationConfig;

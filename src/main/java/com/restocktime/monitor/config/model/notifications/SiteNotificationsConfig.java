@@ -78,6 +78,24 @@ public class SiteNotificationsConfig {
     private NotificationConfig dsm;
     private NotificationConfig concepts;
     private NotificationConfig yeezysupply;
+    private NotificationConfig travis;
+    private NotificationConfig chinatown;
+
+    public NotificationConfig getTravis() {
+        return travis;
+    }
+
+    public void setTravis(NotificationConfig travis) {
+        this.travis = travis;
+    }
+
+    public NotificationConfig getChinatown() {
+        return chinatown;
+    }
+
+    public void setChinatown(NotificationConfig chinatown) {
+        this.chinatown = chinatown;
+    }
 
     public NotificationConfig getAdidas() {
         return adidas;
