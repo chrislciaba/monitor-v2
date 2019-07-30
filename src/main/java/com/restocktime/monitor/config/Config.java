@@ -127,7 +127,7 @@ public class Config {
                 result = Optional.of(objectMapper.readValue(resp.get(), MonitorConfig.class));
             }
         } catch (Exception e){
-
+            e.printStackTrace();
         }
 
         return result;

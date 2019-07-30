@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
+import static java.lang.System.exit;
+
 public class ProxyManager {
 
     private final String PROXY_ENDPOINT = "%s/api/v2/proxies?accessToken=%s";
@@ -43,7 +45,7 @@ public class ProxyManager {
                 }
                 break;
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
     }
@@ -64,7 +66,7 @@ public class ProxyManager {
             resp = EntityUtils.toString(httpResponse.getEntity());
 
         } catch (Exception e){
-
+            e.printStackTrace();
         } finally {
             httpGet.releaseConnection();
         }

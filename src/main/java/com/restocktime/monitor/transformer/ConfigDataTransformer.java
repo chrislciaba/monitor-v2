@@ -71,6 +71,7 @@ import com.restocktime.monitor.monitors.ingest.lvr.LVR;
 import com.restocktime.monitor.monitors.parse.lvr.parse.LvrResponseParser;
 import com.restocktime.monitor.monitors.parse.naked.ParseNakedAbstractResponse;
 import com.restocktime.monitor.monitors.parse.nittygritty.NittyGrittyAbstractResponseParser;
+import com.restocktime.monitor.monitors.parse.offspring.Offspring;
 import com.restocktime.monitor.monitors.parse.offwhite.OffWhite;
 import com.restocktime.monitor.monitors.parse.offwhite.OffWhiteAll;
 import com.restocktime.monitor.monitors.parse.offwhite.OffWhiteAtc;
@@ -712,6 +713,8 @@ public class ConfigDataTransformer {
             ShopifyAbstractResponseParser shopifyAbstractResponseParser = new ShopifyAbstractResponseParser(new StockTracker(new HashMap<>(), 0), page.getUrls().get(0), NotificationsConfigTransformer.transformNotifications(notificationConfig));
             ShopifyFrontendHelper shopifyFrontendHelper = new ShopifyFrontendHelper(page.getUrls().get(0));
             return new ShopifyFrontend(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), shopifyAbstractResponseParser, shopifyFrontendHelper);
+        } else if(site.equals("offspring")){
+            return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), new Offspring(new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring()), new ObjectMapper()));
         }
 
         return null;

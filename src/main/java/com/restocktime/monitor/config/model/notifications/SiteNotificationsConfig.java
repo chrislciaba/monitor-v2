@@ -80,6 +80,15 @@ public class SiteNotificationsConfig {
     private NotificationConfig yeezysupply;
     private NotificationConfig travis;
     private NotificationConfig chinatown;
+    private NotificationConfig offspring;
+
+    public NotificationConfig getOffspring() {
+        return offspring;
+    }
+
+    public void setOffspring(NotificationConfig offspring) {
+        this.offspring = offspring;
+    }
 
     public NotificationConfig getTravis() {
         return travis;
