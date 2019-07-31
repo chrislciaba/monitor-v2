@@ -34,6 +34,7 @@ import com.restocktime.monitor.monitors.ingest.bstn.BSTN;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BSTNParseProductAbstractResponse;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BSTNParseSearchAbstractResponse;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BstnParsePageResponse;
+import com.restocktime.monitor.monitors.parse.caliroots.Caliroots;
 import com.restocktime.monitor.monitors.parse.citygear.CitygearAbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.citygear.CitygearProductResponseParser;
 import com.restocktime.monitor.monitors.parse.complexcon.parse.ComplexconResponseParser;
@@ -715,6 +716,8 @@ public class ConfigDataTransformer {
             return new ShopifyFrontend(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), shopifyAbstractResponseParser, shopifyFrontendHelper);
         } else if(site.equals("offspring")){
             return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), new Offspring(new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring()), new ObjectMapper()));
+        } else if(site.equals("caliroots")){
+            return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new CloudflareRequestHelper(apiKeys), new Caliroots(new StockTracker(new HashMap<>(), 0), page.getUrls().get(0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring())));
         }
 
         return null;
