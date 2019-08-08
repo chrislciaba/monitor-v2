@@ -12,7 +12,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 public class NikeLogin {
 
     public static String getLoginFrontend(){
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriverLinux");
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("window-size=1500,1500");
 
