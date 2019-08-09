@@ -40,13 +40,14 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
             EntityUtils.consumeQuietly(entity);
             return new BasicHttpResponse(resp, httpResponse.getStatusLine().getStatusCode(), Arrays.asList(httpResponse.getAllHeaders()));
         } catch(Exception e) {
-            throw new MonitorRequestException("post request failed", e);
+            throw new MonitorRequestException("get request failed", e);
         } finally {
             httpGet.releaseConnection();
             try {
                 httpResponse.close();
             } catch (Exception e){
-                throw new MonitorRequestException("post request failed on close", e);
+                e.printStackTrace();
+                throw new MonitorRequestException("get request failed on close", e);
             }
         }
     }

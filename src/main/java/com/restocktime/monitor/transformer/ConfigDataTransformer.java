@@ -92,6 +92,7 @@ import com.restocktime.monitor.monitors.parse.porter.helper.PorterHelper;
 import com.restocktime.monitor.monitors.parse.porter.parse.ApiAbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.porter.parse.AtcResponseParser;
 import com.restocktime.monitor.monitors.parse.rimowa.RimowaResponseParser;
+import com.restocktime.monitor.monitors.parse.sevenhills.SevenHillsResponseParser;
 import com.restocktime.monitor.monitors.parse.shoepalace.ShoepalaceResponseParser;
 import com.restocktime.monitor.monitors.parse.shopify.helper.ShopifyFrontendHelper;
 import com.restocktime.monitor.monitors.parse.shopify.helper.linkchecker.LinkCheckStarter;
@@ -718,6 +719,8 @@ public class ConfigDataTransformer {
             return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), new Offspring(new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring()), new ObjectMapper()));
         } else if(site.equals("caliroots")){
             return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new CloudflareRequestHelper(apiKeys), new Caliroots(new StockTracker(new HashMap<>(), 0), page.getUrls().get(0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring())));
+        } else if(site.equals("7hills")) {
+            return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), new SevenHillsResponseParser(new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring())));
         }
 
         return null;
