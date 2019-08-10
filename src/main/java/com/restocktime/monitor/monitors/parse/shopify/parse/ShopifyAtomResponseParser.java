@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.shopify.parse;
 
 import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
@@ -60,11 +61,11 @@ public class ShopifyAtomResponseParser implements AbstractResponseParser {
         }
 
 
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        if(basicHttpResponse.getResponseCode() == 430){
+        if(basicHttpResponse.getResponseCode().get() == 430){
             logger.info("Banned asf shopify");
             return;
         }
@@ -73,7 +74,7 @@ public class ShopifyAtomResponseParser implements AbstractResponseParser {
         List<String> knownLinks = new ArrayList<>();
         List<String> unknownLinks = new ArrayList<>();
 
-        String responseString = basicHttpResponse.getBody().replaceAll(">\\s+<", "><");
+        String responseString = basicHttpResponse.getBody().get().replaceAll(">\\s+<", "><");
         Matcher m = pattern.matcher(responseString);
 
         while(m.find()){

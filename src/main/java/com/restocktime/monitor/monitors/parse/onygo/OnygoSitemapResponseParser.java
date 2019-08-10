@@ -28,7 +28,7 @@ public class OnygoSitemapResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         Matcher products = pattern.matcher(responseString);
         boolean found = false;

@@ -2,6 +2,7 @@ package com.restocktime.monitor.monitors.parse.footsites.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.helper.debug.DiscordLog;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.helper.url.UrlHelper;
@@ -42,25 +43,27 @@ public class FootsitesResponseParser implements AbstractResponseParser {
 
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return;
+        }
+
+        String responseString = basicHttpResponse.getBody().get();
 
 
-        if (basicHttpResponse == null) {
-            return;
-        } else if (basicHttpResponse.getBody() == null) {
-            return;
-        } else if(basicHttpResponse.getBody().contains("The product you are trying to view is no longer available")){
-            logger.info("N/A");
+
+        if(responseString.contains("The product you are trying to view is no longer available")){
+            logger.info("The product you are trying to view is no longer available");
             stockTracker.setOOS(url);
             return;
-        } else if(basicHttpResponse.getBody().contains("<TITLE>Access Denied</TITLE>")){
-            discordLog.error(FootsitesResponseParser.class.getName() + ": Banned on footsites " + url);
+        } else if(responseString.contains("<TITLE>Access Denied</TITLE>")){
+            logger.info("Access Denied");
+
             return;
-        } else if(basicHttpResponse.getBody().contains("\"errors\"")){
+        } else if(responseString.contains("\"errors\"")){
             logger.info("error - " + basicHttpResponse.getBody());
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {

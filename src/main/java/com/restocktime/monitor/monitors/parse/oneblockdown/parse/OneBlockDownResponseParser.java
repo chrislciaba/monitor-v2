@@ -31,13 +31,13 @@ public class OneBlockDownResponseParser {
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
         if(basicHttpResponse == null || basicHttpResponse.getBody() == null)
             return;
-        if(basicHttpResponse.getBody().contains("\"success\":false")){
+        if(basicHttpResponse.getBody().get().contains("\"success\":false")){
             stockTracker.setOOS(curSku);
             return;
         }
 
         try {
-            ObdResponse obdResponse = objectMapper.readValue(basicHttpResponse.getBody(), ObdResponse.class);
+            ObdResponse obdResponse = objectMapper.readValue(basicHttpResponse.getBody().get(), ObdResponse.class);
             if(stockTracker.notifyForObject(curSku, isFirst)){
                 DefaultBuilder.buildAttachments(attachmentCreater, obdResponse.getPayload().get(0).getPermalink(), obdResponse.getPayload().get(0).getImageObject().getImageUrl(), "OBD", obdResponse.getPayload().get(0).getTitle(), formatNames);
             }

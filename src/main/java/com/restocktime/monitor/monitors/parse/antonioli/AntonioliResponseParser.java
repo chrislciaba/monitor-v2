@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.antonioli;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
@@ -34,11 +35,11 @@ public class AntonioliResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         if((responseString.contains("data-product-id") || responseString.contains("add-to-cart"))){
             log.info("in stock");

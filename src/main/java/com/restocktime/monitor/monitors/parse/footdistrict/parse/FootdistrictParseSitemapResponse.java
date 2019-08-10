@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.footdistrict.parse;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -26,7 +27,11 @@ public class FootdistrictParseSitemapResponse implements AbstractResponseParser 
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        String responseString = basicHttpResponse.getBody();
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return;
+        }
+
+        String responseString = basicHttpResponse.getBody().get();
         Matcher m = searchPattern.matcher(responseString);
         boolean found = responseString.contains("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
         while(m.find()){

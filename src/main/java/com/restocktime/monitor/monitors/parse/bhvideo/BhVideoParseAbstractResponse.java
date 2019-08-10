@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.bhvideo;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -28,17 +29,17 @@ public class BhVideoParseAbstractResponse implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if (basicHttpResponse == null || basicHttpResponse.getBody() == null) {
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
         String name = "";
 
-        if(basicHttpResponse.getBody().contains("type=\"submit\">Add to Cart</button>")){
+        if(basicHttpResponse.getBody().get().contains("type=\"submit\">Add to Cart</button>")){
             logger.info("In stock");
 
             if(stockTracker.notifyForObject(url, isFirst)){
-                Matcher m = pattern.matcher(basicHttpResponse.getBody());
+                Matcher m = pattern.matcher(basicHttpResponse.getBody().get());
                 if(m.find()){
                     name = m.group(1);
                 }
@@ -47,7 +48,7 @@ public class BhVideoParseAbstractResponse implements AbstractResponseParser {
                 //Notifications.send(discordWebhook, slackObj, attachmentCreater);
             }
 
-        } else if(basicHttpResponse.getResponseCode() >= 400){
+        } else if(basicHttpResponse.getResponseCode().get() >= 400){
             logger.info("Error");
         } else {
             logger.info("oos - " + name);

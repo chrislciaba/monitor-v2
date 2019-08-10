@@ -39,7 +39,7 @@ public class OffWhiteHtmlPageResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         String productName = name;
         Matcher titleMatcher = titlePattern.matcher(responseString);
         Matcher sizeMatcher = sizePattern.matcher(responseString);

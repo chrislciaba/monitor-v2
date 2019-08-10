@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.solebox;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -27,11 +28,11 @@ public class SoleboxResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
-        String responseString = basicHttpResponse.getBody().toLowerCase();
+
+        String responseString = basicHttpResponse.getBody().get().toLowerCase();
 
         if (responseString.contains("in den warenkorb") || responseString.contains("add to basket") || responseString.contains("add to cart")) {
             Matcher m = pattern.matcher(responseString);
@@ -47,7 +48,7 @@ public class SoleboxResponseParser implements AbstractResponseParser {
             }
         } else if(responseString.contains("429 - too many requests") || responseString.contains("too mamy requests") || responseString.contains("leider zu viele anfragen")) {
             logger.info("Banned");
-        } else if(basicHttpResponse.getResponseCode() >= 400){
+        } else if(basicHttpResponse.getResponseCode().get() >= 400){
             logger.info("Solebox error code" + basicHttpResponse.getResponseCode());
         } else {
             logger.info("out of stock");

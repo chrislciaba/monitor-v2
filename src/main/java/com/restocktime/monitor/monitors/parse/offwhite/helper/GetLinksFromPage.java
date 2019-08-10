@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.offwhite.helper;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.monitors.parse.offwhite.model.offwhite.OffWhiteThreadObj;
 
@@ -28,11 +29,11 @@ public class GetLinksFromPage {
     }
 
     public OffWhiteThreadObj getLinks(BasicHttpResponse basicHttpResponse, boolean isFirst){
-        if (basicHttpResponse == null || basicHttpResponse.getBody() == null) {
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return null;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         Matcher m = pattern.matcher(responseString);
 

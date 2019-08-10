@@ -70,26 +70,26 @@ public class ShopifyProductsResponseParser implements AbstractResponseParser {
         count++;
         if (basicHttpResponse == null) {
             return;
-        } else if (basicHttpResponse.getResponseCode() == 404 || basicHttpResponse.getResponseCode() == 401) {
+        } else if (basicHttpResponse.getResponseCode().get() == 404 || basicHttpResponse.getResponseCode().get() == 401) {
             logger.info("Not loaded yet - " + url);
             return;
         } else if (basicHttpResponse.getBody() == null) {
             return;
         }
-        if (basicHttpResponse.getResponseCode() == 400) {
+        if (basicHttpResponse.getResponseCode().get() == 400) {
             logger.info("Pass up");
             return;
-        } else if (basicHttpResponse.getBody().contains("Page temporarily unavailable")) {
+        } else if (basicHttpResponse.getBody().get().contains("Page temporarily unavailable")) {
             logger.info("page unavailable " + url);
             bans++;
             return;
-        } else if(basicHttpResponse.getResponseCode() == 430){
+        } else if(basicHttpResponse.getResponseCode().get() == 430){
             bans++;
             logger.info("too many reqs");
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
 
         if (responseString == null) {
@@ -97,7 +97,7 @@ public class ShopifyProductsResponseParser implements AbstractResponseParser {
         }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ShopifyProducts shopifyProducts = objectMapper.readValue(basicHttpResponse.getBody(), ShopifyProducts.class);
+            ShopifyProducts shopifyProducts = objectMapper.readValue(basicHttpResponse.getBody().get(), ShopifyProducts.class);
             for (Product product : shopifyProducts.getProducts()) {
 
                 boolean available = false;

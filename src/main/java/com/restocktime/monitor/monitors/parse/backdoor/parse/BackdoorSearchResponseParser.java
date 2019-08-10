@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.backdoor.parse;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -34,11 +35,11 @@ public class BackdoorSearchResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         if(responseString.contains(String.format(SKU_TEMPLATE, sku))){
             Matcher name = TITLE_PATTERN.matcher(responseString);
             Matcher link = LINK_PATTERN.matcher(responseString);
@@ -57,12 +58,12 @@ public class BackdoorSearchResponseParser implements AbstractResponseParser {
     }
 
     public String getAndSetCookie(BasicHttpResponse basicHttpResponse) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return null;
         }
 
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         Matcher cookie = COOKIE_PATTERN.matcher(responseString);
         if(cookie.find()){
             logger.info("Found cookie");

@@ -31,7 +31,7 @@ public class OffWhiteAllResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody().replaceAll(">\\s+<", "><").replaceAll("\n", "");
+        String responseString = basicHttpResponse.getBody().get().replaceAll(">\\s+<", "><").replaceAll("\n", "");
         if(responseString.contains("<h1>502 Bad Gateway</h1>")){
             logger.info("BANNED PROXY ON OFF WHITE 3");
             return;

@@ -5,6 +5,7 @@ import com.restocktime.monitor.helper.debug.DiscordLog;
 import com.restocktime.monitor.helper.httprequests.exception.MonitorRequestException;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.TwoCaptchaService;
+import com.restocktime.monitor.helper.httprequests.model.ResponseErrors;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.helper.url.UrlHelper;
 import com.restocktime.monitor.monitors.ingest.backdoor.BackDoor;
@@ -18,6 +19,7 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.omg.CORBA.UNKNOWN;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -66,13 +68,32 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             int respCode = response.getStatusLine().getStatusCode();
 
             String responseString = EntityUtils.toString(entity, "UTF-8");
-            return Optional.of(new BasicHttpResponse(responseString, respCode));
+            return Optional.of(
+                    BasicHttpResponse.builder()
+                            .body(Optional.of(responseString))
+                            .responseCode(Optional.of(respCode))
+                            .headers(Optional.empty())
+                            .error(Optional.empty())
+                            .build()
+            );
         } catch (ConnectTimeoutException cte) {
-            log.error("Connection timed out");
-            throw new MonitorRequestException("Connection timed out");
+            log.info("Connection timed out");
+            return Optional.of(
+                    BasicHttpResponse.builder()
+                            .body(Optional.empty())
+                            .responseCode(Optional.empty())
+                            .headers(Optional.empty())
+                            .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
+                            .build());
         } catch (SocketTimeoutException ste) {
-            log.error("Socket timeout");
-            throw new MonitorRequestException("Socket timed out");
+            log.info("Socket timeout");
+            return Optional.of(
+                    BasicHttpResponse.builder()
+                            .body(Optional.empty())
+                            .responseCode(Optional.empty())
+                            .headers(Optional.empty())
+                            .error(Optional.of(ResponseErrors.SOCKET_TIMEOUT))
+                            .build());
         }
         catch (IOException e) {
             log.error(EXCEPTION_LOG_MESSAGE, e);
@@ -83,11 +104,13 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
     }
 
     private boolean isBanned(BasicHttpResponse basicHttpResponse, String url, String proxy) {
-        if(basicHttpResponse.getBody().contains("<title>Access denied")) {
+        if(!basicHttpResponse.getBody().isPresent()){
+            return false;
+        } if(basicHttpResponse.getBody().get().contains("<title>Access denied")) {
             log.error("banned proxy on sns " + proxy);
             return true;
-        } else if(basicHttpResponse.getBody().contains("Access denied") || basicHttpResponse.getBody().contains("Access Denied")){
-            if(basicHttpResponse.getBody().toLowerCase().contains("squid")){
+        } else if(basicHttpResponse.getBody().get().contains("Access denied") || basicHttpResponse.getBody().get().contains("Access Denied")){
+            if(basicHttpResponse.getBody().get().toLowerCase().contains("squid")){
                 log.error("Squid proxy error for: " + proxy);
             } else {
                 log.error("banned proxy on " + UrlHelper.deriveBaseUrl(url) + " " + proxy);
@@ -99,11 +122,13 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
     }
 
     private Optional<BasicHttpResponse> checkCapRoute(BasicHttpResponse basicHttpResponse, String url, BasicRequestClient basicRequestClient){
-        if(basicHttpResponse.getResponseCode() != 503){
-            if(basicHttpResponse.getResponseCode() == 403 && basicHttpResponse.getBody().contains("cdn-cgi")){
-                BasicHttpResponse capResp = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody(), apiKeys[idx]);
+        if(!basicHttpResponse.getBody().isPresent() || !basicHttpResponse.getResponseCode().isPresent()){
+            return Optional.empty();
+        } else if(basicHttpResponse.getResponseCode().get() != 503){
+            if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
+                BasicHttpResponse capResp = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
                 idx = (idx + 1) % apiKeys.length;
-                if(!basicHttpResponse.getBody().contains("Checking your browser before accessing")){
+                if(!basicHttpResponse.getBody().get().contains("Checking your browser before accessing")){
                     return Optional.of(capResp);
                 } else {
                     if(url.contains("search.jimmyjazz")){
@@ -121,6 +146,10 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
     }
 
     private Optional<String> getChallengeUrl(BasicHttpResponse basicHttpResponse, String url) throws Exception {
+        if (!basicHttpResponse.getBody().isPresent() || !basicHttpResponse.getResponseCode().isPresent()) {
+            return Optional.empty();
+        }
+
         URL uri = new URL(url);
         String base = uri.getProtocol() + "://" + uri.getHost();
 
@@ -128,9 +157,9 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
         Pattern passPattern = Pattern.compile("name=\"pass\" value=\"([^\"]*)\"");
         Pattern jschlPattern= Pattern.compile("name=\"jschl_vc\" value=\"([^\"]*)\"");
         Pattern sPattern = Pattern.compile("name=\"s\" value=\"([^\"]*)\"");
-        Matcher passMatcher = passPattern.matcher(basicHttpResponse.getBody());
-        Matcher jschlMatcher = jschlPattern.matcher(basicHttpResponse.getBody());
-        Matcher sMatcher = sPattern.matcher(basicHttpResponse.getBody());
+        Matcher passMatcher = passPattern.matcher(basicHttpResponse.getBody().get());
+        Matcher jschlMatcher = jschlPattern.matcher(basicHttpResponse.getBody().get());
+        Matcher sMatcher = sPattern.matcher(basicHttpResponse.getBody().get());
 
         String pass, jschl, s;
         if(passMatcher.find() && jschlMatcher.find() && sMatcher.find()){
@@ -141,7 +170,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             return Optional.empty();
         }
 
-        String[] parts = basicHttpResponse.getBody().split("\n");
+        String[] parts = basicHttpResponse.getBody().get().split("\n");
         String exec = "var t ='" + shortUrl + "';var a = {}";
         String firstLine = "", secondLine = "";
         boolean found = false;
@@ -170,11 +199,13 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
     }
 
     private Optional<BasicHttpResponse> finalScan(BasicHttpResponse basicHttpResponse, BasicRequestClient basicRequestClient, String url){
-        if(basicHttpResponse.getResponseCode() == 403 && basicHttpResponse.getBody().contains("cdn-cgi")){
-            BasicHttpResponse basicHttpResponse1 = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody(), apiKeys[idx]);
+        if(!basicHttpResponse.getBody().isPresent() || !basicHttpResponse.getResponseCode().isPresent()){
+            return Optional.empty();
+        } else if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
+            BasicHttpResponse basicHttpResponse1 = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
             idx = (idx + 1) % apiKeys.length;
             return Optional.of(basicHttpResponse1);
-        } else if(basicHttpResponse.getResponseCode() != 503){
+        } else if(basicHttpResponse.getResponseCode().get() != 503){
             return Optional.of(basicHttpResponse);
         }
 
@@ -184,18 +215,29 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
     public BasicHttpResponse performGet(BasicRequestClient basicRequestClient,
                                         String url) {
-        logger.info("HERE");
         try {
             while(true) {
                 Optional<BasicHttpResponse> basicHttpResponse = doGet(basicRequestClient, url);
                 if(!basicHttpResponse.isPresent()){
-                    logger.info("HERE");
+                    log.error("cf get request failed on initial get");
+                    return BasicHttpResponse.builder()
+                            .body(Optional.empty())
+                            .headers(Optional.empty())
+                            .responseCode(Optional.empty())
+                            .error(Optional.of(ResponseErrors.UNKNOWN))
+                            .build();
 
-                    throw new MonitorRequestException("cf get request failed on initial get " + url);
                 }
 
                 if(isBanned(basicHttpResponse.get(), url, basicRequestClient.getHttpHost().getHostName())){
-                    throw new MonitorRequestException("cf proxy banned");
+                    log.error("cf proxy banned");
+
+                    return BasicHttpResponse.builder()
+                            .body(Optional.empty())
+                            .headers(Optional.empty())
+                            .responseCode(Optional.empty())
+                            .error(Optional.of(ResponseErrors.UNKNOWN))
+                            .build();
                 }
 
                 Optional<BasicHttpResponse> basicHttpResponse1 = checkCapRoute(basicHttpResponse.get(), url, basicRequestClient);
@@ -203,14 +245,28 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                     return basicHttpResponse1.get();
                 Optional<String> resultUrl = getChallengeUrl(basicHttpResponse.get(), url);
                 if(!resultUrl.isPresent()){
-                    throw new MonitorRequestException("cf get request failed on captcha " + url);
+                    log.error("cf captcha failed");
+
+                    return BasicHttpResponse.builder()
+                            .body(Optional.empty())
+                            .headers(Optional.empty())
+                            .responseCode(Optional.empty())
+                            .error(Optional.of(ResponseErrors.UNKNOWN))
+                            .build();
                 }
 
                 Thread.sleep(4000 + (int) (Math.random() * 500));
                 basicHttpResponse = doGet(basicRequestClient, resultUrl.get());
 
                 if(!basicHttpResponse.isPresent()){
-                    throw new MonitorRequestException("cf get request failed on challenge solve " + url);
+                    log.error("cf couldn't solve challenge URL");
+
+                    return BasicHttpResponse.builder()
+                            .body(Optional.empty())
+                            .headers(Optional.empty())
+                            .responseCode(Optional.empty())
+                            .error(Optional.of(ResponseErrors.UNKNOWN))
+                            .build();
                 }
 
                 basicHttpResponse = finalScan(basicHttpResponse.get(), basicRequestClient, url);
@@ -221,7 +277,13 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             }
         } catch(Exception e) {
             log.error(EXCEPTION_LOG_MESSAGE, e);
-            throw new MonitorRequestException("cf exception thrown on get", e);
+
+            return BasicHttpResponse.builder()
+                    .body(Optional.empty())
+                    .headers(Optional.empty())
+                    .responseCode(Optional.empty())
+                    .error(Optional.of(ResponseErrors.UNKNOWN))
+                    .build();
         }
     }
 
@@ -254,16 +316,31 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                 int respCode = httpResponse.getStatusLine().getStatusCode();
 
                 if(responseString.contains("<title>Access denied | www.sneakersnstuff.com used Cloudflare to restrict access</title>")) {
-                    log.error("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
+                    log.info("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
 
-                    return new BasicHttpResponse(null, respCode);
+                    return BasicHttpResponse.builder()
+                            .error(Optional.of(ResponseErrors.BANNED))
+                            .responseCode(Optional.of(respCode))
+                            .headers(Optional.empty())
+                            .body(Optional.empty())
+                            .build();
                 } else if(responseString.contains("Access denied")){
-                    log.error("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
+                    log.info("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
 
-                    return new BasicHttpResponse(null, respCode);
+                    return BasicHttpResponse.builder()
+                            .error(Optional.of(ResponseErrors.BANNED))
+                            .responseCode(Optional.of(respCode))
+                            .headers(Optional.empty())
+                            .body(Optional.empty())
+                            .build();
                 }
 
-                return new BasicHttpResponse(responseString, respCode);
+                return BasicHttpResponse.builder()
+                        .body(Optional.of(responseString))
+                        .responseCode(Optional.of(respCode))
+                        .error(Optional.empty())
+                        .headers(Optional.empty())
+                        .build();
 
             } catch(Exception e) {
                 log.error(EXCEPTION_LOG_MESSAGE, e);
@@ -273,7 +350,15 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                     httpGet.releaseConnection();
             }
         }
-        return new BasicHttpResponse("", -1);
+
+        log.error(respStr);
+
+        return BasicHttpResponse.builder()
+                .body(Optional.empty())
+                .headers(Optional.empty())
+                .responseCode(Optional.empty())
+                .error(Optional.of(ResponseErrors.UNKNOWN))
+                .build();
     }
 
     public BasicHttpResponse performPost(
@@ -318,10 +403,20 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             }
 
 
-            return new BasicHttpResponse(responseString, statusCode);
+            return BasicHttpResponse.builder()
+                    .responseCode(Optional.of(statusCode))
+                    .body(Optional.of(responseString))
+                    .headers(Optional.empty())
+                    .error(Optional.empty())
+                    .build();
         } catch(Exception e) {
             log.error(EXCEPTION_LOG_MESSAGE, e);
-            throw new MonitorRequestException("post request failed on initial get");
+            return BasicHttpResponse.builder()
+                    .responseCode(Optional.empty())
+                    .body(Optional.empty())
+                    .headers(Optional.empty())
+                    .error(Optional.of(ResponseErrors.UNKNOWN))
+                    .build();
         }
     }
 }

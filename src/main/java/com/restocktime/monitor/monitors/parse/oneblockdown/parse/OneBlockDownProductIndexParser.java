@@ -48,7 +48,7 @@ public class OneBlockDownProductIndexParser implements AbstractResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         Matcher matcher = pattern.matcher(responseString);
         if(matcher.find()){

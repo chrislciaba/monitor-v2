@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.titolo.parse;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -25,11 +26,11 @@ public class TitoloSearchResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         Matcher link = linkPattern.matcher(responseString);
 
         if (responseString.contains("did not match any products")) {

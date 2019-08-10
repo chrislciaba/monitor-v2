@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.shopify.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.helper.url.UrlHelper;
@@ -56,23 +57,27 @@ public class ShopifyAbstractResponseParser implements AbstractResponseParser {
             errors = 0;
         }
 
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return;
+        }
+
         count++;
 
         if (basicHttpResponse == null) {
             return;
-        } else if (basicHttpResponse.getResponseCode() == 404 || basicHttpResponse.getResponseCode() == 401) {
+        } else if (basicHttpResponse.getResponseCode().get() == 404 || basicHttpResponse.getResponseCode().get() == 401) {
             stockTracker.setOOS(url);
             return;
         } else if (basicHttpResponse.getBody() == null) {
             return;
-        } else if(basicHttpResponse.getBody().contains("Page temporarily unavailable<")){
+        } else if(basicHttpResponse.getBody().get().contains("Page temporarily unavailable<")){
             bans++;
             return;
-        } else if(basicHttpResponse.getResponseCode() == 430){
+        } else if(basicHttpResponse.getResponseCode().get() == 430){
             bans++;
             return;
         }
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         if (responseString == null) {
             return;

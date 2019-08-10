@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.snkrs.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -16,6 +17,8 @@ import java.net.URL;
 import java.util.Base64;
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class HuntResponseParser implements AbstractResponseParser {
     final static Logger logger = Logger.getLogger(HuntResponseParser.class);
     private StockTracker stockTracker;
@@ -27,11 +30,11 @@ public class HuntResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Hunts hunts = objectMapper.readValue(responseString, Hunts.class);
@@ -93,6 +96,7 @@ public class HuntResponseParser implements AbstractResponseParser {
 
             }
         } catch (Exception e){
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
 
         }
     }

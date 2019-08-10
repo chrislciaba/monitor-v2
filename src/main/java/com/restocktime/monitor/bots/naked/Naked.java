@@ -28,7 +28,7 @@ public class Naked {
             return false;
         }
 
-        String responseString = basicHttpResponse1.getBody();
+        String responseString = basicHttpResponse1.getBody().get();
 
 
         String sizeStr = "<option\\s+value=\"([0-9]*)\">\\s+([0-9.]*)\\s+</option>";
@@ -55,11 +55,11 @@ public class Naked {
             BasicHttpResponse basicHttpResponse =
                     httpRequestHelper.performPost(basicRequestClient, cart, body);
             logger.info(basicHttpResponse.getBody());
-            if(basicHttpResponse != null && basicHttpResponse.getBody() != null && basicHttpResponse.getBody().contains("Your shopping bag")){
+            if(basicHttpResponse != null && basicHttpResponse.getBody() != null && basicHttpResponse.getBody().get().contains("Your shopping bag")){
                 BasicHttpResponse response = httpRequestHelper.performGet(basicRequestClient, loginHome);
 
                 if(response != null && response.getBody() != null){
-                    String responseStr1 = response.getBody();
+                    String responseStr1 = response.getBody().toString();
                     Matcher csrf2 = csrfPattern1.matcher(responseStr1);
                     String username = logins.get(loginIdx).getEmail();
                     String pass = logins.get(loginIdx).getPassword();

@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.shopify.helper;
 
 import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.url.UrlHelper;
@@ -33,25 +34,25 @@ public class ShopifyFrontendHelper {
 
     public List<String> findLinks(BasicHttpResponse basicHttpResponse, boolean isFirst){
         List<String> linkList = new ArrayList<>();
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return linkList;
         }
 
-        if(basicHttpResponse.getResponseCode() == 430 || basicHttpResponse.getResponseCode() == 429){
+        if(basicHttpResponse.getResponseCode().get() == 430 || basicHttpResponse.getResponseCode().get() == 429){
             logger.info("Banned asf shopify");
             return linkList;
         }
 
         if(
-                (basicHttpResponse.getResponseCode() == 403 || basicHttpResponse.getResponseCode() == 404)
-                        && !basicHttpResponse.getBody().contains("Squid")
+                (basicHttpResponse.getResponseCode().get() == 403 || basicHttpResponse.getResponseCode().get() == 404)
+                        && !basicHttpResponse.getBody().get().contains("Squid")
 
         ){
             return linkList;
         }
 
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         Matcher productMatcher = productPattern.matcher(responseString);
         Set<String> currentLinks = new HashSet<>();
         while (productMatcher.find()) {

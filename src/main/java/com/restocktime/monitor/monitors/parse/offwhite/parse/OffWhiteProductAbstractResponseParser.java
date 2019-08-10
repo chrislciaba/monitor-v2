@@ -36,7 +36,7 @@ public class OffWhiteProductAbstractResponseParser implements AbstractResponsePa
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             OffWhiteJson offWhiteJson = objectMapper.readValue(responseString, OffWhiteJson.class);

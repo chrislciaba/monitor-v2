@@ -42,8 +42,8 @@ public class Twitter extends AbstractMonitor {
 
         try {
             BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, url);
-            if(basicHttpResponse.getBody().contains("nojs_router")){
-                Matcher m = noScriptLinkPattern.matcher(basicHttpResponse.getBody());
+            if(basicHttpResponse.getBody().get().contains("nojs_router")){
+                Matcher m = noScriptLinkPattern.matcher(basicHttpResponse.getBody().get());
                 if(m.find()){
                     basicHttpResponse = httpRequestHelper.performPost(basicRequestClient, m.group(1), "");
 

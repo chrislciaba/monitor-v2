@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.barnesandnoble.parse;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
@@ -32,20 +33,20 @@ public class BarnesAndNobleResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, BasicHttpResponse prodHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null || prodHttpResponse == null || prodHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
         try {
 
-            String apiresponseString = basicHttpResponse.getBody();
+            String apiresponseString = basicHttpResponse.getBody().get();
             Matcher statusMatcher = statusPattern.matcher(apiresponseString);
             Matcher pidMatcher = pidPattern.matcher(apiresponseString);
             String pid = pidMatcher.find()?pidMatcher.group(1):"";
             String statusString = statusMatcher.find()?statusMatcher.group(1):"";
 
             if(pid.equals(sku) && statusString.equals("true")){
-                String responseString = prodHttpResponse.getBody();
+                String responseString = prodHttpResponse.getBody().get();
                 Matcher priceMatcher = pricePattern.matcher(responseString);
                 Matcher imgMatcher = imgPattern.matcher(responseString);
                 String price = priceMatcher.find()?priceMatcher.group(1):"N/A";

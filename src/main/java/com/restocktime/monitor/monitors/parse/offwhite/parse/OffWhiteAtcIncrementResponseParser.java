@@ -36,7 +36,7 @@ public class OffWhiteAtcIncrementResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody().replaceAll(">\\s+<", "><").replaceAll("\n", "");
+        String responseString = basicHttpResponse.getBody().get().replaceAll(">\\s+<", "><").replaceAll("\n", "");
         Matcher cartMatcher = cartPattern.matcher(responseString);
 
         if(cartMatcher.find() && stockTracker.notifyForObject("offwhite", false)){
@@ -58,7 +58,7 @@ public class OffWhiteAtcIncrementResponseParser {
         } else if(responseString.contains("not available")){
             logger.info("OFF---WHITE OOS");
             stockTracker.setOOS("offwhite");
-        } else if(basicHttpResponse.getResponseCode() == 403){
+        } else if(basicHttpResponse.getResponseCode().get() == 403){
             logger.info("forbidden");
         } else if(responseString.contains("<h1>Internal server error (500)</h1>")){
             logger.info("500 SERVER ERROR");

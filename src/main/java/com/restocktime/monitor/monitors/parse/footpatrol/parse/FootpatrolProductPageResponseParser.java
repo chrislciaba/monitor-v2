@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.footpatrol.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
@@ -30,11 +31,11 @@ public class FootpatrolProductPageResponseParser implements AbstractResponsePars
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         Matcher sizeMatcher = pattern.matcher(responseString);
 

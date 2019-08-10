@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.walmart.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -28,13 +29,13 @@ public class WalmartResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null || basicHttpResponse.getBody().length() == 0){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
         try {
 
-            SearchResults searchResults = objectMapper.readValue(basicHttpResponse.getBody(), SearchResults.class);
+            SearchResults searchResults = objectMapper.readValue(basicHttpResponse.getBody().get(), SearchResults.class);
             if(searchResults.getItems().isEmpty()){
                 logger.info("OOS - " + pid);
                 stockTracker.setOOS(pid);

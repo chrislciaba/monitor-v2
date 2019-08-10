@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.snkrs.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.helper.url.UrlHelper;
@@ -58,11 +59,11 @@ public class ProductFeedV2ResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        List<ParsedResponse> products = getParsedResponseList(basicHttpResponse.getBody());
+        List<ParsedResponse> products = getParsedResponseList(basicHttpResponse.getBody().get());
 
         if(products == null){
             return;

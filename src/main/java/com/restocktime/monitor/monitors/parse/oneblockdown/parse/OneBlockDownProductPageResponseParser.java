@@ -41,7 +41,7 @@ public class OneBlockDownProductPageResponseParser implements AbstractResponsePa
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) throws Exception {
         oosMap.clear();
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         Matcher matcher = pattern.matcher(responseString);
         if(matcher.find()){

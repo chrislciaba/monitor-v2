@@ -42,7 +42,7 @@ public class DisneySitemap extends AbstractMonitor {
 
         try {
             BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, UrlHelper.deriveBaseUrl(url) + "/sitemap.xml");
-            Matcher m = pattern.matcher(basicHttpResponse.getBody());
+            Matcher m = pattern.matcher(basicHttpResponse.getBody().get());
             while(m.find()){
                 Timeout.timeout(delay);
                 basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, m.group(1));

@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.adidas.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -34,8 +35,11 @@ public class AdidasResponseParser implements AbstractResponseParser {
 
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) throws Exception {
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return;
+        }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         ObjectMapper objectMapper = new ObjectMapper();
         Availability availability = objectMapper.readValue(responseString, Availability.class);
         if(availability.getAvailability_status() != null && availability.getAvailability_status().equals("IN_STOCK")){

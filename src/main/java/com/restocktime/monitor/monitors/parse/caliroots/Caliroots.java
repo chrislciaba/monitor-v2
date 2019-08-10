@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.caliroots;
 
 import com.restocktime.monitor.helper.debug.DiscordLog;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -30,11 +31,11 @@ public class Caliroots implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         logger.info(responseString);
         if(responseString.contains("Choose size")){
             if(stockTracker.notifyForObject(url, isFirst)) {

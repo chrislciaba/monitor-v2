@@ -20,7 +20,7 @@ public class NameChangeHelper {
             return false;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         try {
             Matcher productNameMatcher = productNamePattern.matcher(responseString);

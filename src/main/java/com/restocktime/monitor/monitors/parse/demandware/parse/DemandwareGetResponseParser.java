@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.demandware.parse;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -40,7 +41,11 @@ public class DemandwareGetResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse/*, BasicHttpResponse stockHttpResponse*/, AttachmentCreater attachmentCreater, boolean isFirst) {
-        String responseString = basicHttpResponse.getBody();
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return;
+        }
+
+        String responseString = basicHttpResponse.getBody().get();
         String stockString = "";//stockHttpResponse.getBody();
 
         //Matcher qty = cartItemPattern.matcher(responseString);

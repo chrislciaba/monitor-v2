@@ -2,6 +2,7 @@ package com.restocktime.monitor.monitors.parse.footdistrict.helper;
 
 import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import org.apache.http.message.BasicHeader;
 
@@ -31,11 +32,11 @@ public class BotBypass {
             BasicHttpResponse basicHttpResponse,
             String url){
 
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
-            return null;
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return basicHttpResponse;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         try {
             if (responseString.contains("sucuri_cloudproxy_js")) {
                 Matcher m = scriptPattern.matcher(responseString);

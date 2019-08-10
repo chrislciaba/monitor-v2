@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.dsm.parse;
 
 import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.password.PasswordHelper;
@@ -46,15 +47,16 @@ public class ParseDSMAbstractResponse implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
-        String s = basicHttpResponse.getBody();
+
+        String s = basicHttpResponse.getBody().get();
 
         isPassUp = PasswordHelper.getPassStatus(attachmentCreater, basicHttpResponse, url, isFirst, isPassUp, formatNames);
 
 
-        Matcher m = urlPattern.matcher(basicHttpResponse.getBody());
+        Matcher m = urlPattern.matcher(basicHttpResponse.getBody().get());
         Matcher name = namePattern.matcher(s);
 
         List<String> knownLinks = new ArrayList<>();

@@ -33,7 +33,7 @@ public class OffWhiteAtcResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
 
         AtcResponse atcResponse = null;
@@ -47,7 +47,7 @@ public class OffWhiteAtcResponseParser {
         logger.info(responseString);
         logger.info(basicHttpResponse.getResponseCode());
 
-        if(basicHttpResponse.getResponseCode() == 200 && atcResponse != null &&  stockTracker.notifyForObject("offwhite", false)){
+        if(basicHttpResponse.getResponseCode().get() == 200 && atcResponse != null &&  stockTracker.notifyForObject("offwhite", false)){
             String name = atcResponse.getCart().getLine_items().get(0).getDesigner_name() + " " + atcResponse.getCart().getLine_items().get(0).getName();
             String img;
             try{

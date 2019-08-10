@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.walmart.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -33,8 +34,7 @@ public class WalmartTerraResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse,/* BasicHttpResponse productHttpResponse,*/ AttachmentCreater attachmentCreater, boolean isFirst) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null || basicHttpResponse.getBody().length() == 0){
-
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
@@ -52,7 +52,7 @@ public class WalmartTerraResponseParser implements AbstractResponseParser {
                 price = priceMatcher.group(1);
             }
 
-            TerraResponse terraResponse = objectMapper.readValue(basicHttpResponse.getBody(), TerraResponse.class);
+            TerraResponse terraResponse = objectMapper.readValue(basicHttpResponse.getBody().get(), TerraResponse.class);
 
             if(terraResponse.getPayload() != null && terraResponse.getPayload().getOffers() != null) {
                 for (String k : terraResponse.getPayload().getOffers().keySet()) {

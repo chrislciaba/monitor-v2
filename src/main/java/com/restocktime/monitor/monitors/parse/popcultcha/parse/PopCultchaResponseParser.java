@@ -34,7 +34,7 @@ public class PopCultchaResponseParser  implements AbstractResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody().replaceAll("\n", "").replaceAll("\\s+", " ");
+        String responseString = basicHttpResponse.getBody().get().replaceAll("\n", "").replaceAll("\\s+", " ");
 //        Matcher productMatcher = productPattern.matcher(responseString);
 //        Matcher linkMatcher = productLinksandTitles.matcher(responseString);
         Matcher divMatcher = divPattern.matcher(responseString);

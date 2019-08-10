@@ -2,6 +2,7 @@ package com.restocktime.monitor.monitors.parse.instagram.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.helper.debug.DiscordLog;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -29,17 +30,14 @@ public class InstagramStoryResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null || basicHttpResponse.getBody().length() == 0){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        if(basicHttpResponse.getResponseCode() != 200){
-            discordLog.error("@here FIX IG STORY FOR " + name);
-        }
 
         try {
 
-            EntryPoint entryPoint = objectMapper.readValue(basicHttpResponse.getBody(), EntryPoint.class);
+            EntryPoint entryPoint = objectMapper.readValue(basicHttpResponse.getBody().get(), EntryPoint.class);
             for(Story s : entryPoint.getData().getReels_media().get(0).getItems()){
 
                 if(stockTracker.notifyForObject(s.getId(), isFirst)){

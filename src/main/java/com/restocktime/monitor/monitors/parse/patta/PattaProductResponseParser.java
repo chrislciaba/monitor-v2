@@ -29,13 +29,13 @@ public class PattaProductResponseParser implements AbstractResponseParser {
         }
 
 
-        if (basicHttpResponse.getBody().contains("product-addtocart-button") && stockTracker.notifyForObject(url, isFirst)){
-            Matcher titleMatcher = titlePattern.matcher(basicHttpResponse.getBody());
+        if (basicHttpResponse.getBody().get().contains("product-addtocart-button") && stockTracker.notifyForObject(url, isFirst)){
+            Matcher titleMatcher = titlePattern.matcher(basicHttpResponse.getBody().get());
             String title = "HYPE DIRECT LINK SHIT CLICK THIS";
             if(titleMatcher.find())
                 title = titleMatcher.group(1);
             DefaultBuilder.buildAttachments(attachmentCreater, url, null, "Patta", title, formatNames);
-        } else if(basicHttpResponse.getBody().contains("<title>404 Not Found</title>") || (basicHttpResponse.getBody().contains("stock unavailable") && !basicHttpResponse.getBody().contains("product-addtocart-button"))){
+        } else if(basicHttpResponse.getBody().get().contains("<title>404 Not Found</title>") || (basicHttpResponse.getBody().get().contains("stock unavailable") && !basicHttpResponse.getBody().get().contains("product-addtocart-button"))){
             stockTracker.setOOS(url);
         }
     }

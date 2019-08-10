@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.gamestop.parse;
 
 import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -42,9 +43,12 @@ public class GamestopResponseParser  implements AbstractResponseParser {
 
     public void parse(BasicHttpResponse basicHttpResponse,/* BasicRequestClient basicRequestClient,*/
             AttachmentCreater attachmentCreater, boolean isFirst) {
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return;
+        }
         isFirst = false;
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
         Matcher oosMatcher = oosPattern.matcher(responseString);
 

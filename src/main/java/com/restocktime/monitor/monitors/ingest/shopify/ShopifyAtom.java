@@ -44,7 +44,7 @@ public class ShopifyAtom extends AbstractMonitor {
         try{
             BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, url + Long.toString(Math.abs(r.nextLong())) + Long.toString(Math.abs(r.nextLong())));
 
-            String md5 = MD5.getMd5(basicHttpResponse.getBody());
+            String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
             if (hash.equals(md5)) {
                 return;
             }

@@ -3,6 +3,7 @@ package com.restocktime.monitor.helper.httprequests;
 import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.helper.httprequests.exception.MonitorRequestException;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.helper.httprequests.model.ResponseErrors;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -15,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
@@ -42,13 +44,30 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
             HttpEntity entity = httpResponse.getEntity();
             String resp = EntityUtils.toString(entity);
             EntityUtils.consumeQuietly(entity);
-            return new BasicHttpResponse(resp, httpResponse.getStatusLine().getStatusCode(), Arrays.asList(httpResponse.getAllHeaders()));
+            return BasicHttpResponse.builder()
+                    .body(Optional.of(resp))
+                    .responseCode(Optional.of(httpResponse.getStatusLine().getStatusCode()))
+                    .error(Optional.empty())
+                    .headers(Optional.of(Arrays.asList(httpResponse.getAllHeaders())))
+                    .build();
+
+                    //(resp, httpResponse.getStatusLine().getStatusCode(), Arrays.asList(httpResponse.getAllHeaders()));
         } catch (ConnectTimeoutException cte) {
             log.error("Connection timed out");
-            throw new MonitorRequestException("Connection timed out");
+            return BasicHttpResponse.builder()
+                    .body(Optional.empty())
+                    .responseCode(Optional.empty())
+                    .headers(Optional.empty())
+                    .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
+                    .build();
         }  catch (SocketTimeoutException ste) {
             log.error("Socket timeout");
-            throw new MonitorRequestException("Socket timed out");
+            return BasicHttpResponse.builder()
+                    .body(Optional.empty())
+                    .responseCode(Optional.empty())
+                    .headers(Optional.empty())
+                    .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
+                    .build();
         } catch(Exception e) {
             log.info(EXCEPTION_LOG_MESSAGE, e);
             throw new MonitorRequestException("get request failed", e);
@@ -93,13 +112,30 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
                 httpResponse = basicRequestClient.getCloseableHttpClient().execute(httpPost);
                 HttpEntity entity = httpResponse.getEntity();
 
-                return new BasicHttpResponse(EntityUtils.toString(entity), httpResponse.getStatusLine().getStatusCode());
+                BasicHttpResponse basicHttpResponse = BasicHttpResponse.builder()
+                        .body(Optional.of(EntityUtils.toString(entity)))
+                        .responseCode(Optional.of(httpResponse.getStatusLine().getStatusCode()))
+                        .error(Optional.empty())
+                        .headers(Optional.of(Arrays.asList(httpResponse.getAllHeaders())))
+                        .build();
+                EntityUtils.consumeQuietly(entity);
+                return basicHttpResponse;
             } catch (ConnectTimeoutException cte) {
-                log.error("Connection timed out");
-                throw new MonitorRequestException("Connection timed out");
+                log.info("Connection timed out");
+                return BasicHttpResponse.builder()
+                        .body(Optional.empty())
+                        .responseCode(Optional.empty())
+                        .headers(Optional.empty())
+                        .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
+                        .build();
             } catch (SocketTimeoutException ste) {
-                log.error("Socket timeout");
-                throw new MonitorRequestException("Socket timed out");
+                log.info("Socket timeout");
+                return BasicHttpResponse.builder()
+                        .body(Optional.empty())
+                        .responseCode(Optional.empty())
+                        .headers(Optional.empty())
+                        .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
+                        .build();
             } catch(Exception e) {
                 log.info(EXCEPTION_LOG_MESSAGE, e);
                 throw new MonitorRequestException("post request failed", e);

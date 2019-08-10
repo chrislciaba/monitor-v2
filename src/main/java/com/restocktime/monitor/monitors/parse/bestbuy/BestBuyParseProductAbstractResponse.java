@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.bestbuy;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -29,28 +30,28 @@ public class BestBuyParseProductAbstractResponse implements AbstractResponsePars
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if (basicHttpResponse == null || basicHttpResponse.getBody() == null) {
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        if(basicHttpResponse.getBody().contains("\"availability\":\"http://schema.org/InStock\"")){
+        if(basicHttpResponse.getBody().get().contains("\"availability\":\"http://schema.org/InStock\"")){
             logger.info("in stock");
             String name = "PRODUCT_NAME_UNAVAILABLE";
             if(stockTracker.notifyForObject(url, isFirst)){
-                Matcher patternMatcher = pattern.matcher(basicHttpResponse.getBody());
+                Matcher patternMatcher = pattern.matcher(basicHttpResponse.getBody().get());
                 if(patternMatcher.find()){
                     name = patternMatcher.group(1);
                 }
-                Matcher imgMatcher = imgPattern.matcher(basicHttpResponse.getBody());
+                Matcher imgMatcher = imgPattern.matcher(basicHttpResponse.getBody().get());
                 String img = imgMatcher.find()?imgMatcher.group(1):null;
                 DefaultBuilder.buildAttachments(attachmentCreater, url, img, "Best Buy", name, formatNames);
             }
 
-        } else if(basicHttpResponse.getBody().contains("\"availability\":\"http://schema.org/SoldOut\"")){
+        } else if(basicHttpResponse.getBody().get().contains("\"availability\":\"http://schema.org/SoldOut\"")){
             logger.info("oos");
             stockTracker.setOOS(url);
         }
-        else if(basicHttpResponse.getResponseCode() >= 400){
+        else if(basicHttpResponse.getResponseCode().get() >= 400){
         } else {
             logger.info("broken");
         }

@@ -16,8 +16,8 @@ public class CheckoutLinkRedirectHelper {
     }
     public BasicHttpResponse getCheckoutPage(String url, BasicRequestClient basicRequestClient, HttpRequestHelper httpRequestHelper){
         BasicHttpResponse checkoutHttpResponse = httpRequestHelper.performGet(basicRequestClient, url);
-        while(checkoutHttpResponse.getBody() != null && checkoutHttpResponse.getBody().contains("http-equiv=\"refresh\"")){
-            Matcher m = linkPattern.matcher(checkoutHttpResponse.getBody());
+        while(checkoutHttpResponse.getBody() != null && checkoutHttpResponse.getBody().get().contains("http-equiv=\"refresh\"")){
+            Matcher m = linkPattern.matcher(checkoutHttpResponse.getBody().get());
 
             if(m.find()) {
                 checkoutHttpResponse = httpRequestHelper.performGet(basicRequestClient, m.group(1));

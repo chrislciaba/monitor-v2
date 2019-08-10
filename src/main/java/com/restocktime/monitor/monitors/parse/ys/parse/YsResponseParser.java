@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.ys.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.password.PasswordHelper;
@@ -45,23 +46,33 @@ public class YsResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
         String baseUrl = UrlHelper.deriveBaseUrl(url);
-        Matcher urlMatcher = Pattern.compile(actualUrl).matcher(basicHttpResponse.getBody());
+        Matcher urlMatcher = Pattern.compile(actualUrl).matcher(basicHttpResponse.getBody().get());
         if(urlMatcher.find()){
             baseUrl = UrlHelper.deriveBaseUrl(urlMatcher.group(1));
         }
 
         isPassUp = PasswordHelper.getPassStatus(attachmentCreater, basicHttpResponse, baseUrl, isFirst, isPassUp, formatNames);
 
-        Matcher m = productPattern.matcher(basicHttpResponse.getBody());
+        Matcher m = productPattern.matcher(basicHttpResponse.getBody().get());
 
 
         while(m.find()){
-            shopifyAbstractResponseParser.parse(new BasicHttpResponse(m.group(1), 200), attachmentCreater, isFirst);
+            shopifyAbstractResponseParser.parse(
+                    BasicHttpResponse.builder()
+                            .body(
+                                    Optional.of(m.group(1))
+                            )
+                            .responseCode(
+                                    basicHttpResponse.getResponseCode()
+                            ).build(),
+                    attachmentCreater,
+                    isFirst
+            );
         }
     }
 }

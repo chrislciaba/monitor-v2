@@ -26,7 +26,7 @@ public class PasswordHelper {
             boolean isPassUp,
             List<String> formatNames
     ){
-        if(!isPassUp && (basicHttpResponse.getBody().contains("password") || basicHttpResponse.getBody().contains("Password"))){
+        if(!isPassUp && (basicHttpResponse.getBody().get().contains("password") || basicHttpResponse.getBody().get().contains("Password"))){
             if(!isFirst) {
                 DefaultBuilder.buildAttachments(attachmentCreater, UrlHelper.deriveBaseUrl(url), null, UrlHelper.getHost(url), "PASSWORD UP", formatNames);
                 if(url.contains("yeezy")){
@@ -36,7 +36,7 @@ public class PasswordHelper {
             }
 
             return true;
-        } else if(isPassUp && basicHttpResponse.getResponseCode() == 200 && basicHttpResponse.getBody().contains("/products/")){
+        } else if(isPassUp && basicHttpResponse.getResponseCode().get() == 200 && basicHttpResponse.getBody().get().contains("/products/")){
 
             if(!isFirst)
                 DefaultBuilder.buildAttachments(attachmentCreater,  UrlHelper.deriveBaseUrl(url), null, UrlHelper.getHost(url), "PASSWORD DOWN", formatNames);

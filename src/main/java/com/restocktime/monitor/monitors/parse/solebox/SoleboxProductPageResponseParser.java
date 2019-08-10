@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.solebox;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -29,13 +30,17 @@ public class SoleboxProductPageResponseParser implements AbstractResponseParser 
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        String responseString = basicHttpResponse.getBody().replaceAll(">\\s+<", "><");
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return;
+        }
+
+        String responseString = basicHttpResponse.getBody().get().replaceAll(">\\s+<", "><");
 
         Matcher productMatcher = productPattern.matcher(responseString);
 
         if(responseString.contains("429 - too many requests") || responseString.contains("too many requests") || responseString.contains("leider zu viele anfragen")) {
-            logger.error("Banned");
-        } else if(basicHttpResponse.getResponseCode() >= 400){
+            logger.info("Banned");
+        } else if(basicHttpResponse.getResponseCode().get() >= 400){
             logger.info("Solebox error code " + basicHttpResponse.getResponseCode());
         } else {
             List<String> urls = new ArrayList<>();

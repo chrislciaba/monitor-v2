@@ -35,7 +35,7 @@ public class JimmyJazzResponseParser implements AbstractResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         Matcher sizeMatcher = sizePattern.matcher(responseString);
 
         List<String> sizeList = new ArrayList<>();

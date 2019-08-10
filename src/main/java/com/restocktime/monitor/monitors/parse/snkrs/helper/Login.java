@@ -72,7 +72,7 @@ public class Login {
             com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse httpResponse2 = httpRequestHelper.performPost(basicRequestClient, "https://s3.nikecdn.com/_bm/_data", body);
 
 
-            if(httpResponse2.getBody().contains("false")){
+            if(httpResponse2.getBody().get().contains("false")){
                 exit(1);
             }
 
@@ -94,7 +94,7 @@ public class Login {
                 return null;
             }
             logger.info(basicHttpResponse3.getBody());
-            String responseString = basicHttpResponse3.getBody();
+            String responseString = basicHttpResponse3.getBody().get();
             logger.info(responseString);
             logger.info(basicHttpResponse3.getResponseCode());
             ObjectMapper objectMapper = new ObjectMapper();

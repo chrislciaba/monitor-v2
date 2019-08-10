@@ -46,7 +46,7 @@ public class ShopifyKw extends AbstractMonitor {
 
         try{
             BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, String.format(url, ThreadLocalRandom.current().nextInt(1, 3000), 9223372036854775807L));
-            String md5 = MD5.getMd5(basicHttpResponse.getBody());
+            String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
 
             if (hash.equals(md5)) {
                 return;

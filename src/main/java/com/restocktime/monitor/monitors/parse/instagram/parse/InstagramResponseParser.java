@@ -2,6 +2,7 @@ package com.restocktime.monitor.monitors.parse.instagram.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
@@ -34,13 +35,13 @@ public class InstagramResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null || basicHttpResponse.getBody().length() == 0){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
         try {
 
-            Matcher m = jsonPattern.matcher(basicHttpResponse.getBody());
+            Matcher m = jsonPattern.matcher(basicHttpResponse.getBody().get());
             if(m.find()) {
                 String toParse = m.group(1);
 

@@ -30,7 +30,7 @@ public class PattaAbstractResponseParser implements AbstractResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         responseString = responseString.replaceAll(">\\s+<", "><");
         Matcher m = pattern.matcher(responseString);
         while(m.find()) {

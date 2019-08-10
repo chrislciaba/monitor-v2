@@ -70,7 +70,7 @@ import com.restocktime.monitor.monitors.ingest.jimmyjazz.JimmyJazz;
 import com.restocktime.monitor.monitors.parse.jimmyjazz.parse.JimmyJazzResponseParser;
 import com.restocktime.monitor.monitors.ingest.lvr.LVR;
 import com.restocktime.monitor.monitors.parse.lvr.parse.LvrResponseParser;
-import com.restocktime.monitor.monitors.parse.naked.ParseNakedAbstractResponse;
+import com.restocktime.monitor.monitors.parse.naked.NakedResponseParser;
 import com.restocktime.monitor.monitors.parse.nittygritty.NittyGrittyAbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.offspring.Offspring;
 import com.restocktime.monitor.monitors.parse.offwhite.OffWhite;
@@ -163,7 +163,7 @@ public class ConfigDataTransformer {
             return new BSTN(url, page.getSku(), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getBstn(), notificationsFormatConfig), new CloudflareRequestHelper(apiKeys), bstnParseProductResponse, bstnParseSearchResponse, bstnParsePageResponse);
         } else if(site.equals("naked")){
 
-            AbstractResponseParser parseNakedResponse = new ParseNakedAbstractResponse(new StockTracker(new HashMap<>(), 500000), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getNaked()));
+            AbstractResponseParser parseNakedResponse = new NakedResponseParser(new StockTracker(new HashMap<>(), 500000), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getNaked()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNaked(), notificationsFormatConfig), new CloudflareRequestHelper(apiKeys), parseNakedResponse);
         } else if(site.equals("shopify")){
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);

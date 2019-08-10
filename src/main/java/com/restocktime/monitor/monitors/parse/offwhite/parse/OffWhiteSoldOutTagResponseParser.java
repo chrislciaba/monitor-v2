@@ -36,7 +36,7 @@ public class OffWhiteSoldOutTagResponseParser {
             return;
         }
 
-        String responseString = basicHttpResponse.getBody().replaceAll("\\s+", " ").replaceAll(">\\s+<", "><");
+        String responseString = basicHttpResponse.getBody().get().replaceAll("\\s+", " ").replaceAll(">\\s+<", "><");
         List<String> productStrList = new ArrayList<>();
 
         String[] splitList = responseString.split("<div class='sizes'>");

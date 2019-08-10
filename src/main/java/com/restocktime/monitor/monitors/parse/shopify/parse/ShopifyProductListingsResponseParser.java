@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.shopify.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
@@ -53,22 +54,24 @@ public class ShopifyProductListingsResponseParser implements AbstractResponsePar
 
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
-        if (basicHttpResponse == null) {
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
-        } else if (basicHttpResponse.getResponseCode() == 404 || basicHttpResponse.getResponseCode() == 401) {
+        }
+
+        if (basicHttpResponse.getResponseCode().get() == 404 || basicHttpResponse.getResponseCode().get() == 401) {
             logger.info("Not loaded yet - " + url);
             return;
         } else if (basicHttpResponse.getBody() == null) {
             return;
-        } if(basicHttpResponse.getResponseCode() == 400){
+        } if(basicHttpResponse.getResponseCode().get() == 400){
             logger.info("Pass up");
             return;
-        } else if(basicHttpResponse.getBody().contains("Page temporarily unavailable")){
+        } else if(basicHttpResponse.getBody().get().contains("Page temporarily unavailable")){
             logger.info("page unavailable " + url);
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
 
 
         if (responseString == null) {
@@ -76,7 +79,7 @@ public class ShopifyProductListingsResponseParser implements AbstractResponsePar
         }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ProductListings productListings = objectMapper.readValue(basicHttpResponse.getBody(), ProductListings.class);
+            ProductListings productListings = objectMapper.readValue(basicHttpResponse.getBody().get(), ProductListings.class);
             for(ProductListing productListing : productListings.getProductListings()){
                 if(productListing.getAvailable()){
                     String imgUrl = productListing.getImages().isEmpty() ? "" : productListing.getImages().get(0).getSrc();

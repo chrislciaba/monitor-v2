@@ -48,7 +48,7 @@ public class DefaultMonitor extends AbstractMonitor {
 
         try{
             BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, url);
-            String md5 = MD5.getMd5(basicHttpResponse.getBody());
+            String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
             if (md5.equals(hash)) {
                 return;
             }

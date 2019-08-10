@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.shopify.parse;
 
 import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -51,19 +52,18 @@ public class ShopifyKwAbstractResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        if(basicHttpResponse.getResponseCode() == 430){
+        if(basicHttpResponse.getResponseCode().get() == 430){
             logger.info("Banned asf shopify");
             return;
         }
 
         if(
-                (basicHttpResponse.getResponseCode() == 403 || basicHttpResponse.getResponseCode() == 404)
-                        && !basicHttpResponse.getBody().contains("Squid")
+                (basicHttpResponse.getResponseCode().get() == 403 || basicHttpResponse.getResponseCode().get() == 404)
+                        && !basicHttpResponse.getBody().get().contains("Squid")
         ) {
             if(hitUnblockedSitemap) {
                 hitUnblockedSitemap = false;
@@ -82,7 +82,7 @@ public class ShopifyKwAbstractResponseParser implements AbstractResponseParser {
         List<String> knownLinks = new ArrayList<>();
         List<String> unknownLinks = new ArrayList<>();
 
-        String responseString = basicHttpResponse.getBody().replaceAll("\n", "").replaceAll(">\\s+<", "><");
+        String responseString = basicHttpResponse.getBody().get().replaceAll("\n", "").replaceAll(">\\s+<", "><");
         Matcher productMatcher = productPattern.matcher(responseString);
         while(productMatcher.find()){
             hitUnblockedSitemap = true;

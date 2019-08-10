@@ -11,7 +11,7 @@ public class SubmitBillShip {
     public void submitBillShip(BasicRequestClient basicRequestClient, CloudflareRequestHelper cloudflareRequestHelper){
         while(true){
             BasicHttpResponse basicHttpResponse = cloudflareRequestHelper.performPost(basicRequestClient, url, body);
-            if(basicHttpResponse.getBody() != null && basicHttpResponse.getBody().contains("<h5 class='stock-shipping-method-title'>Shipping Method</h5>")){
+            if(basicHttpResponse.getBody() != null && basicHttpResponse.getBody().get().contains("<h5 class='stock-shipping-method-title'>Shipping Method</h5>")){
                 break;
             }
         }

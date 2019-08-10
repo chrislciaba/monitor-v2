@@ -33,20 +33,20 @@ public class GetAllProducts {
 
             BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, currentPageUrl);
             Timeout.timeout(2500);
-            if(basicHttpResponse.getResponseCode() == 400){
+            if(basicHttpResponse.getResponseCode().get() == 400){
                 logger.info("Password up");
                 return existingProductsMap;
             }
 
             if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
                 continue;
-            } else if(basicHttpResponse.getBody().contains("{\"errors\":\"Internal Server Error\"}")){
+            } else if(basicHttpResponse.getBody().get().contains("{\"errors\":\"Internal Server Error\"}")){
                 logger.error("Server error - " + currentPageUrl);
                 continue;
             }
 
             try{
-                ProductListings productListings = objectMapper.readValue(basicHttpResponse.getBody(), ProductListings.class);
+                ProductListings productListings = objectMapper.readValue(basicHttpResponse.getBody().get(), ProductListings.class);
 
                 if(productListings.getProductListings().size() == 0){
                     break;

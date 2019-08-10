@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.acronym;
 
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
@@ -28,7 +29,11 @@ public class AcronymParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
-        String responseString = basicHttpResponse.getBody();
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            return;
+        }
+
+        String responseString = basicHttpResponse.getBody().get();
         responseString = responseString.replaceAll(">\\s+<", "><");
         Matcher m = pattern.matcher(responseString);
         while(m.find()) {

@@ -3,6 +3,7 @@ package com.restocktime.monitor.monitors.parse.shopify.helper.linkchecker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.monitors.parse.shopify.model.shopify.ShopifyJson;
@@ -67,24 +68,26 @@ public class ShopifyLinkChecker {
 
         if(link.contains("eflash")){
             basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, link + "?limit=" + Long.toString(Math.abs(r.nextLong())) + Long.toString(Math.abs(r.nextLong())));
-            if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+            if (ResponseValidator.isInvalid(basicHttpResponse)) {
                 return;
             }
-            Matcher m = jsonPatternDsm.matcher(basicHttpResponse.getBody());
+
+            Matcher m = jsonPatternDsm.matcher(basicHttpResponse.getBody().get());
             if(m.find()){
                 responseString = m.group(1).trim();
             }
-            Matcher tokMatcher = dsmTokenPattern.matcher(basicHttpResponse.getBody());
+            Matcher tokMatcher = dsmTokenPattern.matcher(basicHttpResponse.getBody().get());
             if(tokMatcher.find()){
                 dsmToken = tokMatcher.group(1);
             }
         } else {
 
             basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, link + "?format=js&limit=" + Long.toString(Math.abs(r.nextLong())) + Long.toString(Math.abs(r.nextLong())));
-            if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+            if (ResponseValidator.isInvalid(basicHttpResponse)) {
                 return;
             }
-            responseString = basicHttpResponse.getBody();
+
+            responseString = basicHttpResponse.getBody().get();
         }
 
 

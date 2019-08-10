@@ -21,8 +21,8 @@ public class GetApiToken {
             return null;
         }
 
-        Matcher tokenMatcher = tokenPattern.matcher(basicHttpResponse.getBody());
-        Matcher backupTokenMatcher = backupTokenPattern.matcher(basicHttpResponse.getBody());
+        Matcher tokenMatcher = tokenPattern.matcher(basicHttpResponse.getBody().get());
+        Matcher backupTokenMatcher = backupTokenPattern.matcher(basicHttpResponse.getBody().get());
         if(tokenMatcher.find()){
             return tokenMatcher.group(1);
         } else if(backupTokenMatcher.find()){

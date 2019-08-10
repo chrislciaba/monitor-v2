@@ -1,6 +1,7 @@
 package com.restocktime.monitor.monitors.parse.target.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -29,19 +30,18 @@ public class TargetAbstractResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null || basicHttpResponse.getBody().length() == 0){
-            logger.info("X");
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
 
-        if(basicHttpResponse.getBody().trim().equals("{\"message\":\"no products found\"}")){
+        if(basicHttpResponse.getBody().get().trim().equals("{\"message\":\"no products found\"}")){
             stockTracker.setOOS(pid);
             logger.info("not found - " + pid);
         }
 
         try {
 
-            TargetResponse targetResponse = objectMapper.readValue(basicHttpResponse.getBody(), TargetResponse.class);
+            TargetResponse targetResponse = objectMapper.readValue(basicHttpResponse.getBody().get(), TargetResponse.class);
             int stock = targetResponse.getProduct().getAvailable_to_promise_network().getOnline_available_to_promise_quantity();
             String title = targetResponse.getProduct().getItem().getProduct_description().getTitle();
             String product_url = targetResponse.getProduct().getItem().getBuy_url();

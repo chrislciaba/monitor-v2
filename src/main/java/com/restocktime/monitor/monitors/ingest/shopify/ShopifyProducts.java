@@ -48,7 +48,7 @@ public class ShopifyProducts extends AbstractMonitor {
         try{
             BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, url + (25 + new Random().nextInt(100000)));
 
-            String md5 = MD5.getMd5(basicHttpResponse.getBody());
+            String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
             if (hash.equals(md5)) {
                 return;
             }

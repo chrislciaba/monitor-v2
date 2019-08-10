@@ -33,7 +33,7 @@ public class OffWhiteSearchAbstractResponseParser implements AbstractResponsePar
             return;
         }
 
-        String responseString = basicHttpResponse.getBody();
+        String responseString = basicHttpResponse.getBody().get();
         Matcher nameMatcher = namePattern.matcher(responseString);
         Matcher urlMatcher = urlPattern.matcher(responseString);
         String name, url;

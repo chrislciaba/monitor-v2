@@ -2,6 +2,7 @@ package com.restocktime.monitor.monitors.parse.dsm.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.helper.botlinkgen.BotLinkGen;
+import com.restocktime.monitor.helper.httprequests.ResponseValidator;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.password.PasswordHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
@@ -44,12 +45,12 @@ public class DsmProductResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) throws Exception {
-        if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
+        if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
-        String s = basicHttpResponse.getBody();
+        String s = basicHttpResponse.getBody().get();
 
-        Matcher m = jsonPattern.matcher(basicHttpResponse.getBody());
+        Matcher m = jsonPattern.matcher(basicHttpResponse.getBody().get());
 
         isPassUp = PasswordHelper.getPassStatus(attachmentCreater, basicHttpResponse, url, isFirst, isPassUp, formatNames);
 
