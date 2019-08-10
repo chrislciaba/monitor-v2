@@ -7,6 +7,7 @@ import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.TwoCaptchaService;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.monitors.ingest.backdoor.BackDoor;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,6 +26,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
     final static Logger logger = Logger.getLogger(CloudflareRequestHelper.class);
@@ -33,12 +36,12 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
     private String[] apiKeys;
     private int idx;
-    private DiscordLog discordLog;
+    private static final Logger log = Logger.getLogger(CloudflareRequestHelper.class);
+
 
     public CloudflareRequestHelper(String[] apiKeys){
         this.apiKeys = apiKeys;
         this.idx = 0;
-        discordLog = new DiscordLog(CloudflareRequestHelper.class);
     }
 
     private Optional<BasicHttpResponse> doGet(BasicRequestClient basicRequestClient,
@@ -63,7 +66,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             String responseString = EntityUtils.toString(entity, "UTF-8");
             return Optional.of(new BasicHttpResponse(responseString, respCode));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(EXCEPTION_LOG_MESSAGE, e);
             return Optional.empty();
         } finally {
             httpGet.releaseConnection();
@@ -71,14 +74,14 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
     }
 
     private boolean isBanned(BasicHttpResponse basicHttpResponse, String url, String proxy) {
-        if(basicHttpResponse.getBody().contains("<title>Access denied | www.sneakersnstuff.com used Cloudflare to restrict access</title>")) {
-            discordLog.error("banned proxy on sns " + proxy);
+        if(basicHttpResponse.getBody().contains("<title>Access denied")) {
+            log.error("banned proxy on sns " + proxy);
             return true;
         } else if(basicHttpResponse.getBody().contains("Access denied") || basicHttpResponse.getBody().contains("Access Denied")){
             if(basicHttpResponse.getBody().toLowerCase().contains("squid")){
-                discordLog.error("Squid proxy error for: " + proxy);
+                log.error("Squid proxy error for: " + proxy);
             } else {
-                discordLog.error("banned proxy on " + UrlHelper.deriveBaseUrl(url) + " " + proxy);
+                log.error("banned proxy on " + UrlHelper.deriveBaseUrl(url) + " " + proxy);
             }
             return true;
         }
@@ -208,7 +211,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                 }
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            log.error(EXCEPTION_LOG_MESSAGE, e);
             throw new MonitorRequestException("cf exception thrown on get", e);
         }
     }
@@ -242,21 +245,20 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                 int respCode = httpResponse.getStatusLine().getStatusCode();
 
                 if(responseString.contains("<title>Access denied | www.sneakersnstuff.com used Cloudflare to restrict access</title>")) {
-                    discordLog.error("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
-                    logger.error("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
+                    log.error("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
 
                     return new BasicHttpResponse(null, respCode);
                 } else if(responseString.contains("Access denied")){
-                    logger.error("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
+                    log.error("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
 
-                    discordLog.error("banned proxy on " + UrlHelper.deriveBaseUrl(url) + " " + basicRequestClient.getHttpHost().getHostName());
                     return new BasicHttpResponse(null, respCode);
                 }
 
                 return new BasicHttpResponse(responseString, respCode);
 
-            }catch(Exception e){
-                e.printStackTrace();
+            } catch(Exception e) {
+                log.error(EXCEPTION_LOG_MESSAGE, e);
+
             } finally {
                 if(httpGet != null)
                     httpGet.releaseConnection();
@@ -300,7 +302,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                         break;
                     }
 
-                }finally {
+                } finally {
                     httpPost.releaseConnection();
                 }
 
@@ -309,7 +311,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
             return new BasicHttpResponse(responseString, statusCode);
         } catch(Exception e) {
-            e.printStackTrace();
+            log.error(EXCEPTION_LOG_MESSAGE, e);
             throw new MonitorRequestException("post request failed on initial get");
         }
     }

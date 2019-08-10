@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
+import com.restocktime.monitor.monitors.parse.footsites.parse.FootsitesResponseParser;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
 import com.restocktime.monitor.notifications.model.discord.DiscordField;
 import com.restocktime.monitor.monitors.parse.frenzy.model.FrenzyProduct;
@@ -11,12 +12,15 @@ import com.restocktime.monitor.monitors.parse.frenzy.model.FrenzyResponse;
 import com.restocktime.monitor.notifications.model.slack.SlackField;
 import com.restocktime.monitor.monitors.parse.snkrs.parse.helper.DateHelper;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrenzyResponseParser implements AbstractResponseParser {
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
+public class FrenzyResponseParser implements AbstractResponseParser {
+    final static Logger logger = Logger.getLogger(FootsitesResponseParser.class);
     private final String FRENZY_URL_TEMPLATE = "https://frenzy.sale/%s";
 
     private StockTracker stockTracker;
@@ -53,14 +57,13 @@ public class FrenzyResponseParser implements AbstractResponseParser {
                         name = "NAME UNAVAILABLE";
                     if(frenzyProduct.getImage_urls().isEmpty()){
                         DefaultBuilder.buildAttachments(attachmentCreater, String.format(FRENZY_URL_TEMPLATE, frenzyProduct.getPassword()), null, "Frenzy", name, formatNames);
-                    //    attachmentCreater.addMessages(String.format(FRENZY_URL_TEMPLATE, frenzyProduct.getPassword()), name, "Frenzy", slackFields, discordDiscordFields);
                     } else {
                    //     attachmentCreater.addMessages(String.format(FRENZY_URL_TEMPLATE, frenzyProduct.getPassword()), name, "Frenzy", slackFields, discordDiscordFields, frenzyProduct.getImage_urls().get(0));
                     }
                 }
             }
         } catch (Exception e){
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 }

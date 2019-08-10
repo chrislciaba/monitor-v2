@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BackdoorSearchAbstractResponseParser implements AbstractResponseParser {
+public class BackdoorSearchResponseParser implements AbstractResponseParser {
 
     private final String SKU_TEMPLATE = "<span class=\"sku\" itemprop=\"sku\">%s</span>";
     private final Pattern TITLE_PATTERN = Pattern.compile("<title>(.*)</title>");
     private final Pattern LINK_PATTERN = Pattern.compile("<link rel=\"canonical\" href=\"([^\"]*)\" />");
     private final Pattern COOKIE_PATTERN = Pattern.compile("document.cookie\\s*=\\s*\"([^\"]*)\"");
 
-    final static Logger logger = Logger.getLogger(BackdoorSearchAbstractResponseParser.class);
+    final static Logger logger = Logger.getLogger(BackdoorSearchResponseParser.class);
 
 
     private String sku;
@@ -26,7 +26,7 @@ public class BackdoorSearchAbstractResponseParser implements AbstractResponsePar
     private StockTracker stockTracker;
     private List<String> formatNames;
 
-    public BackdoorSearchAbstractResponseParser(String sku, String url, StockTracker stockTracker, List<String> formatNames) {
+    public BackdoorSearchResponseParser(String sku, String url, StockTracker stockTracker, List<String> formatNames) {
         this.sku = sku;
         this.url = url;
         this.stockTracker = stockTracker;
@@ -52,7 +52,6 @@ public class BackdoorSearchAbstractResponseParser implements AbstractResponsePar
             }
             if(stockTracker.notifyForObject(productLink, isFirst)) {
                 DefaultBuilder.buildAttachments(attachmentCreater, productLink, null, "Backdoor", productName, formatNames);
-               // attachmentCreater.addMessages(productLink, productName, "Backdoor", null, null);
             }
         }
     }

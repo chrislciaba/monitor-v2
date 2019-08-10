@@ -11,10 +11,12 @@ import org.apache.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class SJS extends AbstractMonitor {
     //<a class="product_img_link" href="https://www.slamjamsocialism.com/high-top/53530-air-jordan-1-retro-high-og-sneakers.html" title="Air Jordan 1 Retro High OG Sneakers"
 
-    final static Logger logger = Logger.getLogger(SJS.class);
+    final static Logger log = Logger.getLogger(SJS.class);
 
     private String url;
     private int delay;
@@ -61,8 +63,7 @@ public class SJS extends AbstractMonitor {
         //    }
 
         } catch(Exception e){
-            logger.error(e);
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

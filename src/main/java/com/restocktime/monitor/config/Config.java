@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Config {
     final static Logger logger = Logger.getLogger(Config.class);
     private BasicMonitorConfig basicMonitorConfig;
@@ -127,7 +129,8 @@ public class Config {
                 result = Optional.of(objectMapper.readValue(resp.get(), MonitorConfig.class));
             }
         } catch (Exception e){
-            e.printStackTrace();
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
+
         }
 
         return result;
@@ -142,7 +145,7 @@ public class Config {
             Links links = mapper.readValue(file, Links.class);
             return links;
         } catch (Exception e) {
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
             return null;
         }
     }
@@ -158,7 +161,7 @@ public class Config {
             }
 
         } catch (Exception e){
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         } finally {
             httpGet.releaseConnection();
         }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.config.model.Proxies;
 import com.restocktime.monitor.config.model.ProxyConfig;
 import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.monitors.parse.walmart.Walmart;
 import com.restocktime.monitor.proxymanager.model.ProxyList;
 import com.restocktime.monitor.proxymanager.model.ProxyModel;
 import org.apache.http.HttpResponse;
@@ -11,15 +12,18 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 import static java.lang.System.exit;
 
 public class ProxyManager {
+    final static Logger logger = Logger.getLogger(ProxyManager.class);
 
     private final String PROXY_ENDPOINT = "%s/api/v2/proxies?accessToken=%s";
 
@@ -45,7 +49,7 @@ public class ProxyManager {
                 }
                 break;
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }
     }
@@ -66,7 +70,7 @@ public class ProxyManager {
             resp = EntityUtils.toString(httpResponse.getEntity());
 
         } catch (Exception e){
-            e.printStackTrace();
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         } finally {
             httpGet.releaseConnection();
         }

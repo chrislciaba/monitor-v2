@@ -38,7 +38,6 @@ public class WalgreensSearchResponseParser implements AbstractResponseParser {
 
             if(stockTracker.notifyForObject(url, isFirst) && keywordSearchHelper.search(name)){
                 DefaultBuilder.buildAttachments(attachmentCreater, url, imgUrl, "Walgreens", name, formatNames);
-
             }
         }
     }

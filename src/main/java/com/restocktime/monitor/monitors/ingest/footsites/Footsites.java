@@ -14,12 +14,14 @@ import org.apache.log4j.Logger;
 
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Footsites extends AbstractMonitor {
 
     private String url;
     private String monitorUrl;
     private int delay;
-    final static Logger logger = Logger.getLogger(Footsites.class);
+    final static Logger log = Logger.getLogger(Footsites.class);
 
     private final String  URL_TEMPLATE = "%s/api/products/pdp/%s?format=json";
     private final Pattern skuPattern = Pattern.compile("/([^.]*)\\.html");
@@ -32,7 +34,6 @@ public class Footsites extends AbstractMonitor {
     public Footsites(String url, int delay, AttachmentCreater attachmentCreater, HttpRequestHelper httpRequestHelper, FootsitesResponseParser footsitesResponseParser){
         this.url = url;
         this.monitorUrl = buildUrl(url);
-        logger.info(monitorUrl);
         this.delay = delay;
         this.attachmentCreater = attachmentCreater;
         this.httpRequestHelper = httpRequestHelper;
@@ -49,8 +50,7 @@ public class Footsites extends AbstractMonitor {
             footsitesResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-            logger.info(e);
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

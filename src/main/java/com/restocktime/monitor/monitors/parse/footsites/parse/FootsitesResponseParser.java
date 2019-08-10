@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class FootsitesResponseParser implements AbstractResponseParser {
 
     final static Logger logger = Logger.getLogger(FootsitesResponseParser.class);
@@ -74,7 +76,7 @@ public class FootsitesResponseParser implements AbstractResponseParser {
                 }
             }
         } catch (Exception e){
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 }

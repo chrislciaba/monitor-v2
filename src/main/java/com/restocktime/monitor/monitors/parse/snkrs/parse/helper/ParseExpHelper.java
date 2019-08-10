@@ -76,7 +76,7 @@ public class ParseExpHelper {
         String type = getType(thread);
         String getMethod = getSelectionEngine(thread);
 
-        return new ParsedResponse(getId(thread), getName(thread), getLink(thread), getType(thread), getImage(thread), getSelectionEngine(thread), DateHelper.formatDate(getStartDate(thread)), DateHelper.getEpochTimeSecs(getStartDate(thread)), getSku(thread));
+        return new ParsedResponse(getId(thread), getName(thread), getLink(thread), getType(thread), getImage(thread), getSelectionEngine(thread), DateHelper.formatDate(getStartDate(thread)), DateHelper.getEpochTimeSecs(getStartDate(thread)), getSku(thread), true);
     }
 
     public List<ParsedResponse> getParsedResponseList(){

@@ -1,15 +1,21 @@
 package com.restocktime.monitor.helper.nikefrontendlogin;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.parse.snkrs.model.snkrs.snkrsv2.LoginResponse;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 
 public class NikeLogin {
+    final static Logger log = Logger.getLogger(NikeLogin.class);
+
 
     public static String getLoginFrontend(){
         System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver");
@@ -41,6 +47,7 @@ public class NikeLogin {
 
 
         } catch (Exception e){
+            log.error(EXCEPTION_LOG_MESSAGE, e);
             webDriver.close();
 
 

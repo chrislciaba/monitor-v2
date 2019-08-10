@@ -12,9 +12,11 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 
 public class ComplexconResponseParser implements AbstractResponseParser {
-    final static Logger logger = Logger.getLogger(ComplexconResponseParser.class);
+    final static Logger log = Logger.getLogger(ComplexconResponseParser.class);
     private StockTracker stockTracker;
     private ObjectMapper objectMapper;
     private List<String> formatNames;
@@ -32,24 +34,16 @@ public class ComplexconResponseParser implements AbstractResponseParser {
         }
 
         String responseString = basicHttpResponse.getBody();
-
-
         try {
             ReserveObject reserveObject = objectMapper.readValue(responseString, ReserveObject.class);
             for(MarketPlace marketPlace : reserveObject.getData()){
                 if(stockTracker.notifyForObject(Integer.toString(marketPlace.getId()), isFirst)){
                     DefaultBuilder.buildAttachments(attachmentCreater, null, null,"Complexcon Reserves", marketPlace.getTitle(), formatNames);
-
                 }
-
-            }
-
-            if(attachmentCreater.isEmpty()){
-                logger.info("Nothing found");
             }
 
         } catch (Exception e){
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
 
     }

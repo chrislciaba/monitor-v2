@@ -2,18 +2,24 @@ package com.restocktime.monitor.notifications;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.config.model.notifications.SlackObj;
+import com.restocktime.monitor.monitors.parse.supreme.parse.SupremeAllProductResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.attachments.notification.DiscordNotification;
 import com.restocktime.monitor.notifications.attachments.notification.Notification;
 import com.restocktime.monitor.notifications.attachments.notification.SlackNotification;
 import com.restocktime.monitor.notifications.client.Discord;
 import com.restocktime.monitor.notifications.client.Slack;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Notifications {
+    final static Logger logger = Logger.getLogger(Notifications.class);
+
 
     public static void send(AttachmentCreater attachmentCreater){
         Notification notification = attachmentCreater.getNotification();
@@ -49,7 +55,7 @@ public class Notifications {
                 slack.run();
             }
         } catch(Exception e){
-            e.printStackTrace();
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 }

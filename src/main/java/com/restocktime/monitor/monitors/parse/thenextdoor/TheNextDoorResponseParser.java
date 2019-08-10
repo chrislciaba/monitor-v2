@@ -37,7 +37,6 @@ public class TheNextDoorResponseParser implements AbstractResponseParser {
             String l = m.group(1);
             String name = m.group(2).replaceAll("\\s+", " ");
             if (stockTracker.notifyForObject(l, isFirst) && keywordSearchHelper.search(name)) {
-              //  attachmentCreater.addMessages(l, name, "TheNextDoor", null, null, null);
                 DefaultBuilder.buildAttachments(attachmentCreater, l, null, "The Next Door", name, formatNames);
             }
         }

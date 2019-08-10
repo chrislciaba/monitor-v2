@@ -43,13 +43,9 @@ public class Caliroots implements AbstractResponseParser {
                 if(m.find())
                     title = m.group(1);
                 DefaultBuilder.buildAttachments(attachmentCreater, url, null, "Caliroots", title, formatNames);
-                discordLog.info("@here BACK IN STOCK " + url);
             }
-            discordLog.debug("in stock don't notify " + url);
-
         } else if(responseString.contains("<p class=\"sold-out\">")){
             stockTracker.setOOS(url);
-            discordLog.info("OOS " + url);
         }
     }
 }

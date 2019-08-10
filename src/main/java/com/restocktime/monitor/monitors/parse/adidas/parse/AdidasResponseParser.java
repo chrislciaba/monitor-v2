@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import java.util.List;
 
 public class AdidasResponseParser implements AbstractResponseParser {
-    final static Logger logger = Logger.getLogger(ShopifyAbstractResponseParser.class);
+    final static Logger log = Logger.getLogger(AdidasResponseParser.class);
 
     private String url;
     private String imgUrl;
@@ -39,7 +39,7 @@ public class AdidasResponseParser implements AbstractResponseParser {
         ObjectMapper objectMapper = new ObjectMapper();
         Availability availability = objectMapper.readValue(responseString, Availability.class);
         if(availability.getAvailability_status() != null && availability.getAvailability_status().equals("IN_STOCK")){
-            logger.info("IN STOCK");
+            log.info("IN STOCK");
             if(stockTracker.notifyForObject(url, isFirst))
                 DefaultBuilder.buildAttachments(attachmentCreater, url, imgUrl, "Adidas", name, formatNames);
         } else if(availability.getAvailability_status() != null && availability.getAvailability_status().equals("NOT_AVAILABLE")){

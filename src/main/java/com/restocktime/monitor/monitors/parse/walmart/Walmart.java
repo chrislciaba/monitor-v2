@@ -5,11 +5,16 @@ import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
+import com.restocktime.monitor.monitors.parse.supreme.parse.SupremeProductParseAbstractResponse;
 import com.restocktime.monitor.monitors.parse.walmart.parse.WalmartResponseParser;
 import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
+import org.apache.log4j.Logger;
+
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 public class Walmart extends AbstractMonitor {
+    final static Logger logger = Logger.getLogger(Walmart.class);
 
     private final String WALMART_ENDPOINT = "https://www.walmart.com/preso/search?query=%s";
 
@@ -37,7 +42,7 @@ public class Walmart extends AbstractMonitor {
             walmartResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
 
     }

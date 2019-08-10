@@ -1,16 +1,21 @@
 package com.restocktime.monitor.monitors.parse.snkrs.parse.helper;
 
+import com.restocktime.monitor.monitors.parse.snkrs.model.snkrs.snkrsv2.AvailableSku;
 import com.restocktime.monitor.monitors.parse.snkrs.model.snkrs.snkrsv2.Node;
 import com.restocktime.monitor.monitors.parse.snkrs.model.snkrs.snkrsv2.ProductFeed;
 import com.restocktime.monitor.monitors.parse.snkrs.model.snkrs.snkrsv2.ProductObject;
 import com.restocktime.monitor.monitors.parse.snkrs.model.ParsedResponse;
+import org.apache.log4j.Logger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class ParseV2Helper {
+    final static Logger logger = Logger.getLogger(ParseV2Helper.class);
 
     private ProductFeed productFeed;
 
@@ -73,6 +78,21 @@ public class ParseV2Helper {
         return null;
     }
 
+    public boolean getAvailable(ProductObject productObject){
+        try {
+            boolean available = false;
+            for(AvailableSku availableSku : productObject.getProductInfo().get(0).getAvailableSkus()){
+                available = available || availableSku.isAvailable();
+            }
+            return available;
+
+        } catch (Exception e){
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
+        }
+
+        return true; //would rather notify than not
+    }
+
 
 
 
@@ -91,7 +111,7 @@ public class ParseV2Helper {
                     URL url = new URL(node.getProperties().getPortraitURL());
                     return node.getProperties().getPortraitURL();
                 } catch (MalformedURLException e){
-
+                    logger.error(EXCEPTION_LOG_MESSAGE, e);
                 }
             }
         }
@@ -139,7 +159,18 @@ public class ParseV2Helper {
     }
 
     public ParsedResponse getParsedResponse(ProductObject productObject){
-        return new ParsedResponse(getId(productObject), getName(productObject), getSlug(productObject), getType(productObject), getImage(productObject), getSelectionEngine(productObject), DateHelper.formatDate(getStartEntryDate(productObject)), DateHelper.getEpochTimeSecs(getStartEntryDate(productObject)), getSku(productObject));
+        return new ParsedResponse(
+                getId(productObject),
+                getName(productObject),
+                getSlug(productObject),
+                getType(productObject),
+                getImage(productObject),
+                getSelectionEngine(productObject),
+                DateHelper.formatDate(getStartEntryDate(productObject)),
+                DateHelper.getEpochTimeSecs(getStartEntryDate(productObject)),
+                getSku(productObject),
+                getAvailable(productObject)
+        );
     }
 
     public List<ParsedResponse> getParsedResponseList(){

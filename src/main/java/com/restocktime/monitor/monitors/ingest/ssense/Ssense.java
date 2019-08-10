@@ -15,15 +15,15 @@ import org.apache.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Ssense extends AbstractMonitor {
     //<span class="button-label">Add to bag</span>
 
-    final static Logger logger = Logger.getLogger(Ssense.class);
+    final static Logger log = Logger.getLogger(Ssense.class);
 
     private String url;
     private int delay;
-    private String locale;
-    Map<String, String> urls;
     private AttachmentCreater attachmentCreater;
     private HttpRequestHelper httpRequestHelper;
     private PageResponseParser pageResponseParser;
@@ -32,10 +32,6 @@ public class Ssense extends AbstractMonitor {
     public Ssense(String url, int delay,  String locale,  AttachmentCreater attachmentCreater, HttpRequestHelper httpRequestHelper, PageResponseParser pageResponseParser, SearchResponseParser searchResponseParser){
         this.url = url;
         this.delay = delay;
-        this.locale = locale;
-        urls = new HashMap<>();
-        urls.put("CA", "https://www.ssense.com/en-ca");
-        urls.put("US", "https://www.ssense.com/en-us");
         this.attachmentCreater = attachmentCreater;
         this.httpRequestHelper = httpRequestHelper;
         this.pageResponseParser = pageResponseParser;
@@ -43,16 +39,21 @@ public class Ssense extends AbstractMonitor {
     }
 
     public void run(BasicRequestClient basicRequestClient, boolean isFirst){
-        attachmentCreater.clearAll();
-        Timeout.timeout(delay);
+        try {
+            attachmentCreater.clearAll();
+            Timeout.timeout(delay);
 
-        BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, UrlHelper.urlWithRandParam(url));
-        if(url.contains("?q=")){
-            searchResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
-        } else {
-            pageResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
+            BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, UrlHelper.urlWithRandParam(url));
+            if(url.contains("?q=")){
+                searchResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
+            } else {
+                pageResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
+            }
+            Notifications.send(attachmentCreater);
+        } catch (Exception e) {
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
-        Notifications.send(attachmentCreater);
+
     }
 
     public String getUrl(){

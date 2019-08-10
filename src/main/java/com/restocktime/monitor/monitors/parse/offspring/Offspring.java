@@ -7,12 +7,17 @@ import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.offspring.model.OffspringObj;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
+import com.restocktime.monitor.proxymanager.ProxyManager;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Offspring implements AbstractResponseParser {
+    final static Logger logger = Logger.getLogger(Offspring.class);
 
     private final String productTemplate = "QLTracking\\.listing\\.items\\.push\\(([^)]*)\\)";
 
@@ -54,7 +59,7 @@ public class Offspring implements AbstractResponseParser {
                     );
                 }
             } catch (Exception e){
-                e.printStackTrace();
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }
     }

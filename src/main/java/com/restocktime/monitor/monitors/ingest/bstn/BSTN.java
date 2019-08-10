@@ -5,6 +5,7 @@ import com.restocktime.monitor.helper.httprequests.CloudflareRequestHelper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
+import com.restocktime.monitor.monitors.ingest.barnesandnoble.BarnesAndNoble;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BSTNParseProductAbstractResponse;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BSTNParseSearchAbstractResponse;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BstnParsePageResponse;
@@ -12,9 +13,11 @@ import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.Notifications;
 import org.apache.log4j.Logger;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class BSTN extends AbstractMonitor {
 
-    final static Logger logger = Logger.getLogger(BSTN.class);
+    private static final Logger log = Logger.getLogger(BSTN.class);
 
     private String url;
     private String sku;
@@ -57,7 +60,7 @@ public class BSTN extends AbstractMonitor {
 
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

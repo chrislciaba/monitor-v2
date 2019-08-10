@@ -5,11 +5,15 @@ import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
+import com.restocktime.monitor.monitors.ingest.bstn.BSTN;
 import com.restocktime.monitor.monitors.parse.demandware.parse.DemandwareGetResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.Notifications;
+import org.apache.log4j.Logger;
 
 import java.util.concurrent.ThreadLocalRandom;
+
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 public class DemandwareGet extends AbstractMonitor {
     private String site;
@@ -20,6 +24,9 @@ public class DemandwareGet extends AbstractMonitor {
     private final String LINK_TEMPLATE_HT = "https://www.hottopic.com/product/%s.html";
     private final String LINK_TEMPLATE_BL = "https://www.boxlunch.com/product/%s.html";
     private final String LINK_TEMPLATE_FYE = "https://www.fye.com/product/%s.html";
+
+    private static final Logger log = Logger.getLogger(BSTN.class);
+
 
     private String LINK_TEMPLATE;
     private String STOCK_TEMPLATE;
@@ -88,7 +95,7 @@ public class DemandwareGet extends AbstractMonitor {
             demandwareGetResponseParser.parse(basicHttpResponse,/* stockHttpResponse,*/ attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch (Exception e){
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

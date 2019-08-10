@@ -19,9 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class FootDistrict extends AbstractMonitor {//<h2 class="product-name"><a href="https://footdistrict.com/air-jordan-1-retro-high-og-555088-801.html" title="Air Jordan 1 Retro High OG">Air Jordan 1 Retro High OG</a>
 
-    final static Logger logger = Logger.getLogger(FootDistrict.class);
+    final static Logger log = Logger.getLogger(FootDistrict.class);
 
     private String url;
     private int delay;
@@ -62,7 +64,7 @@ public class FootDistrict extends AbstractMonitor {//<h2 class="product-name"><a
             abstractResponseParser.parse(basicHttpResponseAfterBot, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-            logger.error(e);
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

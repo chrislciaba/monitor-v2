@@ -6,6 +6,7 @@ import com.restocktime.monitor.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.supreme.attachment.SupremeBuilder;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SupremePageResponseParser implements AbstractResponseParser {
+    final static Logger logger = Logger.getLogger(SupremeAllProductResponseParser.class);
+
     private StockTracker stockTracker;
     private String locale;
     private final String SUP_URL_TEMPLATE = "https://www.supremenewyork.com%s";

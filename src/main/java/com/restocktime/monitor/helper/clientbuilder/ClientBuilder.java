@@ -3,6 +3,7 @@ package com.restocktime.monitor.helper.clientbuilder;
 import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.helper.clientbuilder.model.HttpProxy;
 import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.monitors.ingest.backdoor.BackDoor;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -16,13 +17,18 @@ import org.apache.http.impl.client.*;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.log4j.Logger;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class ClientBuilder {
+    private static final Logger log = Logger.getLogger(BackDoor.class);
+
     public List<BasicRequestClient> buildClients(String url, List<String> proxyList, String site){
         List<BasicRequestClient> basicRequestClients = new ArrayList<>();
         for(int i = 0; i < proxyList.size(); i++){
@@ -140,7 +146,7 @@ public class ClientBuilder {
                 basicRequestClients.add(new BasicRequestClient(httpclient, config, new ArrayList<>(), null, cookieStore, httpHost, noRedirectconfig));
 
             } catch(Exception e){
-
+                log.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }
 

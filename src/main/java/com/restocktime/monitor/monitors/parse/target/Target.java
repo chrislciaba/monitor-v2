@@ -6,13 +6,16 @@ import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
+import com.restocktime.monitor.monitors.parse.supreme.parse.SupremeProductParseAbstractResponse;
 import com.restocktime.monitor.monitors.parse.target.parse.TargetAbstractResponseParser;
 import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
+import org.apache.log4j.Logger;
+
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 public class Target extends AbstractMonitor {
-
-
+    final static Logger logger = Logger.getLogger(SupremeProductParseAbstractResponse.class);
     private String url;
     private int delay;
     private AttachmentCreater attachmentCreater;
@@ -43,6 +46,7 @@ public class Target extends AbstractMonitor {
             targetResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
 
         }
 

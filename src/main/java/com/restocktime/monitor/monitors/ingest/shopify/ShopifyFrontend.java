@@ -15,10 +15,12 @@ import org.apache.log4j.Logger;
 import java.util.List;
 import java.util.Random;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class ShopifyFrontend extends AbstractMonitor {
     private String url;
     private int delay;
-    final static Logger logger = Logger.getLogger(ShopifyFrontend.class);
+    final static Logger log = Logger.getLogger(ShopifyFrontend.class);
     private Random r;
     private AttachmentCreater attachmentCreater;
     private HttpRequestHelper httpRequestHelper;
@@ -59,8 +61,7 @@ public class ShopifyFrontend extends AbstractMonitor {
 
             hash = md5;
         } catch(Exception e){
-            logger.info(e);
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

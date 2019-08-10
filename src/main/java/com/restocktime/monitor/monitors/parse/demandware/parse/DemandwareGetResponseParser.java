@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class DemandwareGetResponseParser implements AbstractResponseParser {
     private StockTracker stockTracker;
     private final Pattern imagePattern = Pattern.compile("<img itemprop=\"image\" class=\"primary-image\" src=\"([^\"]*)\" alt=\"[^\"]*\" title=\"([^\"]*)\"/>");
@@ -29,7 +31,7 @@ public class DemandwareGetResponseParser implements AbstractResponseParser {
     private final Pattern fyeImgPattern = Pattern.compile("image_url: \"([^\"]*)\",");
 
 
-    final static Logger logger = Logger.getLogger(OffWhiteAtcResponseParser.class);
+    final static Logger logger = Logger.getLogger(DemandwareGetResponseParser.class);
 
 
     public DemandwareGetResponseParser(StockTracker stockTracker, List<String> formatNames) {
@@ -78,7 +80,7 @@ public class DemandwareGetResponseParser implements AbstractResponseParser {
 
                         //DemandwareHTBLBuilder.buildAttachments(attachmentCreater, url, pic, title, price, qtyStr, atcFG, atcPR, ebay, stash, formatNames);
                     } catch (Exception e){
-
+                        logger.error(EXCEPTION_LOG_MESSAGE, e);
                     }
 
                 } else if(responseString.contains("fye.com")){
@@ -107,6 +109,7 @@ public class DemandwareGetResponseParser implements AbstractResponseParser {
 
                         DemandwareBuilder.buildAttachments(attachmentCreater, url, pic, title, price, qtyStr, ebay, stash, formatNames);
                     } catch (Exception e){
+                        logger.error(EXCEPTION_LOG_MESSAGE, e);
 
                     }
                 }

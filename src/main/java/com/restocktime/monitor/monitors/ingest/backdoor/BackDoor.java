@@ -5,11 +5,14 @@ import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
-import com.restocktime.monitor.monitors.parse.backdoor.parse.BackdoorSearchAbstractResponseParser;
+import com.restocktime.monitor.monitors.parse.backdoor.parse.BackdoorSearchResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.Notifications;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
+import org.apache.log4j.Logger;
+
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 public class BackDoor extends AbstractMonitor {
 
@@ -17,9 +20,11 @@ public class BackDoor extends AbstractMonitor {
     private int delay;
     private AttachmentCreater attachmentCreater;
     private HttpRequestHelper httpRequestHelper;
-    private BackdoorSearchAbstractResponseParser backdoorSearchResponseParser;
+    private BackdoorSearchResponseParser backdoorSearchResponseParser;
+    private static final Logger log = Logger.getLogger(BackDoor.class);
 
-    public BackDoor(String url, int delay,   AttachmentCreater attachmentCreater, HttpRequestHelper httpRequestHelper, BackdoorSearchAbstractResponseParser backdoorSearchResponseParser) {
+
+    public BackDoor(String url, int delay,   AttachmentCreater attachmentCreater, HttpRequestHelper httpRequestHelper, BackdoorSearchResponseParser backdoorSearchResponseParser) {
         this.url = url;
         this.delay = delay;
         this.attachmentCreater = attachmentCreater;
@@ -51,7 +56,7 @@ public class BackDoor extends AbstractMonitor {
 
 
         } catch(Exception e){
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

@@ -14,11 +14,13 @@ import org.apache.log4j.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Twitter extends AbstractMonitor {
 
     private String url;
     private int delay;
-    final static Logger logger = Logger.getLogger(Shopify.class);
+    final static Logger log = Logger.getLogger(Shopify.class);
     private Pattern noScriptLinkPattern = Pattern.compile("<form action=\"([^\"]*)\" method=\"POST\"");
 
     private AttachmentCreater attachmentCreater;
@@ -50,9 +52,7 @@ public class Twitter extends AbstractMonitor {
             twitterResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-            logger.info(e);
-
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

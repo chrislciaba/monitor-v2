@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration debug="true"
+                     xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <appender name="roll-by-size" class="org.apache.log4j.rolling.RollingFileAppender">
+        <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+            <param name="ActiveFileName" value="log4j/roll-by-size/app.log" />
+            <param name="FileNamePattern" value="log4j/roll-by-size/app.%i.log.gz" />
+            <param name="MaxIndex" value="10" />
+        </rollingPolicy>
+        <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+            <param name="MaxFileSize" value="512000000" />
+        </triggeringPolicy>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %tid %-5p %m%n" />
+        </layout>
+    </appender>
+    <root>
+        <level value="ERROR" />
+        <appender-ref ref="roll-by-size" />
+    </root>
+
+</log4j:configuration>

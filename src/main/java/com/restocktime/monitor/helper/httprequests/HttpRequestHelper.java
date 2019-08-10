@@ -14,8 +14,10 @@ import org.apache.log4j.Logger;
 
 import java.util.Arrays;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class HttpRequestHelper extends AbstractHttpRequestHelper {
-    final static Logger logger = Logger.getLogger(HttpRequestHelper.class);
+    final static Logger log = Logger.getLogger(HttpRequestHelper.class);
 
     public BasicHttpResponse performGet(BasicRequestClient basicRequestClient, String url){
         HttpGet httpGet = new HttpGet(url);
@@ -40,13 +42,14 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
             EntityUtils.consumeQuietly(entity);
             return new BasicHttpResponse(resp, httpResponse.getStatusLine().getStatusCode(), Arrays.asList(httpResponse.getAllHeaders()));
         } catch(Exception e) {
+            log.info(EXCEPTION_LOG_MESSAGE, e);
             throw new MonitorRequestException("get request failed", e);
         } finally {
             httpGet.releaseConnection();
             try {
                 httpResponse.close();
             } catch (Exception e){
-                e.printStackTrace();
+                log.error(EXCEPTION_LOG_MESSAGE, e);
                 throw new MonitorRequestException("get request failed on close", e);
             }
         }
@@ -70,7 +73,7 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
             if(basicRequestClient.getHeaderList() != null){
                 for(Header header : basicRequestClient.getHeaderList()) {
                    // httpPost.setHeader(header);
-                    logger.info(header.getName());
+                    log.info(header.getName());
                 }
             }
 
@@ -82,12 +85,14 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
 
                 return new BasicHttpResponse(EntityUtils.toString(entity), httpResponse.getStatusLine().getStatusCode());
             } catch(Exception e) {
+                log.info(EXCEPTION_LOG_MESSAGE, e);
                 throw new MonitorRequestException("post request failed", e);
             } finally {
                 httpPost.releaseConnection();
                 try {
                     httpResponse.close();
                 } catch (Exception e){
+                    log.info(EXCEPTION_LOG_MESSAGE, e);
                     throw new MonitorRequestException("post request failed on close", e);
                 }
             }

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class ParseNakedAbstractResponse implements AbstractResponseParser {
     final static Logger logger = Logger.getLogger(ParseNakedAbstractResponse.class);
     private String patternStr = "<title>(.*)</title>";
@@ -32,6 +34,14 @@ public class ParseNakedAbstractResponse implements AbstractResponseParser {
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
         if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
             return;
+        }
+
+        logger.error("HELLO");
+
+        try {
+            throw new RuntimeException("HEEEHEEHE");
+        } catch (Exception e) {
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
 
         String responseString = basicHttpResponse.getBody();

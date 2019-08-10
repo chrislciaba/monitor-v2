@@ -12,10 +12,12 @@ import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import org.apache.log4j.Logger;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class DisneyRestock extends AbstractMonitor {
     private String url;
     private int delay;
-    final static Logger logger = Logger.getLogger(Shopify.class);
+    final static Logger log = Logger.getLogger(DisneyRestock.class);
 
     private AttachmentCreater attachmentCreater;
     private HttpRequestHelper httpRequestHelper;
@@ -39,8 +41,7 @@ public class DisneyRestock extends AbstractMonitor {
             disneyRestockResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-            logger.info(e);
-
+            log.info(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class AntonioliResponseParser implements AbstractResponseParser {
-    final static Logger logger = Logger.getLogger(AntonioliResponseParser.class);
+    final static Logger log = Logger.getLogger(AntonioliResponseParser.class);
 
 
     private final String patternStr = "<a itemProp=\"url\" href=\"([^\"]*)\"><span content='([^']*)'";
@@ -41,13 +41,13 @@ public class AntonioliResponseParser implements AbstractResponseParser {
         String responseString = basicHttpResponse.getBody();
 
         if((responseString.contains("data-product-id") || responseString.contains("add-to-cart"))){
-            logger.info("in stock");
+            log.info("in stock");
             if(stockTracker.notifyForObject(url, isFirst)){
                 DefaultBuilder.buildAttachments(attachmentCreater, url, null, "Antonioli", name, formatNames);
             }
         } else if(responseString.contains("<body class=\"404\">") || responseString.contains("card products_search_results_heading_no_results_found")){
             stockTracker.setOOS(url);
-            logger.info("oos");
+            log.info("oos");
 
         }
     }

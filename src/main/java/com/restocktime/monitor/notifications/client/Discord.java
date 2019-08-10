@@ -16,6 +16,8 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Discord {
 
     final static Logger logger = Logger.getLogger(Discord.class);
@@ -65,7 +67,7 @@ public class Discord {
             stringEntity = new StringEntity(s);
 
         } catch (Exception e) {
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
             return;
         }
         CloseableHttpClient closeableHttpClient = HttpClients.custom()
@@ -78,11 +80,10 @@ public class Discord {
             HttpResponse httpResponse = closeableHttpClient.execute(httpPost);
             if(httpResponse.getStatusLine().getStatusCode() >= 400){
                 logger.error(EntityUtils.toString(httpResponse.getEntity()));
-                discordLog.debug(httpResponse.getStatusLine().getStatusCode() + " response received when sending " + s);
             }
 
         } catch (Exception e) {
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         } finally {
             httpPost.releaseConnection();
         }

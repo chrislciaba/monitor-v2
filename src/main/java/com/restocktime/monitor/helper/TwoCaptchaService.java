@@ -1,7 +1,6 @@
 package com.restocktime.monitor.helper;
 
 import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.notifications.client.Discord;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -12,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
-import static java.lang.System.exit;
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 
 public class TwoCaptchaService {
@@ -100,7 +99,7 @@ public class TwoCaptchaService {
             HttpEntity entity = response.getEntity();
             responseString = EntityUtils.toString(entity, "UTF-8");
         } catch(Exception e){
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         } finally {
             request.releaseConnection();
         }

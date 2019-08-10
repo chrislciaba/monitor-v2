@@ -4,14 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.monitors.ingest.ssense.Ssense;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.supreme.model.supreme.*;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class SupremeAllProductResponseParser implements AbstractResponseParser {
+    final static Logger logger = Logger.getLogger(SupremeAllProductResponseParser.class);
 
     private StockTracker stockTracker;
     private String url;
@@ -53,6 +58,7 @@ public class SupremeAllProductResponseParser implements AbstractResponseParser {
             }
 
         } catch (Exception e){
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
 
         }
 

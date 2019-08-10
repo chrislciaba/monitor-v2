@@ -12,18 +12,15 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class SearchResponseParser implements AbstractResponseParser {
-    private String locale;
-    private String url;
-    private String productName;
+
     final static Logger logger = Logger.getLogger(Ssense.class);
     private StockTracker stockTracker;
     private List<String> formatNames;
 
     public SearchResponseParser(String locale, String url, String productName, StockTracker stockTracker, List<String> formatNames) {
-        this.locale = locale;
-        this.url = url;
-        this.productName = productName;
         this.stockTracker = stockTracker;
         this.formatNames = formatNames;
     }
@@ -50,6 +47,7 @@ public class SearchResponseParser implements AbstractResponseParser {
             }
 
         } catch(Exception e){
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
 
         }
     }

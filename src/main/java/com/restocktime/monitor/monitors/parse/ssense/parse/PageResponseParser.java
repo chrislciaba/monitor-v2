@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class PageResponseParser implements AbstractResponseParser {
     private StockTracker stockTracker;
     private String url;
@@ -52,12 +54,11 @@ public class PageResponseParser implements AbstractResponseParser {
                 }
 
                 if (stockTracker.notifyForObject(url, isFirst)) {
-                  //  attachmentCreater.addMessages(url, title, "ssense", null, null);
                     DefaultBuilder.buildAttachments(attachmentCreater, url, null, "Ssense", title, formatNames);
                 }
             }
         } catch (Exception e) {
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 }

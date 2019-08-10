@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Slack {
 
     final static Logger logger = Logger.getLogger(Slack.class);
@@ -74,11 +76,9 @@ public class Slack {
 
             } catch (Exception e) {
 
-
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
                 return;
             }
-
-            //logger.info(attachmentStr);
 
 
             if (attachmentStr != null) {
@@ -88,7 +88,6 @@ public class Slack {
 
 
         try {
-            //logger.info(attachmentStr);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
 
             HttpResponse response =  httpClient.execute(httpPost);
@@ -97,6 +96,7 @@ public class Slack {
             String responseString = EntityUtils.toString(entity, "UTF-8");
             //logger.info(responseString);
         } catch(Exception e){
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
 
         } finally {
             httpPost.releaseConnection();

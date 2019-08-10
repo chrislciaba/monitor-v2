@@ -8,12 +8,16 @@ import com.restocktime.monitor.monitors.parse.footpatrol.attachment.FootpatrolBu
 import com.restocktime.monitor.monitors.parse.footpatrol.model.app.FpOption;
 import com.restocktime.monitor.monitors.parse.footpatrol.model.app.FpProduct;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 
 public class FootpatrolAppResponseParser implements AbstractResponseParser {
+    private static final Logger log = Logger.getLogger(FootpatrolAppResponseParser.class);
 
     private StockTracker stockTracker;
     private ObjectMapper objectMapper;
@@ -26,6 +30,7 @@ public class FootpatrolAppResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
+
         if(basicHttpResponse == null || basicHttpResponse.getBody() == null){
             return;
         }
@@ -51,7 +56,7 @@ public class FootpatrolAppResponseParser implements AbstractResponseParser {
                 FootpatrolBuilder.buildAttachments(attachmentCreater, fpProduct.getID(), fpProduct.getMainImage(), "Footpatrol", fpProduct.getName(), formatNames);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
 
     }

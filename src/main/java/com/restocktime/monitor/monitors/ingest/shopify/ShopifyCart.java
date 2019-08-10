@@ -12,9 +12,11 @@ import org.apache.log4j.Logger;
 
 import java.util.Random;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class ShopifyCart {
 
-    final static Logger logger = Logger.getLogger(ShopifyKw.class);
+    final static Logger log = Logger.getLogger(ShopifyKw.class);
 
     private String url;
     private int delay;
@@ -48,7 +50,7 @@ public class ShopifyCart {
             Notifications.send(attachmentCreater);
             hash = md5;
         } catch(Exception e){
-            logger.info(e);
+            log.error(EXCEPTION_LOG_MESSAGE, e);
 
         }
 

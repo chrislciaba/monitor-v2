@@ -17,8 +17,10 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class NikeScratch extends AbstractMonitor {
-    final static Logger logger = Logger.getLogger(NikeScratch.class);
+    final static Logger log = Logger.getLogger(NikeScratch.class);
     private String url;
     private int delay;
     private List<Header> headers;
@@ -26,13 +28,11 @@ public class NikeScratch extends AbstractMonitor {
     private AttachmentCreater attachmentCreater;
     private HttpRequestHelper httpRequestHelper;
     private HuntResponseParser huntResponseParser;
-    private Notifications notifications;
     private long nextRefresh;
 
     public NikeScratch(String url, int delay,   AttachmentCreater attachmentCreater, HttpRequestHelper httpRequestHelper, HuntResponseParser huntResponseParser) {
         this.url = url;
         this.delay = delay;
-        this.notifications = notifications;
         this.attachmentCreater = attachmentCreater;
         this.httpRequestHelper = httpRequestHelper;
         this.huntResponseParser = huntResponseParser;
@@ -78,7 +78,7 @@ public class NikeScratch extends AbstractMonitor {
 
 
         } catch(Exception e){
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

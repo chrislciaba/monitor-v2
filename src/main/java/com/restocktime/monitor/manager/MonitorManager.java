@@ -4,12 +4,14 @@ import com.restocktime.monitor.Monitor;
 import com.restocktime.monitor.config.Config;
 import com.restocktime.monitor.config.model.MonitorConfig;
 import com.restocktime.monitor.config.model.Page;
+import com.restocktime.monitor.helper.TwoCaptchaService;
 import com.restocktime.monitor.helper.debug.DiscordLog;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.helper.url.UrlHelper;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
 import com.restocktime.monitor.proxymanager.ProxyManager;
 import com.restocktime.monitor.transformer.ConfigDataTransformer;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,14 +20,16 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class MonitorManager {
 
     ConcurrentMap<String, Monitor> monitorMap;
-    private DiscordLog discordLog;
+    final static Logger logger = Logger.getLogger(TwoCaptchaService.class);
+
 
     public MonitorManager(){
         this.monitorMap = new ConcurrentHashMap<>();
-        this.discordLog = new DiscordLog(MonitorManager.class);
     }
 
     public void run(){
@@ -37,7 +41,6 @@ public class MonitorManager {
                 Config c = new Config();
 
                 while (true) {
-                    discordLog.debug("Check for updates");
 
                     try {
                         Optional<MonitorConfig> monitorConfigOptional = c.loadConfigData(Long.toString(updated_at));
@@ -59,20 +62,19 @@ public class MonitorManager {
                         }
 
                     } catch (Exception e) {
-                        discordLog.error("non fatal error in run()");
+                        logger.error(EXCEPTION_LOG_MESSAGE, e);
                     }
 
                     Timeout.timeout(10000);
 
                 }
             } catch (Exception e) {
-                discordLog.error("FATAL ERROR IN RUN MonitorManager run()");
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }
     }
 
     private void refresh(MonitorConfig monitorConfig, Config c, ProxyManager proxyManager){
-        discordLog.info("Updating config");
         for (String key : monitorMap.keySet()) {
             monitorMap.get(key).stop();
         }
@@ -98,15 +100,13 @@ public class MonitorManager {
                         abstractMonitor,
                         proxyList,
                         abstractMonitor.getUrl(),
-                        page.getSite());
+                        page.getSite(),
+                        page.getId()
+                );
                 m.start();
                 monitorMap.put(page.getId(), m);
             } catch (Exception e){
-                String msg = "";
-                if(page.getUrls() != null && page.getUrls().size() > 0)
-                    msg = page.getUrls().get(0);
-                discordLog.debug(e.getMessage() + " this failed to refresh() " + msg);
-
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }
     }
@@ -135,17 +135,15 @@ public class MonitorManager {
                             abstractMonitor,
                             proxyList,
                             abstractMonitor.getUrl(),
-                            page.getSite());
+                            page.getSite(),
+                            page.getId()
+                    );
                     m.start();
                     tempMap.put(page.getId(), m); //new tasks started
                 }
                 allKeys.put(page.getId(), ""); //all tasks
             } catch (Exception e){
-                String msg = "";
-                if(page.getUrls() != null && page.getUrls().size() > 0)
-                    msg = page.getUrls().get(0);
-                discordLog.error(e.getMessage() + " this failed to update() " + msg);
-
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }
 

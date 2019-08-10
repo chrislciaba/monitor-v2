@@ -6,11 +6,16 @@ import com.restocktime.monitor.helper.httprequests.AbstractHttpRequestHelper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.taskstatus.TaskStatus;
 import com.restocktime.monitor.helper.timeout.Timeout;
+import com.restocktime.monitor.monitors.ingest.titolo.Titolo;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
+import org.apache.log4j.Logger;
+
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 public class DefaultMonitor extends AbstractMonitor {
+    final static Logger log = Logger.getLogger(DefaultMonitor.class);
 
     private String url;
     private int delay;
@@ -54,7 +59,7 @@ public class DefaultMonitor extends AbstractMonitor {
             taskStatus.incrementSuccess();
         } catch(Exception e){
             taskStatus.incrementError();
-e.printStackTrace();
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

@@ -3,7 +3,9 @@ package com.restocktime.monitor;
 import com.restocktime.monitor.helper.clientbuilder.ClientBuilder;
 import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
+import com.restocktime.monitor.proxymanager.ProxyManager;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.log4j.Logger;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,7 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class Monitor implements Runnable {
+    final static Logger logger = Logger.getLogger(ProxyManager.class);
+
 
     private Thread t = null;
     private AtomicBoolean running = new AtomicBoolean(false);
@@ -22,13 +28,15 @@ public class Monitor implements Runnable {
     private String url;
     private Map<String, CloseableHttpClient> clientStore;
     private String site;
+    private String id;
 
-    public Monitor(AbstractMonitor abstractMonitor, List<String> proxyList, String url, String site){
+    public Monitor(AbstractMonitor abstractMonitor, List<String> proxyList, String url, String site, String id){
         this.abstractMonitor = abstractMonitor;
         this.proxyList = proxyList;
         this.url = url;
         this.clientStore = new HashMap<>();
         this.site = site;
+        this.id = id;
     }
 
 
@@ -54,18 +62,17 @@ public class Monitor implements Runnable {
                 abstractMonitor.run(clients.get(proxyIndex), false);
                 proxyIndex = (proxyIndex + 1) % clients.size();
             }
-        }catch(Exception e){
-
+        } catch (Exception e) {
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
 
     }
 
     public void start () {
         if (t == null) {
-            t = new Thread (this,url);
+            t = new Thread (this, String.format("[%s] [%s]", id, url));
             running.set(true);
             t.start ();
-
         }
     }
 

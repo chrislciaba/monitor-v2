@@ -34,7 +34,6 @@ public class SevenHillsResponseParser implements AbstractResponseParser {
         Matcher m = p.matcher(responseString);
 
         while (m.find()) {
-            System.out.println(m.group(1));
             if (stockTracker.notifyForObject(m.group(1), isFirst)) {
                 DefaultBuilder.buildAttachments(attachmentCreater, m.group(1), null, "7hills", m.group(2), formatNames);
             }

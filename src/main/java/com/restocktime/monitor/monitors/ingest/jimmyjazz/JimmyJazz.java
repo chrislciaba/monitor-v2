@@ -11,10 +11,12 @@ import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.Notifications;
 import org.apache.log4j.Logger;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class JimmyJazz extends AbstractMonitor {
     private String url;
     private int delay;
-    final static Logger logger = Logger.getLogger(JimmyJazz.class);
+    final static Logger log = Logger.getLogger(JimmyJazz.class);
 
     private AttachmentCreater attachmentCreater;
     private CloudflareRequestHelper cloudflareRequestHelper;
@@ -50,8 +52,7 @@ public class JimmyJazz extends AbstractMonitor {
 
 
         } catch(Exception e){
-            logger.info(e);
-
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 

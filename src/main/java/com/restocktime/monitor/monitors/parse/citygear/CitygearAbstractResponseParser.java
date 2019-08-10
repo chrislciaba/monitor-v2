@@ -38,7 +38,6 @@ public class CitygearAbstractResponseParser implements AbstractResponseParser {
 
             if(keywordSearchHelper.search(name) && stockTracker.notifyForObject(url, isFirst)){
                 DefaultBuilder.buildAttachments(attachmentCreater, url, null,"Citygear", name, formatNames);
-
             }
         }
     }

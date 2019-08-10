@@ -15,10 +15,12 @@ import org.apache.log4j.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class DisneySitemap extends AbstractMonitor {
     private String url;
     private int delay;
-    final static Logger logger = Logger.getLogger(Shopify.class);
+    final static Logger log = Logger.getLogger(DisneySitemap.class);
     private final Pattern pattern = Pattern.compile("<loc>([^<]*)</loc>");
 
     private AttachmentCreater attachmentCreater;
@@ -50,7 +52,7 @@ public class DisneySitemap extends AbstractMonitor {
             disneySitemapResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-            logger.info(e);
+            log.info(EXCEPTION_LOG_MESSAGE, e);
 
         }
     }

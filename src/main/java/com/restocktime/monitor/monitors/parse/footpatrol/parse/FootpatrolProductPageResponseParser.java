@@ -9,6 +9,7 @@ import com.restocktime.monitor.monitors.parse.footpatrol.attachment.FootpatrolBu
 import com.restocktime.monitor.monitors.parse.footpatrol.model.Item;
 import com.restocktime.monitor.monitors.parse.footpatrol.model.ProductResponse;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,6 +21,7 @@ public class FootpatrolProductPageResponseParser implements AbstractResponsePars
     private Pattern pattern = Pattern.compile("<script type=\"text/javascript\">\\s+var\\s+dataObject\\s+=\\s+([^;]*);\\s*</script>");
     private List<String> formatNames;
     private KeywordSearchHelper keywordSearchHelper;
+    private static final Logger log = Logger.getLogger(FootpatrolProductPageResponseParser.class);
 
     public FootpatrolProductPageResponseParser(StockTracker stockTracker, KeywordSearchHelper keywordSearchHelper, List<String> formatNames) {
         this.stockTracker = stockTracker;
@@ -50,7 +52,7 @@ public class FootpatrolProductPageResponseParser implements AbstractResponsePars
                     }
                 }
             } catch (Exception e){
-
+                log.error("Stacktrace:", e);
             }
         }
 

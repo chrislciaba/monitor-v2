@@ -17,12 +17,14 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class ShopifyProductListings extends AbstractMonitor {
 
 
-    private static final String PRODUCT_LISTINGS_TEMPLATE = "%s/api/product_listings.json?limit=10&fill_cache=true";
+    private static final String PRODUCT_LISTINGS_TEMPLATE = "%s/api/product_listings.json";
 
-    final static Logger logger = Logger.getLogger(ShopifyProductListings.class);
+    final static Logger log = Logger.getLogger(ShopifyProductListings.class);
 
     private String url;
     private int delay;
@@ -74,7 +76,7 @@ public class ShopifyProductListings extends AbstractMonitor {
             shopifyProductListingsResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-            logger.info(e);
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
 
     }

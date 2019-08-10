@@ -25,7 +25,7 @@ import com.restocktime.monitor.monitors.parse.adidas.parse.AdidasResponseParser;
 import com.restocktime.monitor.monitors.parse.amazon.AmazonResponseParser;
 import com.restocktime.monitor.monitors.parse.antonioli.AntonioliResponseParser;
 import com.restocktime.monitor.monitors.ingest.backdoor.BackDoor;
-import com.restocktime.monitor.monitors.parse.backdoor.parse.BackdoorSearchAbstractResponseParser;
+import com.restocktime.monitor.monitors.parse.backdoor.parse.BackdoorSearchResponseParser;
 import com.restocktime.monitor.monitors.ingest.barnesandnoble.BarnesAndNoble;
 import com.restocktime.monitor.monitors.parse.barnesandnoble.parse.BarnesAndNobleResponseParser;
 import com.restocktime.monitor.monitors.parse.bestbuy.BestBuyParseProductAbstractResponse;
@@ -163,7 +163,7 @@ public class ConfigDataTransformer {
         } else if(site.equals("naked")){
 
             AbstractResponseParser parseNakedResponse = new ParseNakedAbstractResponse(new StockTracker(new HashMap<>(), 500000), page.getUrls().get(0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getNaked()));
-            return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNaked(), notificationsFormatConfig), new HttpRequestHelper(), parseNakedResponse);
+            return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNaked(), notificationsFormatConfig), new CloudflareRequestHelper(apiKeys), parseNakedResponse);
         } else if(site.equals("shopify")){
             NotificationConfig notificationConfig = getShopifyConfig(page.getUrls().get(0), siteNotificationsConfig);
             QuicktaskConfig quicktaskConfig = null;//new QuicktaskConfig(page.getQuicktask(), quicktasks);
@@ -415,7 +415,7 @@ public class ConfigDataTransformer {
             return createDefault(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNittygritty(), notificationsFormatConfig), new HttpRequestHelper(), nittyGrittyResponseParser);
         } else if(site.equals("backdoor")){
             StockTracker stockTracker = new StockTracker(new HashMap<>(), -1);
-            BackdoorSearchAbstractResponseParser backdoorSearchResponseParser = new BackdoorSearchAbstractResponseParser(page.getSku(), page.getUrls().get(0), stockTracker, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getBackdoor()));
+            BackdoorSearchResponseParser backdoorSearchResponseParser = new BackdoorSearchResponseParser(page.getSku(), page.getUrls().get(0), stockTracker, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getBackdoor()));
             return new BackDoor(page.getUrls().get(0), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getBackdoor(), notificationsFormatConfig), new HttpRequestHelper(), backdoorSearchResponseParser);
         } else if(site.equals("offwhiteatc")){
             StockTracker stockTracker = new StockTracker(new HashMap<>(), 30000);

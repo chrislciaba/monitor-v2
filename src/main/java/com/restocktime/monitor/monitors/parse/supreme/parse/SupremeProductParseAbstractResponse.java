@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class SupremeProductParseAbstractResponse implements AbstractResponseParser {
     final static Logger logger = Logger.getLogger(SupremeProductParseAbstractResponse.class);
 
@@ -63,6 +65,7 @@ public class SupremeProductParseAbstractResponse implements AbstractResponsePars
 
             }
         } catch (Exception e){
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
 
         }
 

@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class ProductFeedV2ResponseParser implements AbstractResponseParser {
     private ObjectMapper objectMapper;
     final static Logger logger = Logger.getLogger(ProductFeedV2ResponseParser.class);
@@ -110,7 +112,7 @@ public class ProductFeedV2ResponseParser implements AbstractResponseParser {
                 return parseV2Helper.getParsedResponseList();
 
             } catch(Exception e){
-
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
                 return null;
             }
         } else if(url.contains("exp_snkrs")){
@@ -120,7 +122,7 @@ public class ProductFeedV2ResponseParser implements AbstractResponseParser {
                 ParseExpHelper parseExpHelper = new ParseExpHelper(expSnkrs);
                 return parseExpHelper.getParsedResponseList();
             } catch (Exception e){
-
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
                 return null;
             }
         } else {
@@ -129,6 +131,7 @@ public class ProductFeedV2ResponseParser implements AbstractResponseParser {
                 ParseV1Helper parseV1Helper = new ParseV1Helper(content);
                 return parseV1Helper.getParsedResponseList();
             } catch (Exception e){
+                logger.error(EXCEPTION_LOG_MESSAGE, e);
                 return null;
             }
         }

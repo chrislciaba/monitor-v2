@@ -8,8 +8,12 @@ import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
 import com.restocktime.monitor.monitors.parse.walmart.parse.WalmartTerraResponseParser;
 import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
+import org.apache.log4j.Logger;
+
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 public class WalmartTerra extends AbstractMonitor {
+    final static Logger logger = Logger.getLogger(Walmart.class);
 
     private final String WALMART_ENDPOINT = "https://www.walmart.com/terra-firma/item/%s";
     private final String WALMART_PRODUCT_LINK = "https://www.walmart.com/ip/%s";
@@ -41,7 +45,7 @@ public class WalmartTerra extends AbstractMonitor {
             walmartTerraResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-
+            logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
 
     }

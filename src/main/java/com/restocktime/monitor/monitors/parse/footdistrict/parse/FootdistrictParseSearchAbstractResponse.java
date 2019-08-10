@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class FootdistrictParseSearchAbstractResponse implements AbstractResponseParser {
     final static Logger logger = Logger.getLogger(FootdistrictParseSearchAbstractResponse.class);
 
@@ -43,7 +45,7 @@ public class FootdistrictParseSearchAbstractResponse implements AbstractResponse
                 }
             }
         } catch (Exception e) {
-           // e.printStackTrace();
+           logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 }

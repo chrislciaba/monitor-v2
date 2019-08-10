@@ -106,7 +106,7 @@ public class ShopifyAbstractResponseParser implements AbstractResponseParser {
             }
         } catch (Exception e){
             errors++;
-            e.printStackTrace();
+
         }
     }
 

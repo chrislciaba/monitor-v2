@@ -38,9 +38,7 @@ public class CitygearProductResponseParser implements AbstractResponseParser {
 
 
             if(stockTracker.notifyForObject(url, isFirst)){
-            //    attachmentCreater.addMessages(url, productName, "Citygear", null, null);
                 DefaultBuilder.buildAttachments(attachmentCreater, url, null,"Citygear", productName, formatNames);
-
             } else {
                 stockTracker.setOOS(url);
             }

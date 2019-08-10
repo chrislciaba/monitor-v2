@@ -1,3 +1,5 @@
 /.class
 workspace.xml
 .idea/
+log4j/
+*.iml

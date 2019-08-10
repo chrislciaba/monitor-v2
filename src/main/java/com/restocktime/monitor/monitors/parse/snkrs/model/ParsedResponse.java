@@ -10,8 +10,9 @@ public class ParsedResponse {
     private String launchDate;
     private Long launchDateEpoch;
     private String sku;
+    private boolean available;
 
-    public ParsedResponse(String id, String name, String slug, String type, String image, String selectionEngine, String launchDate, Long launchDateEpoch, String sku) {
+    public ParsedResponse(String id, String name, String slug, String type, String image, String selectionEngine, String launchDate, Long launchDateEpoch, String sku, boolean available) {
         this.id = id;
         this.name = name;
         this.slug = slug;
@@ -21,6 +22,7 @@ public class ParsedResponse {
         this.launchDate = launchDate;
         this.launchDateEpoch = launchDateEpoch;
         this.sku = sku;
+        this.available = available;
     }
 
     public String getId() {
@@ -57,5 +59,13 @@ public class ParsedResponse {
 
     public String getSku() {
         return sku;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }

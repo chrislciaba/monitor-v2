@@ -5,6 +5,7 @@ import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
 import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
+import com.restocktime.monitor.monitors.ingest.backdoor.BackDoor;
 import com.restocktime.monitor.monitors.parse.barnesandnoble.parse.BarnesAndNobleResponseParser;
 import com.restocktime.monitor.monitors.ingest.shopify.Shopify;
 import com.restocktime.monitor.notifications.Notifications;
@@ -15,11 +16,13 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 
+import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+
 public class BarnesAndNoble extends AbstractMonitor {
     private String url;
     private String prodUrl;
     private int delay;
-    final static Logger logger = Logger.getLogger(Shopify.class);
+    private static final Logger log = Logger.getLogger(BarnesAndNoble.class);
     private final String apiUrl = "https://m.barnesandnoble.com/skavastream/core/v5/barnesandnobleapi/productdetails/get?campaignId=1&productids=%s";
     private final String productUrl = "https://www.barnesandnoble.com/w/jarman/123?ean=%s";
 
@@ -54,7 +57,7 @@ public class BarnesAndNoble extends AbstractMonitor {
             barnesAndNobleResponseParser.parse(basicHttpResponse, prodHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
         } catch(Exception e){
-            logger.info(e);
+            log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }
 
