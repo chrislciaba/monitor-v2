@@ -47,7 +47,9 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
         } finally {
             httpGet.releaseConnection();
             try {
-                httpResponse.close();
+                if(httpResponse != null) {
+                    httpResponse.close();
+                }
             } catch (Exception e){
                 log.error(EXCEPTION_LOG_MESSAGE, e);
                 throw new MonitorRequestException("get request failed on close", e);
@@ -90,7 +92,9 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
             } finally {
                 httpPost.releaseConnection();
                 try {
-                    httpResponse.close();
+                    if(httpResponse != null) {
+                        httpResponse.close();
+                    }
                 } catch (Exception e){
                     log.info(EXCEPTION_LOG_MESSAGE, e);
                     throw new MonitorRequestException("post request failed on close", e);
