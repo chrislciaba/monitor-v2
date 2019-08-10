@@ -14,6 +14,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
@@ -21,6 +22,7 @@ import org.apache.log4j.Logger;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -65,7 +67,14 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
             String responseString = EntityUtils.toString(entity, "UTF-8");
             return Optional.of(new BasicHttpResponse(responseString, respCode));
-        } catch (IOException e) {
+        } catch (ConnectTimeoutException cte) {
+            log.error("Connection timed out");
+            throw new MonitorRequestException("Connection timed out");
+        } catch (SocketTimeoutException ste) {
+            log.error("Socket timeout");
+            throw new MonitorRequestException("Socket timed out");
+        }
+        catch (IOException e) {
             log.error(EXCEPTION_LOG_MESSAGE, e);
             return Optional.empty();
         } finally {
