@@ -1,7 +1,7 @@
 package com.restocktime.monitor.monitors.ingest.shopify;
 
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.util.MD5;
+import com.restocktime.monitor.util.hash.MD5;
 import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.timeout.Timeout;

@@ -1,4 +1,4 @@
-package com.restocktime.monitor.util;
+package com.restocktime.monitor.util.hash;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
