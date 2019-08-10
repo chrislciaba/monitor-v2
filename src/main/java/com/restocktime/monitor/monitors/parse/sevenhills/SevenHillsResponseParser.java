@@ -1,15 +1,11 @@
 package com.restocktime.monitor.monitors.parse.sevenhills;
 
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
-import com.restocktime.monitor.monitors.parse.sns.SNSProductResponseParser;
-import com.restocktime.monitor.monitors.parse.sns.SnsResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
-import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.regex.Matcher;

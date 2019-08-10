@@ -1,11 +1,9 @@
 package com.restocktime.monitor.monitors.parse.caliroots;
 
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
-import com.restocktime.monitor.monitors.parse.sns.SNSProductResponseParser;
 import com.restocktime.monitor.monitors.parse.sns.SnsResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
@@ -20,14 +18,12 @@ public class Caliroots implements AbstractResponseParser {
     private StockTracker stockTracker;
     private List<String> formatNames;
     private final Pattern titlePattern = Pattern.compile("<title>([^<]*)</title>");
-    private DiscordLog discordLog;
     private String url;
 
     public Caliroots(StockTracker stockTracker, String url, List<String> formatNames) {
         this.stockTracker = stockTracker;
         this.url = url;
         this.formatNames = formatNames;
-        this.discordLog = new DiscordLog(Caliroots.class);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){

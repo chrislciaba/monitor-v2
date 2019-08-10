@@ -1,8 +1,8 @@
 package com.restocktime.monitor.monitors.parse.shopify.helper.linkchecker;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 
 import java.util.ArrayList;

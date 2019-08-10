@@ -1,8 +1,8 @@
 package com.restocktime.monitor.monitors.parse.oneblockdown.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.oneblockdown.model.index.ObdResponse;
 import com.restocktime.monitor.monitors.parse.shopify.parse.ShopifyAbstractResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;

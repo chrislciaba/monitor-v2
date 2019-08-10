@@ -1,9 +1,9 @@
 package com.restocktime.monitor.monitors.ingest.oneblockdown;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.CloudflareRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.timeout.Timeout;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
 import com.restocktime.monitor.monitors.ingest.jimmyjazz.JimmyJazz;
 import com.restocktime.monitor.monitors.parse.oneblockdown.parse.OneBlockDownResponseParser;

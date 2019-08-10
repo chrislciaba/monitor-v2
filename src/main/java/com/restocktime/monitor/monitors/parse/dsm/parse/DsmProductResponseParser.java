@@ -1,14 +1,12 @@
 package com.restocktime.monitor.monitors.parse.dsm.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.botlinkgen.BotLinkGen;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.password.PasswordHelper;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
-import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.util.botlinkgen.BotLinkGen;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.password.PasswordHelper;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
-import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
 import com.restocktime.monitor.notifications.model.discord.DiscordField;
 import com.restocktime.monitor.monitors.parse.shopify.model.shopify.ShopifyJson;
 import com.restocktime.monitor.monitors.parse.shopify.model.shopify.Variant;

@@ -1,9 +1,8 @@
 package com.restocktime.monitor.monitors.parse.sns;
 
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
@@ -19,7 +18,6 @@ public class SNSProductResponseParser implements AbstractResponseParser {
     private StockTracker stockTracker;
     private List<String> formatNames;
     private final Pattern titlePattern = Pattern.compile("<title>([^<]*)</title>");
-    private DiscordLog discordLog;
 
 
     private final String SNS_TEMPLATE = "https://www.sneakersnstuff.com%s";
@@ -30,7 +28,6 @@ public class SNSProductResponseParser implements AbstractResponseParser {
         this.stockTracker = stockTracker;
         this.url = url;
         this.formatNames = formatNames;
-        this.discordLog = new DiscordLog(SNSProductResponseParser.class);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
@@ -47,13 +44,10 @@ public class SNSProductResponseParser implements AbstractResponseParser {
                 if(m.find())
                     title = m.group(1);
                 DefaultBuilder.buildAttachments(attachmentCreater, url, null, "SNS", title, formatNames);
-                discordLog.info("@here BACK IN STOCK " + url);
             }
-            discordLog.debug("in stock don't notify " + url);
 
         } else if(responseString.contains("Sold out") || responseString.contains("This raffle is closed")){
             stockTracker.setOOS(url);
-            discordLog.info("OOS " + url);
 
         }
     }

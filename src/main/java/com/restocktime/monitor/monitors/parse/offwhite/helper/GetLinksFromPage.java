@@ -1,7 +1,7 @@
 package com.restocktime.monitor.monitors.parse.offwhite.helper;
 
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.monitors.parse.offwhite.model.offwhite.OffWhiteThreadObj;
 
 import java.util.regex.Matcher;

@@ -1,10 +1,10 @@
 package com.restocktime.monitor.monitors.parse.footpatrol.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.footpatrol.attachment.FootpatrolBuilder;
 import com.restocktime.monitor.monitors.parse.footpatrol.model.Item;

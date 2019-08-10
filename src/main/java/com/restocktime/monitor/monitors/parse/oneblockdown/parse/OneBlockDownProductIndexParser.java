@@ -1,10 +1,9 @@
 package com.restocktime.monitor.monitors.parse.oneblockdown.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.oneblockdown.model.index.ObdProduct;
 import com.restocktime.monitor.monitors.parse.oneblockdown.model.index.ObdProductContainer;
@@ -26,7 +25,6 @@ public class OneBlockDownProductIndexParser implements AbstractResponseParser {
     private KeywordSearchHelper keywordSearchHelper;
     private List<String> formatNames;
     private ObjectMapper objectMapper;
-    private DiscordLog discordLog;
 
 
     String patternStr = "var preloadedItems = ([^;]*);";
@@ -38,7 +36,6 @@ public class OneBlockDownProductIndexParser implements AbstractResponseParser {
         this.keywordSearchHelper = keywordSearchHelper;
         this.formatNames = formatNames;
         this.objectMapper = new ObjectMapper();
-        this.discordLog = new DiscordLog(OneBlockDownProductIndexParser.class);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){

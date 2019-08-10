@@ -1,8 +1,8 @@
 package com.restocktime.monitor.monitors.parse.offwhite.aco;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.CloudflareRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 
 public class SubmitDelivery {
     String url = "https://www.off---white.com/en/AT/checkout/address";

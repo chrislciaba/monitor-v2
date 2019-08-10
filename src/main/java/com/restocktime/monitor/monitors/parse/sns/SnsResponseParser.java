@@ -1,10 +1,9 @@
 package com.restocktime.monitor.monitors.parse.sns;
 
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
@@ -26,7 +25,6 @@ public class SnsResponseParser implements AbstractResponseParser {
 
     private final String SNS_TEMPLATE = "https://www.sneakersnstuff.com%s";
     private String searchUrl;
-    private DiscordLog discordLog;
     String s = "><span class=\"ribbon__text\"></span></span><h3 class=\"card__title\"><a itemprop=\"url\" href=\"/en/product/35915/nike-air-max-180-hi-ambush\" class=\"card__link\"><span class=\"card__brand\">NikeLab</span><strong itemprop=\"name\" class=\"card__name\">Air Max 180 Hi / Ambush</strong>";
     String newPatternStr = "(<span class=\"ribbon__text\">[^<]*</span></span>)?<h3 class=\"card__title\"><a itemprop=\"url\" href=\"([^\"]*)\" class=\"card__link\"><span class=\"card__brand\">([^<]*)</span><strong itemprop=\"name\" class=\"card__name\">([^<]*)</strong>";
   //  String s = "<span class=\"ribbon__text\">Sold out</span></span><h3 class=\"card__title\"><a itemprop=\"url\" href=\"/en/product/38383/adidas-yeezy-boots\" class=\"card__link\"><span class=\"card__brand\">adidas Originals x Kanye West</span><strong itemprop=\"name\" class=\"card__name\">Yeezy Boots</strong></a>"
@@ -39,7 +37,6 @@ public class SnsResponseParser implements AbstractResponseParser {
         this.keywordSearchHelper = keywordSearchHelper;
         this.searchUrl = searchUrl;
         this.formatNames = formatNames;
-        this.discordLog = new DiscordLog(SnsResponseParser.class);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
@@ -68,12 +65,6 @@ public class SnsResponseParser implements AbstractResponseParser {
             } else {
                 stockTracker.setOOS(link);
             }
-        }
-
-        if(found) {
-            discordLog.debug("found products " + searchUrl);
-        } else {
-            discordLog.error(searchUrl + "\n```" + responseString + "```");
         }
     }
 }

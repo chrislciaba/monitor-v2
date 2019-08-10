@@ -1,10 +1,9 @@
 package com.restocktime.monitor.monitors.parse.instagram.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.instagram.attachment.DefaultInstagramStory;
 import com.restocktime.monitor.monitors.parse.instagram.model.stories.EntryPoint;
@@ -18,7 +17,6 @@ public class InstagramStoryResponseParser implements AbstractResponseParser {
     private StockTracker stockTracker;
     private List<String> formatNames;
     private String name;
-    private DiscordLog discordLog;
 
 
     public InstagramStoryResponseParser(ObjectMapper objectMapper, StockTracker stockTracker, List<String> formatNames, String name) {
@@ -26,14 +24,12 @@ public class InstagramStoryResponseParser implements AbstractResponseParser {
         this.stockTracker = stockTracker;
         this.formatNames = formatNames;
         this.name = name;
-        discordLog = new DiscordLog(InstagramStoryResponseParser.class);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
             return;
         }
-
 
         try {
 

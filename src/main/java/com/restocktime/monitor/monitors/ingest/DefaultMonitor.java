@@ -1,12 +1,10 @@
 package com.restocktime.monitor.monitors.ingest;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.hash.MD5;
-import com.restocktime.monitor.helper.httprequests.AbstractHttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.taskstatus.TaskStatus;
-import com.restocktime.monitor.helper.timeout.Timeout;
-import com.restocktime.monitor.monitors.ingest.titolo.Titolo;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.MD5;
+import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
@@ -23,7 +21,6 @@ public class DefaultMonitor extends AbstractMonitor {
     private AbstractHttpRequestHelper httpRequestHelper;
     private AbstractResponseParser abstractResponseParser;
     private String hash;
-    private TaskStatus taskStatus;
 
     public DefaultMonitor(
             String url,
@@ -31,15 +28,13 @@ public class DefaultMonitor extends AbstractMonitor {
             AttachmentCreater attachmentCreater,
             AbstractHttpRequestHelper httpRequestHelper,
             AbstractResponseParser abstractResponseParser,
-            String hash,
-            TaskStatus taskStatus) {
+            String hash) {
         this.url = url;
         this.delay = delay;
         this.attachmentCreater = attachmentCreater;
         this.httpRequestHelper = httpRequestHelper;
         this.abstractResponseParser = abstractResponseParser;
         this.hash = hash;
-        this.taskStatus = taskStatus;
     }
 
     public void run(BasicRequestClient basicRequestClient, boolean isFirst) {
@@ -56,9 +51,7 @@ public class DefaultMonitor extends AbstractMonitor {
             abstractResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
             hash = md5;
-            taskStatus.incrementSuccess();
         } catch(Exception e){
-            taskStatus.incrementError();
             log.error(EXCEPTION_LOG_MESSAGE, e);
         }
     }

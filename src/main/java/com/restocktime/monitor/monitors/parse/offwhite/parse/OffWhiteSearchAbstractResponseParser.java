@@ -1,7 +1,7 @@
 package com.restocktime.monitor.monitors.parse.offwhite.parse;
 
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import org.apache.log4j.Logger;

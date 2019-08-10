@@ -1,16 +1,15 @@
 package com.restocktime.monitor.monitors.parse.shopify.parse;
 
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.shopify.helper.linkchecker.LinkCheckStarter;
 import com.restocktime.monitor.monitors.parse.shopify.helper.linkchecker.ShopifyLinkChecker;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
-import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
+import com.restocktime.monitor.util.url.UrlHelper;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
-import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
 import org.apache.log4j.Logger;
 

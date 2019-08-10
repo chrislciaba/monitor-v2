@@ -1,8 +1,7 @@
 package com.restocktime.monitor.notifications.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.timeout.Timeout;
+import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.notifications.model.discord.DiscordMessage;
 import com.restocktime.monitor.notifications.model.discord.Embed;
 import org.apache.http.HttpResponse;
@@ -27,14 +26,12 @@ public class Discord {
     private ObjectMapper objectMapper;
     private List<String> messages;
     private final int MAX_ATTACHMENTS = 20;
-    private DiscordLog discordLog;
 
     public Discord(String webhookUrl, List<Embed> embeds, List<String> messages) {
         this.webhookUrl = webhookUrl;
         this.embeds = embeds;
         this.messages = messages;
         objectMapper = new ObjectMapper();
-        this.discordLog = new DiscordLog(Discord.class);
     }
 
     public void run(){

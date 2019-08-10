@@ -1,11 +1,10 @@
 package com.restocktime.monitor.monitors.ingest.shopify;
 
-import com.restocktime.monitor.helper.botstarters.QuicktaskConfig;
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.hash.MD5;
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.timeout.Timeout;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.MD5;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
 import com.restocktime.monitor.monitors.parse.shopify.parse.ShopifyAbstractResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
@@ -25,17 +24,15 @@ public class Shopify extends AbstractMonitor {
     private AttachmentCreater attachmentCreater;
     private HttpRequestHelper httpRequestHelper;
     private ShopifyAbstractResponseParser shopifyResponseParser;
-    private QuicktaskConfig quicktaskConfig;
     private String hash;
 
-    public Shopify(String url, int delay, AttachmentCreater attachmentCreater, HttpRequestHelper httpRequestHelper, ShopifyAbstractResponseParser shopifyResponseParser, QuicktaskConfig quicktaskConfig){
+    public Shopify(String url, int delay, AttachmentCreater attachmentCreater, HttpRequestHelper httpRequestHelper, ShopifyAbstractResponseParser shopifyResponseParser){
         this.url = url;
         this.jsonUrl = String.format("%s?format=js&limit=", url);
         this.delay = delay;
         this.attachmentCreater = attachmentCreater;
         this.httpRequestHelper = httpRequestHelper;
         this.shopifyResponseParser = shopifyResponseParser;
-        this.quicktaskConfig = quicktaskConfig;
         this.r = new Random();
         this.hash = "";
     }

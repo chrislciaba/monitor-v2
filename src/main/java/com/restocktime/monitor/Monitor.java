@@ -1,7 +1,7 @@
 package com.restocktime.monitor;
 
-import com.restocktime.monitor.helper.clientbuilder.ClientBuilder;
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.clientbuilder.ClientBuilder;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
 import com.restocktime.monitor.proxymanager.ProxyManager;
 import org.apache.http.impl.client.CloseableHttpClient;

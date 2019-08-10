@@ -1,9 +1,9 @@
 package com.restocktime.monitor.monitors.parse.footdistrict.helper;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import org.apache.http.message.BasicHeader;
 
 import javax.script.ScriptEngine;

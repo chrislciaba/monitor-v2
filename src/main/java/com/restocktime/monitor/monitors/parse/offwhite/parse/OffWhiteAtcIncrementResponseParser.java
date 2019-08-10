@@ -1,9 +1,9 @@
 package com.restocktime.monitor.monitors.parse.offwhite.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
-import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
+import com.restocktime.monitor.util.url.UrlHelper;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
 import org.apache.log4j.Logger;

@@ -1,6 +1,6 @@
 package com.restocktime.monitor.monitors.parse.shopify.attachment;
 
-import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.util.url.UrlHelper;
 import com.restocktime.monitor.monitors.parse.shopify.model.shopify.Variant;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.model.discord.DiscordField;

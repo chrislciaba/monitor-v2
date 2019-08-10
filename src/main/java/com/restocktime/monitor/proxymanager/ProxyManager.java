@@ -1,10 +1,7 @@
 package com.restocktime.monitor.proxymanager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.config.model.Proxies;
 import com.restocktime.monitor.config.model.ProxyConfig;
-import com.restocktime.monitor.helper.url.UrlHelper;
-import com.restocktime.monitor.monitors.parse.walmart.Walmart;
 import com.restocktime.monitor.proxymanager.model.ProxyList;
 import com.restocktime.monitor.proxymanager.model.ProxyModel;
 import org.apache.http.HttpResponse;
@@ -14,13 +11,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.*;
 
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
-import static java.lang.System.exit;
 
 public class ProxyManager {
     final static Logger logger = Logger.getLogger(ProxyManager.class);

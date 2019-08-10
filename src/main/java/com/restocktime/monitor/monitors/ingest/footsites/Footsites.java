@@ -1,10 +1,10 @@
 package com.restocktime.monitor.monitors.ingest.footsites;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.timeout.Timeout;
-import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.timeout.Timeout;
+import com.restocktime.monitor.util.url.UrlHelper;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
 import com.restocktime.monitor.monitors.parse.footsites.helper.SkuHelper;
 import com.restocktime.monitor.monitors.parse.footsites.parse.FootsitesResponseParser;

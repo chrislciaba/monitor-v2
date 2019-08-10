@@ -1,9 +1,9 @@
 package com.restocktime.monitor.bots.naked;
 
 import com.restocktime.monitor.config.NakedLogin;
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.CloudflareRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.notifications.Notifications;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;

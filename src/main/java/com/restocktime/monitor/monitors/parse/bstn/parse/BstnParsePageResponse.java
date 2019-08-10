@@ -1,9 +1,9 @@
 package com.restocktime.monitor.monitors.parse.bstn.parse;
 
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
 import com.restocktime.monitor.notifications.model.discord.DiscordField;
 import com.restocktime.monitor.notifications.model.slack.SlackField;

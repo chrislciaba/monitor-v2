@@ -1,11 +1,10 @@
 package com.restocktime.monitor.monitors.parse.footsites.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
-import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
+import com.restocktime.monitor.util.url.UrlHelper;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.footsites.helper.SkuHelper;
 import com.restocktime.monitor.monitors.parse.footsites.model.FootsitesProduct;
@@ -28,7 +27,6 @@ public class FootsitesResponseParser implements AbstractResponseParser {
     private String sku;
     private StockTracker stockTracker;
     private List<String> formatNames;
-    private DiscordLog discordLog;
 
 
     public FootsitesResponseParser(StockTracker stockTracker, String url, String name, List<String> formatNames){
@@ -38,7 +36,6 @@ public class FootsitesResponseParser implements AbstractResponseParser {
         this.sku = SkuHelper.getSku(url);
         this.stockTracker = stockTracker;
         this.formatNames = formatNames;
-        this.discordLog = new DiscordLog(FootsitesResponseParser.class);
     }
 
 

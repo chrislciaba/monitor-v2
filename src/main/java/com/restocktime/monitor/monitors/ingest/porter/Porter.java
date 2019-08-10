@@ -1,11 +1,10 @@
 package com.restocktime.monitor.monitors.ingest.porter;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.timeout.Timeout;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
-import com.restocktime.monitor.monitors.ingest.jimmyjazz.JimmyJazz;
 import com.restocktime.monitor.monitors.parse.porter.parse.ApiAbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.porter.parse.AtcResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;

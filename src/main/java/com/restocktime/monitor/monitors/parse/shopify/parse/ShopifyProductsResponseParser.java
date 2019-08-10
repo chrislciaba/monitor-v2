@@ -2,10 +2,10 @@ package com.restocktime.monitor.monitors.parse.shopify.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
-import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
+import com.restocktime.monitor.util.url.UrlHelper;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.shopify.model.products.Product;
 import com.restocktime.monitor.monitors.parse.shopify.model.products.ShopifyProducts;

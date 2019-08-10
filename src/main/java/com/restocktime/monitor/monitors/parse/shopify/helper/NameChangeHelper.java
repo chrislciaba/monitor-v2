@@ -1,6 +1,6 @@
 package com.restocktime.monitor.monitors.parse.shopify.helper;
 
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 
 import java.util.Map;
 import java.util.regex.Matcher;

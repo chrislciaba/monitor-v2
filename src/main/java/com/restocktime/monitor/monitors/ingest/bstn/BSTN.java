@@ -1,11 +1,10 @@
 package com.restocktime.monitor.monitors.ingest.bstn;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.CloudflareRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.timeout.Timeout;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
-import com.restocktime.monitor.monitors.ingest.barnesandnoble.BarnesAndNoble;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BSTNParseProductAbstractResponse;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BSTNParseSearchAbstractResponse;
 import com.restocktime.monitor.monitors.parse.bstn.parse.BstnParsePageResponse;

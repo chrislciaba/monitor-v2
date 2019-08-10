@@ -2,7 +2,6 @@ package com.restocktime.monitor.notifications.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.config.model.notifications.SlackObj;
-import com.restocktime.monitor.helper.timeout.Timeout;
 import com.restocktime.monitor.notifications.model.slack.Attachment;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

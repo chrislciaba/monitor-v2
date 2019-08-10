@@ -1,11 +1,10 @@
 package com.restocktime.monitor.monitors.parse.walmart;
 
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.timeout.Timeout;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
-import com.restocktime.monitor.monitors.parse.supreme.parse.SupremeProductParseAbstractResponse;
 import com.restocktime.monitor.monitors.parse.walmart.parse.WalmartResponseParser;
 import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;

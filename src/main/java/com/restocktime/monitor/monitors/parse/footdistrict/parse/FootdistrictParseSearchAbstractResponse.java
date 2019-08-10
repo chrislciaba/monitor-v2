@@ -1,10 +1,9 @@
 package com.restocktime.monitor.monitors.parse.footdistrict.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.footdistrict.parse.model.FootdistricResult;
 import com.restocktime.monitor.monitors.parse.footdistrict.parse.model.FootdistrictSearch;
@@ -13,8 +12,6 @@ import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
 import org.apache.log4j.Logger;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 

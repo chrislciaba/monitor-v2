@@ -6,16 +6,13 @@ import com.restocktime.monitor.config.model.GlobalSettings;
 import com.restocktime.monitor.config.model.NotificationsFormatConfig;
 import com.restocktime.monitor.config.model.Page;
 import com.restocktime.monitor.config.model.notifications.NotificationConfig;
-import com.restocktime.monitor.helper.botstarters.QuicktaskConfig;
-import com.restocktime.monitor.helper.clientbuilder.ClientBuilder;
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.debug.DiscordLog;
-import com.restocktime.monitor.helper.httprequests.AbstractHttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.CloudflareRequestHelper;
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
-import com.restocktime.monitor.helper.keywords.helper.KeywordFormatHelper;
-import com.restocktime.monitor.helper.taskstatus.TaskStatus;
+import com.restocktime.monitor.util.clientbuilder.ClientBuilder;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.keywords.helper.KeywordFormatHelper;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
 import com.restocktime.monitor.monitors.ingest.DefaultMonitor;
 import com.restocktime.monitor.monitors.ingest.shopify.*;
@@ -96,8 +93,8 @@ import com.restocktime.monitor.monitors.parse.sevenhills.SevenHillsResponseParse
 import com.restocktime.monitor.monitors.parse.shoepalace.ShoepalaceResponseParser;
 import com.restocktime.monitor.monitors.parse.shopify.helper.ShopifyFrontendHelper;
 import com.restocktime.monitor.monitors.parse.shopify.helper.linkchecker.LinkCheckStarter;
-import com.restocktime.monitor.helper.stocktracker.StockTracker;
-import com.restocktime.monitor.helper.url.UrlHelper;
+import com.restocktime.monitor.util.stocktracker.StockTracker;
+import com.restocktime.monitor.util.url.UrlHelper;
 import com.restocktime.monitor.config.model.notifications.SiteNotificationsConfig;
 import com.restocktime.monitor.monitors.ingest.demandware.DemandwareGet;
 import com.restocktime.monitor.monitors.parse.demandware.parse.DemandwareGetResponseParser;
@@ -167,9 +164,8 @@ public class ConfigDataTransformer {
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNaked(), notificationsFormatConfig), new CloudflareRequestHelper(apiKeys), parseNakedResponse);
         } else if(site.equals("shopify")){
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
-            QuicktaskConfig quicktaskConfig = null;//new QuicktaskConfig(page.getQuicktask(), quicktasks);
             ShopifyAbstractResponseParser shopifyResponseParser = new ShopifyAbstractResponseParser(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(notificationConfig));
-            return new Shopify(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper() , shopifyResponseParser, quicktaskConfig);
+            return new Shopify(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper() , shopifyResponseParser);
         } else if(site.equals("shopifyallproducts")){
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
 
@@ -734,8 +730,7 @@ public class ConfigDataTransformer {
                 attachmentCreater,
                 abstractHttpRequestHelper,
                 abstractResponseParser,
-                "",
-                new TaskStatus(0, 0, "", url, new DiscordLog("")));
+                "");
     }
 
     private static NotificationConfig getShopifyConfig(String url, SiteNotificationsConfig siteNotificationsConfig){

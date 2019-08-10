@@ -1,11 +1,11 @@
 package com.restocktime.monitor.monitors.parse.shopify.helper.linkchecker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.helper.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.helper.httprequests.HttpRequestHelper;
-import com.restocktime.monitor.helper.httprequests.ResponseValidator;
-import com.restocktime.monitor.helper.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.helper.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.HttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.ResponseValidator;
+import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.monitors.parse.shopify.model.shopify.ShopifyJson;
 import com.restocktime.monitor.monitors.parse.shopify.model.shopify.Variant;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
