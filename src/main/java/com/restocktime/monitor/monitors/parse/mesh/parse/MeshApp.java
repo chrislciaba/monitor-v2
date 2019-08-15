@@ -1,13 +1,13 @@
-package com.restocktime.monitor.monitors.parse.footpatrol.parse;
+package com.restocktime.monitor.monitors.parse.mesh.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
-import com.restocktime.monitor.monitors.parse.footpatrol.attachment.FootpatrolBuilder;
-import com.restocktime.monitor.monitors.parse.footpatrol.model.app.FpOption;
-import com.restocktime.monitor.monitors.parse.footpatrol.model.app.FpProduct;
+import com.restocktime.monitor.monitors.parse.mesh.attachment.FootpatrolBuilder;
+import com.restocktime.monitor.monitors.parse.mesh.model.app.FpOption;
+import com.restocktime.monitor.monitors.parse.mesh.model.app.FpProduct;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import org.apache.log4j.Logger;
 
@@ -17,14 +17,14 @@ import java.util.List;
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 
-public class FootpatrolAppResponseParser implements AbstractResponseParser {
-    private static final Logger log = Logger.getLogger(FootpatrolAppResponseParser.class);
+public class MeshApp implements AbstractResponseParser {
+    private static final Logger log = Logger.getLogger(MeshApp.class);
 
     private StockTracker stockTracker;
     private ObjectMapper objectMapper;
     private List<String> formatNames;
 
-    public FootpatrolAppResponseParser(StockTracker stockTracker, List<String> formatNames) {
+    public MeshApp(StockTracker stockTracker, List<String> formatNames) {
         this.stockTracker = stockTracker;
         this.formatNames = formatNames;
         this.objectMapper = new ObjectMapper();
@@ -36,7 +36,7 @@ public class FootpatrolAppResponseParser implements AbstractResponseParser {
         }
 
         String responseString = basicHttpResponse.getBody().get();
-
+        log.info(responseString);
         try {
             FpProduct fpProduct = objectMapper.readValue(responseString, FpProduct.class);
 
@@ -54,7 +54,7 @@ public class FootpatrolAppResponseParser implements AbstractResponseParser {
             }
 
             if(stockTracker.notifyForObject(fpProduct.getID(), false)){
-                FootpatrolBuilder.buildAttachments(attachmentCreater, fpProduct.getID(), fpProduct.getMainImage(), "Footpatrol", fpProduct.getName(), formatNames);
+                FootpatrolBuilder.buildAttachments(attachmentCreater, fpProduct.getID(), fpProduct.getMainImage(), "Mesh", fpProduct.getName(), formatNames);
             }
         } catch (Exception e){
             log.error(EXCEPTION_LOG_MESSAGE, e);

@@ -1,4 +1,4 @@
-package com.restocktime.monitor.monitors.parse.footpatrol.parse;
+package com.restocktime.monitor.monitors.parse.mesh.parse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
@@ -6,9 +6,9 @@ import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
-import com.restocktime.monitor.monitors.parse.footpatrol.attachment.FootpatrolBuilder;
-import com.restocktime.monitor.monitors.parse.footpatrol.model.Item;
-import com.restocktime.monitor.monitors.parse.footpatrol.model.ProductResponse;
+import com.restocktime.monitor.monitors.parse.mesh.attachment.FootpatrolBuilder;
+import com.restocktime.monitor.monitors.parse.mesh.model.Item;
+import com.restocktime.monitor.monitors.parse.mesh.model.ProductResponse;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import org.apache.log4j.Logger;
 

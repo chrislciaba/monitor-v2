@@ -1,4 +1,4 @@
-package com.restocktime.monitor.monitors.parse.footpatrol.model.app;
+package com.restocktime.monitor.monitors.parse.mesh.model.app;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

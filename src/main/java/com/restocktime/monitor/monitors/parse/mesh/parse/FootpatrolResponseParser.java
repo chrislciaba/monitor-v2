@@ -1,4 +1,4 @@
-package com.restocktime.monitor.monitors.parse.footpatrol.parse;
+package com.restocktime.monitor.monitors.parse.mesh.parse;
 
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;

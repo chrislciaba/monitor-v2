@@ -1,4 +1,4 @@
-package com.restocktime.monitor.monitors.parse.footpatrol.attachment;
+package com.restocktime.monitor.monitors.parse.mesh.attachment;
 
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 
