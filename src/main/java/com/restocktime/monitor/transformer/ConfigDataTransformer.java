@@ -52,8 +52,8 @@ import com.restocktime.monitor.monitors.parse.footdistrict.parse.FootdistrictPar
 import com.restocktime.monitor.monitors.parse.footdistrict.parse.FootdistrictParseSearchAbstractResponse;
 import com.restocktime.monitor.monitors.parse.footdistrict.parse.FootdistrictParseSitemapResponse;
 import com.restocktime.monitor.monitors.parse.mesh.parse.MeshApp;
-import com.restocktime.monitor.monitors.parse.mesh.parse.FootpatrolProductPageResponseParser;
-import com.restocktime.monitor.monitors.parse.mesh.parse.FootpatrolResponseParser;
+import com.restocktime.monitor.monitors.parse.mesh.parse.MeshSearchResponseParser;
+import com.restocktime.monitor.monitors.parse.mesh.parse.MeshFrontEndStockResponseParser;
 import com.restocktime.monitor.monitors.ingest.footsites.Footsites;
 import com.restocktime.monitor.monitors.parse.footsites.parse.FootsitesResponseParser;
 import com.restocktime.monitor.monitors.parse.frenzy.parse.FrenzyResponseParser;
@@ -458,10 +458,10 @@ public class ConfigDataTransformer {
             StockTracker stockTracker = new StockTracker(new HashMap<>(), 0);
             ComplexconResponseParser complexconResponseParser = new ComplexconResponseParser(stockTracker, new ObjectMapper(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getComplexcon()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getComplexcon(), notificationsFormatConfig), new HttpRequestHelper(), complexconResponseParser);
-        } else if(site.equals("mesh")){
+        } else if(site.equals("meshstock")){
             StockTracker stockTracker = new StockTracker(new HashMap<>(), 30000);
-            FootpatrolResponseParser footpatrolResponseParser = new FootpatrolResponseParser(stockTracker, url, page.getName(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootpatrol()));
-            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getFootpatrol(), notificationsFormatConfig), new HttpRequestHelper(), footpatrolResponseParser);
+            MeshFrontEndStockResponseParser meshFrontEndStockResponseParser = new MeshFrontEndStockResponseParser(stockTracker, url, page.getName(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootpatrol()));
+            return createDefault(url + "/quickview/stock", page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getFootpatrol(), notificationsFormatConfig), new HttpRequestHelper(), meshFrontEndStockResponseParser);
         } else if(site.equals("footpatrolapp")){
             return createMeshAppMonitor(page.getSku(), "footpatrolgb", page.getDelay(), siteNotificationsConfig, notificationsFormatConfig);
         } else if(site.equals("sizeapp")){
@@ -679,9 +679,9 @@ public class ConfigDataTransformer {
         } else if(site.equals("lvr")){
             LvrResponseParser lvrResponseParser = new LvrResponseParser(new StockTracker(new HashMap<>(), -1), url,  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getLvr()));
             return new LVR(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getLvr(), notificationsFormatConfig), new HttpRequestHelper(), lvrResponseParser);
-        } else if(site.equals("footpatrolproductpage")) {
-            FootpatrolProductPageResponseParser footpatrolProductPageResponseParser = new FootpatrolProductPageResponseParser(new StockTracker(new HashMap<>(), -1), new KeywordSearchHelper(defaultKw),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootpatrol()));
-            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getFootpatrol(), notificationsFormatConfig), new HttpRequestHelper(), footpatrolProductPageResponseParser);
+        } else if(site.equals("meshsearch")) {
+            MeshSearchResponseParser meshSearchResponseParser = new MeshSearchResponseParser(UrlHelper.deriveBaseUrl(page.getUrls().get(0)), new StockTracker(new HashMap<>(), 60000), new KeywordSearchHelper(defaultKw),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootpatrol()));
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getFootpatrol(), notificationsFormatConfig), new HttpRequestHelper(), meshSearchResponseParser);
         } else if(site.equals("footsites")){
             FootsitesResponseParser footsitesResponseParser = new FootsitesResponseParser(new StockTracker(new HashMap<>(), 60000), url, page.getName(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootsites()));
             return new Footsites(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getFootsites(), notificationsFormatConfig), new HttpRequestHelper(), footsitesResponseParser);

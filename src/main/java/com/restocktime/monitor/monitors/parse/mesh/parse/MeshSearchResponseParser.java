@@ -17,17 +17,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class FootpatrolProductPageResponseParser implements AbstractResponseParser {
+public class MeshSearchResponseParser implements AbstractResponseParser {
+    private static final Logger log = Logger.getLogger(MeshSearchResponseParser.class);
+
     private StockTracker stockTracker;
     private Pattern pattern = Pattern.compile("<script type=\"text/javascript\">\\s+var\\s+dataObject\\s+=\\s+([^;]*);\\s*</script>");
     private List<String> formatNames;
     private KeywordSearchHelper keywordSearchHelper;
-    private static final Logger log = Logger.getLogger(FootpatrolProductPageResponseParser.class);
+    private String baseUrl;
+    private String URL_TEMPLATE = "%s/product/restocktime/%s";
 
-    public FootpatrolProductPageResponseParser(StockTracker stockTracker, KeywordSearchHelper keywordSearchHelper, List<String> formatNames) {
+    public MeshSearchResponseParser(String baseUrl, StockTracker stockTracker, KeywordSearchHelper keywordSearchHelper, List<String> formatNames) {
         this.stockTracker = stockTracker;
         this.formatNames = formatNames;
         this.keywordSearchHelper = keywordSearchHelper;
+        this.baseUrl = baseUrl;
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
@@ -49,7 +53,7 @@ public class FootpatrolProductPageResponseParser implements AbstractResponsePars
                 for(Item i : productResponse.getItems()){
 
                     if(keywordSearchHelper.search(i.getDescription()) && stockTracker.notifyForObject(i.getPlu(), isFirst)){
-                        FootpatrolBuilder.buildAttachments(attachmentCreater, i.getPlu(), null, "Footpatrol", i.getDescription(), formatNames);
+                        FootpatrolBuilder.buildAttachments(attachmentCreater, String.format(URL_TEMPLATE, baseUrl, i.getPlu()), null, "Footpatrol", i.getDescription(), formatNames);
                     }
                 }
             } catch (Exception e){
