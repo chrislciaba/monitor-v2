@@ -10,8 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.*;
 
-import static java.lang.System.exit;
-
 public class Hawk {
     final static Logger logger = Logger.getLogger(Hawk.class);
 

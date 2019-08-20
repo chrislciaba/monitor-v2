@@ -18,6 +18,7 @@ public class SNSProductResponseParser implements AbstractResponseParser {
     private StockTracker stockTracker;
     private List<String> formatNames;
     private final Pattern titlePattern = Pattern.compile("<title>([^<]*)</title>");
+    private final Pattern imgPattern = Pattern.compile("<img\\s+class=\"card-img \"\\s+src=\"([^<]*)\"");
 
 
     private final String SNS_TEMPLATE = "https://www.sneakersnstuff.com%s";
@@ -43,10 +44,17 @@ public class SNSProductResponseParser implements AbstractResponseParser {
                 Matcher m = titlePattern.matcher(responseString);
                 if(m.find())
                     title = m.group(1);
-                DefaultBuilder.buildAttachments(attachmentCreater, url, null, "SNS", title, formatNames);
+
+                Matcher imgMatch = imgPattern.matcher(responseString);
+                String imgUrl = null;
+                if(imgMatch.find()){
+                    imgUrl = imgMatch.group(1);
+                }
+
+                DefaultBuilder.buildAttachments(attachmentCreater, url, String.format(SNS_TEMPLATE, imgUrl), "SNS", title, formatNames);
             }
 
-        } else if(responseString.contains("Sold out") || responseString.contains("This raffle is closed")){
+        } else if(responseString.contains("Sold out") || responseString.contains("This raffle is closed") || responseString.contains("<meta name=\"author\" content=\"Sneakersnstuff\">")){
             stockTracker.setOOS(url);
 
         }
