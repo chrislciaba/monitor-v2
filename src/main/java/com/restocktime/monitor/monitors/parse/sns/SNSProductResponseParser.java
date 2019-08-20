@@ -18,7 +18,7 @@ public class SNSProductResponseParser implements AbstractResponseParser {
     private StockTracker stockTracker;
     private List<String> formatNames;
     private final Pattern titlePattern = Pattern.compile("<title>([^<]*)</title>");
-    private final Pattern imgPattern = Pattern.compile("<img\\s+class=\"card-img \"\\s+src=\"([^<]*)\"");
+    private final Pattern imgPattern = Pattern.compile("<img\\s+class=\"card-img \"\\s+src=\"([^\"]*)\"");
 
 
     private final String SNS_TEMPLATE = "https://www.sneakersnstuff.com%s";
@@ -37,9 +37,8 @@ public class SNSProductResponseParser implements AbstractResponseParser {
         }
 
         String responseString = basicHttpResponse.getBody().get();
-        logger.info(responseString);
         if(responseString.contains("product-form__btn")){
-            if(stockTracker.notifyForObject(url, isFirst)) {
+            if(stockTracker.notifyForObject(url, false)) {
                 String title = "HYPE SHIT";
                 Matcher m = titlePattern.matcher(responseString);
                 if(m.find())
