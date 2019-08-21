@@ -11,10 +11,6 @@ public class MonitorRunner {
         //Hawk h = new Hawk();
         //h.call();
 
-        DiscordLog.log("Testing");
-        if(1==1)
-            return;
-
         MonitorManager monitorManager = new MonitorManager();
         monitorManager.run();
     }
