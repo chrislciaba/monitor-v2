@@ -22,11 +22,13 @@ import javax.script.ScriptEngineManager;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+import static org.apache.commons.codec.CharEncoding.UTF_8;
 
 public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
@@ -301,9 +303,9 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             HttpGet httpGet = null;
             try {
                 URL uri = new URL(url);
-                String extraUrl = uri.getProtocol() + "://" + uri.getHost() + "/cdn-cgi/l/chk_captcha?id=" + rayMatcher.group(1) + "&s=" + sMatcher.group(1) + "&g-recaptcha-response=";
+                String extraUrl = uri.getProtocol() + "://" + uri.getHost() + "/cdn-cgi/l/chk_captcha?s=" + URLEncoder.encode(sMatcher.group(1),  UTF_8) + "&id=" + URLEncoder.encode(rayMatcher.group(1), UTF_8) + "&g-recaptcha-response=";
                 extraUrl += t.solveCaptcha();
-
+                logger.info(extraUrl);
                 httpGet = new HttpGet(extraUrl);
                 httpGet.setConfig(config);
                 HttpResponse httpResponse = basicRequestClient.getCloseableHttpClient().execute(httpGet);

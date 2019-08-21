@@ -50,6 +50,7 @@ public class SNSProductResponseParser implements AbstractResponseParser {
         }
 
         String responseString = basicHttpResponse.getBody().get();
+        logger.info(responseString);
         List<SizeObj> sizes = new ArrayList<>();
         Matcher sizeMatcher = sizePattern.matcher(responseString);
         while (sizeMatcher.find()) {
