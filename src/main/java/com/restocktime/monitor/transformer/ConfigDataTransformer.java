@@ -695,7 +695,7 @@ public class ConfigDataTransformer {
             SupremePageResponseParser supremePageResponseParser = new SupremePageResponseParser(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(defaultKw), page.getLocale(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSupreme()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSupreme(), notificationsFormatConfig), new HttpRequestHelper(), supremePageResponseParser);
         } else if(site.equals("snsproduct")){
-            SNSProductResponseParser snsProductResponseParser = new SNSProductResponseParser(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSns()));
+            SNSProductResponseParser snsProductResponseParser = new SNSProductResponseParser(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSns()), new ObjectMapper());
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig), new CloudflareRequestHelper(apiKeys), snsProductResponseParser);
         } else if(site.equals("yeezysupply")){
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
