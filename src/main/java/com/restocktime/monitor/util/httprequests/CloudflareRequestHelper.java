@@ -4,6 +4,7 @@ import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.captcha.TwoCaptchaService;
 import com.restocktime.monitor.util.httprequests.model.ResponseErrors;
+import com.restocktime.monitor.util.log.DiscordLog;
 import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.util.url.UrlHelper;
 import org.apache.http.Header;
@@ -39,11 +40,14 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
     private String[] apiKeys;
     private int idx;
     private static final Logger log = Logger.getLogger(CloudflareRequestHelper.class);
+    private int noCap, cap;
 
 
     public CloudflareRequestHelper(String[] apiKeys){
         this.apiKeys = apiKeys;
         this.idx = 0;
+        this.noCap = 0;
+        this.cap = 0;
     }
 
     private Optional<BasicHttpResponse> doGet(BasicRequestClient basicRequestClient,
@@ -124,6 +128,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() != 503){
             if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
+                cap++;
                 BasicHttpResponse capResp = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
                 idx = (idx + 1) % apiKeys.length;
                 if(!basicHttpResponse.getBody().get().contains("Checking your browser before accessing")){
@@ -134,7 +139,15 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                     }
                 }
             } else {
+                noCap++;
+                DiscordLog.log("No cap " + url);
                 return Optional.of(basicHttpResponse);
+            }
+
+            if(noCap + cap >= 10){
+                DiscordLog.log(url + ": NoCap=" + noCap + ", Cap=" +cap);
+                noCap = 0;
+                cap = 0;
             }
         } else if(url.contains("search.jimmyjazz")){
             return Optional.of(basicHttpResponse);
