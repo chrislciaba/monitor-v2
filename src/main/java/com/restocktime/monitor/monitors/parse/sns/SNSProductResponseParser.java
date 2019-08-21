@@ -6,6 +6,7 @@ import com.restocktime.monitor.monitors.parse.sns.model.SizeObj;
 import com.restocktime.monitor.monitors.parse.sns.model.SnsSizeModel;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.log.DiscordLog;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
@@ -30,6 +31,7 @@ public class SNSProductResponseParser implements AbstractResponseParser {
     private final String SNS_TEMPLATE = "https://www.sneakersnstuff.com%s";
     private String url;
     private ObjectMapper objectMapper;
+    private int errors, success;
 
 
     public SNSProductResponseParser(StockTracker stockTracker, String url, List<String> formatNames, ObjectMapper objectMapper) {
@@ -37,10 +39,13 @@ public class SNSProductResponseParser implements AbstractResponseParser {
         this.url = url;
         this.formatNames = formatNames;
         this.objectMapper = objectMapper;
+        this.errors = 0;
+        this.success = 0;
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            errors++;
             return;
         }
 
@@ -62,6 +67,7 @@ public class SNSProductResponseParser implements AbstractResponseParser {
         }
 
         if(!sizes.isEmpty()){
+            success++;
             if(stockTracker.notifyForObject(url, isFirst)) {
                 String title = "HYPE SHIT";
                 Matcher m = titlePattern.matcher(responseString);
@@ -79,7 +85,15 @@ public class SNSProductResponseParser implements AbstractResponseParser {
 
         } else if(responseString.contains("Sold out") || responseString.contains("This raffle is closed") || responseString.contains("<meta name=\"author\" content=\"Sneakersnstuff\">")){
             stockTracker.setOOS(url);
+            success++;
+        } else {
+            errors++;
+        }
 
+        if (errors + success == 50) {
+            DiscordLog.log(url + " (Errors=" + errors + ", Successes=" + success + ")");
+            errors = 0;
+            success = 0;
         }
     }
 }

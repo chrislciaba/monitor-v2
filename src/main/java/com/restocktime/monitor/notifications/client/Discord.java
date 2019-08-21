@@ -59,8 +59,6 @@ public class Discord {
         try {
             s = objectMapper.writeValueAsString(discordMessage).replaceAll("[^\\x00-\\x7F\\s]", "");
             logger.info(s);
-            if(s.contains("RestockTime x Endurance"))
-                Timeout.timeout(9000);
             stringEntity = new StringEntity(s);
 
         } catch (Exception e) {

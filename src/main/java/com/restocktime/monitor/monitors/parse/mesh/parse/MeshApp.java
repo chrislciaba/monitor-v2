@@ -3,6 +3,7 @@ package com.restocktime.monitor.monitors.parse.mesh.parse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.log.DiscordLog;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.mesh.attachment.FootpatrolBuilder;
@@ -23,15 +24,24 @@ public class MeshApp implements AbstractResponseParser {
     private StockTracker stockTracker;
     private ObjectMapper objectMapper;
     private List<String> formatNames;
+    private int errors, success;
 
     public MeshApp(StockTracker stockTracker, List<String> formatNames) {
         this.stockTracker = stockTracker;
         this.formatNames = formatNames;
         this.objectMapper = new ObjectMapper();
+        this.errors = 0;
+        this.success = 0;
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            errors++;
+            if (errors + success == 50) {
+                DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
+                errors = 0;
+                success = 0;
+            }
             return;
         }
 
@@ -39,7 +49,7 @@ public class MeshApp implements AbstractResponseParser {
         log.info(responseString);
         try {
             FpProduct fpProduct = objectMapper.readValue(responseString, FpProduct.class);
-
+            success++;
             List<String> sizes = new ArrayList<>();
             for(String key : fpProduct.getOptions().keySet()){
                 FpOption fpOption = fpProduct.getOptions().get(key);
@@ -57,7 +67,14 @@ public class MeshApp implements AbstractResponseParser {
                 FootpatrolBuilder.buildAttachments(attachmentCreater, fpProduct.getID(), fpProduct.getMainImage(), "Mesh", fpProduct.getName(), formatNames);
             }
         } catch (Exception e){
+            errors++;
             log.error(EXCEPTION_LOG_MESSAGE, e);
+        }
+
+        if (errors + success == 50) {
+            DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
+            errors = 0;
+            success = 0;
         }
 
     }
