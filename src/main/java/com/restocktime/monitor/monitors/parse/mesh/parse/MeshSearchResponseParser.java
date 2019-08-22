@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
+import com.restocktime.monitor.util.log.DiscordLog;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.mesh.attachment.FootpatrolBuilder;
@@ -26,16 +27,25 @@ public class MeshSearchResponseParser implements AbstractResponseParser {
     private KeywordSearchHelper keywordSearchHelper;
     private String baseUrl;
     private String URL_TEMPLATE = "%s/product/restocktime/%s";
+    private int errors, success;
 
     public MeshSearchResponseParser(String baseUrl, StockTracker stockTracker, KeywordSearchHelper keywordSearchHelper, List<String> formatNames) {
         this.stockTracker = stockTracker;
         this.formatNames = formatNames;
         this.keywordSearchHelper = keywordSearchHelper;
         this.baseUrl = baseUrl;
+        success = 0;
+        errors = 0;
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            errors++;
+            if (errors + success == 50) {
+                DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
+                errors = 0;
+                success = 0;
+            }
             return;
         }
 
@@ -50,6 +60,7 @@ public class MeshSearchResponseParser implements AbstractResponseParser {
 
             try {
                 ProductResponse productResponse = new ObjectMapper().readValue(s, ProductResponse.class);
+                success++;
                 for(Item i : productResponse.getItems()){
 
                     if(keywordSearchHelper.search(i.getDescription()) && stockTracker.notifyForObject(i.getPlu(), isFirst)){
@@ -57,8 +68,15 @@ public class MeshSearchResponseParser implements AbstractResponseParser {
                     }
                 }
             } catch (Exception e){
+                errors++;
                 log.error("Stacktrace:", e);
             }
+        }
+
+        if (errors + success == 50) {
+            DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
+            errors = 0;
+            success = 0;
         }
 
 

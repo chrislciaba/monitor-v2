@@ -2,6 +2,7 @@ package com.restocktime.monitor.monitors.parse.mesh.parse;
 
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.log.DiscordLog;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -29,6 +30,7 @@ public class MeshFrontEndStockResponseParser implements AbstractResponseParser {
 
     private Pattern pattern;
     private List<String> formatNames;
+    private int errors, success;
 
     public MeshFrontEndStockResponseParser(StockTracker stockTracker, String url, String name, List<String> formatNames) {
         log.info(url);
@@ -51,11 +53,22 @@ public class MeshFrontEndStockResponseParser implements AbstractResponseParser {
         } else {
             pattern = patternEnglish;
         }
+
+        errors = 0;
+        success = 0;
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            errors++;
+            if (errors + success == 50) {
+                DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
+                errors = 0;
+                success = 0;
+            }
             return;
+        } else {
+            success++;
         }
 
         String responseString = basicHttpResponse.getBody().get();
@@ -81,6 +94,12 @@ public class MeshFrontEndStockResponseParser implements AbstractResponseParser {
             }
         } else if(sizes.length() == 0){
             stockTracker.setOOS(url);
+        }
+
+        if (errors + success == 50) {
+            DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
+            errors = 0;
+            success = 0;
         }
     }
 }
