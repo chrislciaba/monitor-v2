@@ -1,7 +1,6 @@
 package com.restocktime.monitor.util.hawk;
 
 import com.restocktime.monitor.util.timeout.Timeout;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.apache.log4j.Logger;
 
 import javax.crypto.Mac;
@@ -169,11 +168,10 @@ logger.info(s1);
                             str.getBytes(),
                             "HmacSHA256")
             );
-             return Base64.encode(
-                    instance.doFinal(
-                            str2.getBytes()
-                    )
-            );
+            return Base64.getEncoder().encode(instance.doFinal(
+                    str2.getBytes()
+            )).toString();
+
         } catch (Exception e) {
             //return str3;
         }

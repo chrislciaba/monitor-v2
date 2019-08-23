@@ -128,7 +128,6 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() != 503){
             if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
-                cap++;
                 BasicHttpResponse capResp = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
                 idx = (idx + 1) % apiKeys.length;
                 if(!basicHttpResponse.getBody().get().contains("Checking your browser before accessing")){
@@ -139,16 +138,10 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                     }
                 }
             } else {
-                noCap++;
-                DiscordLog.log("No cap " + url);
                 return Optional.of(basicHttpResponse);
             }
 
-            if(noCap + cap >= 10){
-                DiscordLog.log(url + ": NoCap=" + noCap + ", Cap=" +cap);
-                noCap = 0;
-                cap = 0;
-            }
+
         } else if(url.contains("search.jimmyjazz")){
             return Optional.of(basicHttpResponse);
         }
@@ -205,7 +198,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
 
         String template = "%s/cdn-cgi/l/chk_jschl?s=%s&jschl_vc=%s&pass=%s&jschl_answer=%s";
-        String finalUrl = String.format(template, base, s, jschl, pass, result);
+        String finalUrl = String.format(template, base, URLEncoder.encode(s, UTF_8),  URLEncoder.encode(jschl, UTF_8), URLEncoder.encode(pass, UTF_8), URLEncoder.encode(result, UTF_8));
         return Optional.of(finalUrl);
     }
 

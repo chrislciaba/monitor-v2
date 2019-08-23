@@ -3,6 +3,7 @@ package com.restocktime.monitor.monitors.parse.mesh.parse;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.log.DiscordLog;
+import com.restocktime.monitor.util.metrics.MonitorMetrics;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -30,7 +31,7 @@ public class MeshFrontEndStockResponseParser implements AbstractResponseParser {
 
     private Pattern pattern;
     private List<String> formatNames;
-    private int errors, success;
+    private MonitorMetrics monitorMetrics;
 
     public MeshFrontEndStockResponseParser(StockTracker stockTracker, String url, String name, List<String> formatNames) {
         log.info(url);
@@ -54,21 +55,13 @@ public class MeshFrontEndStockResponseParser implements AbstractResponseParser {
             pattern = patternEnglish;
         }
 
-        errors = 0;
-        success = 0;
+       monitorMetrics = new MonitorMetrics(url);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
-            errors++;
-            if (errors + success == 50) {
-                DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
-                errors = 0;
-                success = 0;
-            }
+           monitorMetrics.error();
             return;
-        } else {
-            success++;
         }
 
         String responseString = basicHttpResponse.getBody().get();
@@ -89,17 +82,15 @@ public class MeshFrontEndStockResponseParser implements AbstractResponseParser {
         }
 
         if(sizes.length() > 0){
+            monitorMetrics.success();
             if(stockTracker.notifyForObject(url, isFirst)) {
                 DefaultBuilder.buildAttachments(attachmentCreater, url, null, "Footpatrol Front End", name, formatNames);
             }
         } else if(sizes.length() == 0){
+            monitorMetrics.success();
             stockTracker.setOOS(url);
         }
 
-        if (errors + success == 50) {
-            DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
-            errors = 0;
-            success = 0;
-        }
+
     }
 }

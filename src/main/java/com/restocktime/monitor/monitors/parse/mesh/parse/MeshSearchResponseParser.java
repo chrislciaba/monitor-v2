@@ -5,6 +5,7 @@ import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.keywords.KeywordSearchHelper;
 import com.restocktime.monitor.util.log.DiscordLog;
+import com.restocktime.monitor.util.metrics.MonitorMetrics;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.monitors.parse.mesh.attachment.FootpatrolBuilder;
@@ -22,62 +23,66 @@ public class MeshSearchResponseParser implements AbstractResponseParser {
     private static final Logger log = Logger.getLogger(MeshSearchResponseParser.class);
 
     private StockTracker stockTracker;
-    private Pattern pattern = Pattern.compile("<script type=\"text/javascript\">\\s+var\\s+dataObject\\s+=\\s+([^;]*);\\s*</script>");
+    private Pattern pattern = Pattern.compile("<meta property=\"og:url\" content=\"([^\"]*)\"/>");
+    private Pattern namePattern = Pattern.compile("<meta property=\"og:title\" content=\"([^\"]*)\"/>");
+    private Pattern imgPattern = Pattern.compile("<meta property=\"og:image\" content=\"([^\"]*)\"/>");
     private List<String> formatNames;
-    private KeywordSearchHelper keywordSearchHelper;
-    private String baseUrl;
-    private String URL_TEMPLATE = "%s/product/restocktime/%s";
-    private int errors, success;
+    private String url;
+    private MonitorMetrics monitorMetrics;
 
-    public MeshSearchResponseParser(String baseUrl, StockTracker stockTracker, KeywordSearchHelper keywordSearchHelper, List<String> formatNames) {
+    public MeshSearchResponseParser(String url, StockTracker stockTracker, List<String> formatNames) {
         this.stockTracker = stockTracker;
         this.formatNames = formatNames;
-        this.keywordSearchHelper = keywordSearchHelper;
-        this.baseUrl = baseUrl;
-        success = 0;
-        errors = 0;
+        this.url = url;
+        this.monitorMetrics = new MonitorMetrics(url);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
-            errors++;
-            if (errors + success == 50) {
-                DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
-                errors = 0;
-                success = 0;
-            }
+            log.info("timeout");
+            monitorMetrics.ban();
             return;
         }
 
         String responseString = basicHttpResponse.getBody().get();
 
-        Matcher sizeMatcher = pattern.matcher(responseString);
+        if(responseString.contains("<meta property=\"og:type\" content=\"product\"/>")){
+                if(stockTracker.notifyForObject(url, false)){
 
-        if(sizeMatcher.find()){
-            String s = sizeMatcher.group(1);
-
-            s = s.replaceAll("\\s+([A-Za-z0-9]*):", " \"$1\":").replaceAll("//[A-Za-z ]*", "").replaceAll("\\[search,listing]", "").replaceAll("- list/search/featured", "");
-
-            try {
-                ProductResponse productResponse = new ObjectMapper().readValue(s, ProductResponse.class);
-                success++;
-                for(Item i : productResponse.getItems()){
-
-                    if(keywordSearchHelper.search(i.getDescription()) && stockTracker.notifyForObject(i.getPlu(), isFirst)){
-                        FootpatrolBuilder.buildAttachments(attachmentCreater, String.format(URL_TEMPLATE, baseUrl, i.getPlu()), null, "Footpatrol", i.getDescription(), formatNames);
+                    Matcher m = pattern.matcher(responseString);
+                    Matcher nameMatcher = namePattern.matcher(responseString);
+                    Matcher imgMatcher = imgPattern.matcher(responseString);
+                    String link, name, img;
+                    if (m.find()) {
+                        link = m.group(1);
+                    } else {
+                        link = url;
                     }
+
+                    if (nameMatcher.find()) {
+                        name = nameMatcher.group(1);
+                    } else {
+                        name = "NAME NOT FOUND";
+                    }
+
+                    if (imgMatcher.find()) {
+                        img = imgMatcher.group(1);
+                    } else {
+                        img = null;
+                    }
+
+                    FootpatrolBuilder.buildAttachments(attachmentCreater, link, img, "Mesh 1", name, formatNames);
                 }
-            } catch (Exception e){
-                errors++;
-                log.error("Stacktrace:", e);
-            }
+                monitorMetrics.success();
+        } else if (responseString.contains("<meta property=\"og:type\" content=\"website\"/>")) {
+            monitorMetrics.success();
+            stockTracker.setOOS(url);
+        } else if (responseString.contains("Access Denied")) {
+            monitorMetrics.ban();
+        } else {
+            monitorMetrics.error();
         }
 
-        if (errors + success == 50) {
-            DiscordLog.log(Thread.currentThread().getName() + " (Errors=" + errors + ", Successes=" + success + ")");
-            errors = 0;
-            success = 0;
-        }
 
 
 

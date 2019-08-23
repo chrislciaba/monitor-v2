@@ -680,7 +680,8 @@ public class ConfigDataTransformer {
             LvrResponseParser lvrResponseParser = new LvrResponseParser(new StockTracker(new HashMap<>(), -1), url,  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getLvr()));
             return new LVR(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getLvr(), notificationsFormatConfig), new HttpRequestHelper(), lvrResponseParser);
         } else if(site.equals("meshsearch")) {
-            MeshSearchResponseParser meshSearchResponseParser = new MeshSearchResponseParser(UrlHelper.deriveBaseUrl(page.getUrls().get(0)), new StockTracker(new HashMap<>(), 60000), new KeywordSearchHelper(defaultKw),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootpatrol()));
+            System.out.println("Search");
+            MeshSearchResponseParser meshSearchResponseParser = new MeshSearchResponseParser(UrlHelper.deriveBaseUrl(page.getUrls().get(0)), new StockTracker(new HashMap<>(), 60000),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootpatrol()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getFootpatrol(), notificationsFormatConfig), new HttpRequestHelper(), meshSearchResponseParser);
         } else if(site.equals("footsites")){
             FootsitesResponseParser footsitesResponseParser = new FootsitesResponseParser(new StockTracker(new HashMap<>(), 60000), url, page.getName(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootsites()));
@@ -757,10 +758,19 @@ public class ConfigDataTransformer {
 
     private static AbstractMonitor createMeshAppMonitor(String url, String site, int delay, SiteNotificationsConfig siteNotificationsConfig, NotificationsFormatConfig notificationsFormatConfig){
         StockTracker stockTracker = new StockTracker(new HashMap<>(), 30000);
+        String base = "";
+        if (url.contains("size")){
+            base = "https://www.size.co.uk";
+        } else if(url.contains("footpatrol")){
+            base = "https://www.footpatrol.com";
+        } else {
+            base  = "https://www.jdsports.co.uk";
+        }
         MeshApp meshApp =
                 new MeshApp(
                         stockTracker,
-                        NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootpatrol())
+                        NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFootpatrol()),
+                        base
                 );
         return new MeshAppMonitor(url, site, delay, new AttachmentCreater(siteNotificationsConfig.getFootpatrol(), notificationsFormatConfig), new HttpRequestHelper(), new Hawk(), meshApp);
     }

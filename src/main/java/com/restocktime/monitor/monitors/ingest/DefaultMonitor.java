@@ -43,14 +43,18 @@ public class DefaultMonitor extends AbstractMonitor {
 
         try{
             BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, url);
-            String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
-            if (md5.equals(hash)) {
-                return;
+            if (basicHttpResponse.getBody().isPresent()) {
+                String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
+                if (md5.equals(hash)) {
+                    return;
+                }
+
+                hash = md5;
             }
+
 
             abstractResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
             Notifications.send(attachmentCreater);
-            hash = md5;
         } catch(Exception e){
             log.error(EXCEPTION_LOG_MESSAGE, e);
         }
