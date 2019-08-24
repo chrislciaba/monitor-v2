@@ -6,6 +6,7 @@ import com.restocktime.monitor.util.httprequests.Http2RequestHelper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.captcha.TwoCaptchaService;
 import com.restocktime.monitor.util.httprequests.model.ResponseErrors;
+import com.restocktime.monitor.util.log.DiscordLog;
 import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.util.url.UrlHelper;
 import org.apache.http.Header;
@@ -92,6 +93,8 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() != 503){
             if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
+                DiscordLog.logPrivately("CAP " + url);
+
                 BasicHttpResponse capResp = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
                 idx = (idx + 1) % apiKeys.length;
                 if(!basicHttpResponse.getBody().get().contains("Checking your browser before accessing")){
@@ -102,6 +105,8 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
                     }
                 }
             } else {
+                DiscordLog.logPrivately("NO CAP " + url);
+
                 return Optional.of(basicHttpResponse);
             }
 
@@ -170,10 +175,13 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
         if(!basicHttpResponse.getBody().isPresent() || !basicHttpResponse.getResponseCode().isPresent()){
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
+            DiscordLog.logPrivately("CAP " + url);
             BasicHttpResponse basicHttpResponse1 = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
             idx = (idx + 1) % apiKeys.length;
             return Optional.of(basicHttpResponse1);
         } else if(basicHttpResponse.getResponseCode().get() != 503){
+            DiscordLog.logPrivately("NO CAP " + url);
+
             return Optional.of(basicHttpResponse);
         }
 

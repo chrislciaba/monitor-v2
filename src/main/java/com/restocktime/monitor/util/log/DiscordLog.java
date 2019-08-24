@@ -28,4 +28,23 @@ public class DiscordLog {
             e.printStackTrace();
         }
     }
+
+    public static void logPrivately(String message){
+        try {
+            CloseableHttpClient closeableHttpClient = HttpClients.custom()
+                    .setRedirectStrategy(new LaxRedirectStrategy())
+                    .build();
+            HttpPost httpPost = new HttpPost("https://discordapp.com/api/webhooks/614716074604363777/jSN7UDYIBqQYqD2DvXBuH5FAtMC3D9f9W47Nv2gC0HDIaJMlIJWYQsP2dwmPWvCylZMd");
+            httpPost.addHeader("Content-Type", "application/json");
+            httpPost.setEntity(new StringEntity("{\"content\":\"" + message + "\"}"));
+            try {
+                HttpResponse httpResponse = closeableHttpClient.execute(httpPost);
+
+            } finally {
+                httpPost.releaseConnection();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
