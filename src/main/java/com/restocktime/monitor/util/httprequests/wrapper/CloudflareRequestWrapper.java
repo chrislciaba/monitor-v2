@@ -1,10 +1,11 @@
-package com.restocktime.monitor.util.httprequests;
+package com.restocktime.monitor.util.httprequests.wrapper;
 
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
+import com.restocktime.monitor.util.httprequests.Http2RequestHelper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.captcha.TwoCaptchaService;
 import com.restocktime.monitor.util.httprequests.model.ResponseErrors;
-import com.restocktime.monitor.util.log.DiscordLog;
 import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.util.url.UrlHelper;
 import org.apache.http.Header;
@@ -15,6 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
@@ -31,23 +33,24 @@ import java.util.regex.Pattern;
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 import static org.apache.commons.codec.CharEncoding.UTF_8;
 
-public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
+public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
 
-    final static Logger logger = Logger.getLogger(CloudflareRequestHelper.class);
+    final static Logger logger = Logger.getLogger(CloudflareRequestWrapper.class);
     private final String REGEX_0 = "name=\"pass\" value=\"([^\"]*)\"";
     private final String REGEX_1 = "name=\"jschl_vc\" value=\"([^\"]*)\"";
 
     private String[] apiKeys;
     private int idx;
-    private static final Logger log = Logger.getLogger(CloudflareRequestHelper.class);
-    private int noCap, cap;
+    private static final Logger log = Logger.getLogger(CloudflareRequestWrapper.class);
+    private Http2RequestHelper http2RequestHelper;
+    private CloseableHttpClient closeableHttpClient;
 
 
-    public CloudflareRequestHelper(String[] apiKeys){
+    public CloudflareRequestWrapper(String[] apiKeys, Http2RequestHelper http2RequestHelper, CloseableHttpClient closeableHttpClient){
         this.apiKeys = apiKeys;
         this.idx = 0;
-        this.noCap = 0;
-        this.cap = 0;
+        this.http2RequestHelper = http2RequestHelper;
+        this.closeableHttpClient = closeableHttpClient;
     }
 
     private Optional<BasicHttpResponse> doGet(BasicRequestClient basicRequestClient,
@@ -63,59 +66,20 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             }
         }
 
-        try {
-
-            HttpResponse response = basicRequestClient.getCloseableHttpClient().execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            int respCode = response.getStatusLine().getStatusCode();
-
-            String responseString = EntityUtils.toString(entity, "UTF-8");
-            return Optional.of(
-                    BasicHttpResponse.builder()
-                            .body(Optional.of(responseString))
-                            .responseCode(Optional.of(respCode))
-                            .headers(Optional.empty())
-                            .error(Optional.empty())
-                            .build()
-            );
-        } catch (ConnectTimeoutException cte) {
-            log.info("Connection timed out");
-            return Optional.of(
-                    BasicHttpResponse.builder()
-                            .body(Optional.empty())
-                            .responseCode(Optional.empty())
-                            .headers(Optional.empty())
-                            .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
-                            .build());
-        } catch (SocketTimeoutException ste) {
-            log.info("Socket timeout");
-            return Optional.of(
-                    BasicHttpResponse.builder()
-                            .body(Optional.empty())
-                            .responseCode(Optional.empty())
-                            .headers(Optional.empty())
-                            .error(Optional.of(ResponseErrors.SOCKET_TIMEOUT))
-                            .build());
-        }
-        catch (IOException e) {
-            log.error(EXCEPTION_LOG_MESSAGE, e);
-            return Optional.empty();
-        } finally {
-            httpGet.releaseConnection();
-        }
+        return Optional.of(http2RequestHelper.performGet(basicRequestClient, url));
     }
 
-    private boolean isBanned(BasicHttpResponse basicHttpResponse, String url, String proxy) {
+    private boolean isBanned(BasicHttpResponse basicHttpResponse, String url) {
         if(!basicHttpResponse.getBody().isPresent()){
             return false;
         } if(basicHttpResponse.getBody().get().contains("<title>Access denied")) {
-            log.error("banned proxy on sns " + proxy);
+            log.error("banned proxy on sns");
             return true;
         } else if(basicHttpResponse.getBody().get().contains("Access denied") || basicHttpResponse.getBody().get().contains("Access Denied")){
             if(basicHttpResponse.getBody().get().toLowerCase().contains("squid")){
-                log.error("Squid proxy error for: " + proxy);
+                log.error("Squid proxy error for: ");
             } else {
-                log.error("banned proxy on " + UrlHelper.deriveBaseUrl(url) + " " + proxy);
+                log.error("banned proxy on " + UrlHelper.deriveBaseUrl(url));
             }
             return true;
         }
@@ -232,8 +196,8 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                             .build();
 
                 }
-
-                if(isBanned(basicHttpResponse.get(), url, basicRequestClient.getHttpHost().getHostName())){
+                basicHttpResponse.get();
+                if(isBanned(basicHttpResponse.get(), url)){
                     log.error("cf proxy banned");
 
                     return BasicHttpResponse.builder()
@@ -305,26 +269,26 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
 
         if(rayMatcher.find() && tokenMatcher.find() && sMatcher.find()) {
-            TwoCaptchaService t = new TwoCaptchaService(apiKey, tokenMatcher.group(1), url, basicRequestClient.getCloseableHttpClient());
+            TwoCaptchaService t = new TwoCaptchaService(apiKey, tokenMatcher.group(1), url, closeableHttpClient);
             HttpGet httpGet = null;
             try {
                 URL uri = new URL(url);
                 String extraUrl = uri.getProtocol() + "://" + uri.getHost() + "/cdn-cgi/l/chk_captcha?s=" + URLEncoder.encode(sMatcher.group(1),  UTF_8) + "&id=" + URLEncoder.encode(rayMatcher.group(1), UTF_8) + "&g-recaptcha-response=";
                 extraUrl += t.solveCaptcha();
-                logger.info(extraUrl);
-                httpGet = new HttpGet(extraUrl);
-                httpGet.setConfig(config);
-                HttpResponse httpResponse = basicRequestClient.getCloseableHttpClient().execute(httpGet);
-                HttpEntity entity1 = httpResponse.getEntity();
-                String responseString = EntityUtils.toString(entity1, "UTF-8");
-                int respCode = httpResponse.getStatusLine().getStatusCode();
+                BasicHttpResponse basicHttpResponse = http2RequestHelper.performGet(basicRequestClient, extraUrl);
+
+                if(basicHttpResponse.getError().isPresent())
+                    return basicHttpResponse;
+
+                String responseString = basicHttpResponse.getBody().get();
+
 
                 if(responseString.contains("<title>Access denied | www.sneakersnstuff.com used Cloudflare to restrict access</title>")) {
                     log.info("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
 
                     return BasicHttpResponse.builder()
                             .error(Optional.of(ResponseErrors.BANNED))
-                            .responseCode(Optional.of(respCode))
+                            .responseCode(Optional.of(basicHttpResponse.getResponseCode().get()))
                             .headers(Optional.empty())
                             .body(Optional.empty())
                             .build();
@@ -333,7 +297,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
                     return BasicHttpResponse.builder()
                             .error(Optional.of(ResponseErrors.BANNED))
-                            .responseCode(Optional.of(respCode))
+                            .responseCode(Optional.of(basicHttpResponse.getResponseCode().get()))
                             .headers(Optional.empty())
                             .body(Optional.empty())
                             .build();
@@ -341,7 +305,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
 
                 return BasicHttpResponse.builder()
                         .body(Optional.of(responseString))
-                        .responseCode(Optional.of(respCode))
+                        .responseCode(Optional.of(basicHttpResponse.getResponseCode().get()))
                         .error(Optional.empty())
                         .headers(Optional.empty())
                         .build();
@@ -365,6 +329,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
                 .build();
     }
 
+    @Deprecated
     public BasicHttpResponse performPost(
             BasicRequestClient basicRequestClient,
             String url, String body){
@@ -388,7 +353,7 @@ public class CloudflareRequestHelper extends AbstractHttpRequestHelper {
             while(true) {
 
                 try {
-                    httpResponse = basicRequestClient.getCloseableHttpClient().execute(httpPost);
+                    httpResponse = basicRequestClient.getCloseableHttpClient().get().execute(httpPost);
 
                     if (httpResponse.getStatusLine().getStatusCode() == 503 || httpResponse.getStatusLine().getStatusCode() == 403) {
                         performGet(basicRequestClient, UrlHelper.deriveBaseUrl(url));

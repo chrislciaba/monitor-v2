@@ -2,7 +2,7 @@ package com.restocktime.monitor.monitors.parse.offwhite;
 
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
-import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.wrapper.CloudflareRequestWrapper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
@@ -29,7 +29,7 @@ public class OffWhiteAtc extends AbstractMonitor {
     List<String> variants;
     private int delay;
     private AttachmentCreater attachmentCreater;
-    private CloudflareRequestHelper httpRequestHelper;
+    private CloudflareRequestWrapper httpRequestHelper;
     private OffWhiteAtcResponseParser offWhiteAtcResponseParser;
 
     public OffWhiteAtc(String url, String sku, String region, int delay, AttachmentCreater attachmentCreater, AbstractHttpRequestHelper httpRequestHelper, OffWhiteAtcResponseParser offWhiteAtcResponseParser) {
@@ -38,7 +38,7 @@ public class OffWhiteAtc extends AbstractMonitor {
         this.sku = sku;
         this.region = region;
         this.attachmentCreater = attachmentCreater;
-        this.httpRequestHelper = (CloudflareRequestHelper)httpRequestHelper;
+        this.httpRequestHelper = (CloudflareRequestWrapper)httpRequestHelper;
         this.offWhiteAtcResponseParser = offWhiteAtcResponseParser;
         this.atcLink = String.format(ATC_LINK_TEMPLATE, region);
         variants = Arrays.asList(sku.split(";"));

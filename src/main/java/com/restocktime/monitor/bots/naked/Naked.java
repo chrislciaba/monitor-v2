@@ -2,7 +2,7 @@ package com.restocktime.monitor.bots.naked;
 
 import com.restocktime.monitor.config.NakedLogin;
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.wrapper.CloudflareRequestWrapper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.notifications.Notifications;
 import org.apache.http.Header;
@@ -23,7 +23,7 @@ public class Naked {
     private static final String loginHome = "https://www.nakedcph.com/auth/view";
     private static final String cart_body = "_AntiCsrfToken=%s&id=%s&partial=ajax-cart";
 
-    public static boolean getCartHold(BasicHttpResponse basicHttpResponse1, CloudflareRequestHelper httpRequestHelper, BasicRequestClient basicRequestClient, List<NakedLogin> logins, int loginIdx, String productName, Notifications notifications){
+    public static boolean getCartHold(BasicHttpResponse basicHttpResponse1, CloudflareRequestWrapper httpRequestHelper, BasicRequestClient basicRequestClient, List<NakedLogin> logins, int loginIdx, String productName, Notifications notifications){
         if(basicHttpResponse1 == null || basicHttpResponse1.getBody() == null){
             return false;
         }

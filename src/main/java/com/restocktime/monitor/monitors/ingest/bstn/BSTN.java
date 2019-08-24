@@ -1,7 +1,7 @@
 package com.restocktime.monitor.monitors.ingest.bstn;
 
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.wrapper.CloudflareRequestWrapper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
@@ -24,19 +24,19 @@ public class BSTN extends AbstractMonitor {
     private boolean isSearch;
 
     private AttachmentCreater attachmentCreater;
-    private CloudflareRequestHelper cloudflareRequestHelper;
+    private CloudflareRequestWrapper cloudflareRequestWrapper;
     private Notifications notifications;
     private BSTNParseSearchAbstractResponse bstnParseSearchResponse;
     private BSTNParseProductAbstractResponse bstnParseProductResponse;
     private BstnParsePageResponse bstnParsePageResponse;
 
-    public BSTN(String url, String sku, int delay, AttachmentCreater attachmentCreater, CloudflareRequestHelper cloudflareRequestHelper, BSTNParseProductAbstractResponse bstnParseProductResponse, BSTNParseSearchAbstractResponse bstnParseSearchResponse, BstnParsePageResponse bstnParsePageResponse){
+    public BSTN(String url, String sku, int delay, AttachmentCreater attachmentCreater, CloudflareRequestWrapper cloudflareRequestWrapper, BSTNParseProductAbstractResponse bstnParseProductResponse, BSTNParseSearchAbstractResponse bstnParseSearchResponse, BstnParsePageResponse bstnParsePageResponse){
         this.url = url;
         this.sku = sku;
         this.delay = delay;
         isSearch = url.contains("searchstring");
         this.attachmentCreater = attachmentCreater;
-        this.cloudflareRequestHelper = cloudflareRequestHelper;
+        this.cloudflareRequestWrapper = cloudflareRequestWrapper;
         this.bstnParseProductResponse = bstnParseProductResponse;
         this.bstnParseSearchResponse = bstnParseSearchResponse;
         this.bstnParsePageResponse = bstnParsePageResponse;
@@ -47,7 +47,7 @@ public class BSTN extends AbstractMonitor {
         Timeout.timeout(delay);
 
         try{
-            BasicHttpResponse response = cloudflareRequestHelper.performGet(basicRequestClient, url);
+            BasicHttpResponse response = cloudflareRequestWrapper.performGet(basicRequestClient, url);
 
             if(isSearch) {
                 bstnParseSearchResponse.parse(response, attachmentCreater, isFirst);

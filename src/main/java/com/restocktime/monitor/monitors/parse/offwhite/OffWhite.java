@@ -2,7 +2,7 @@ package com.restocktime.monitor.monitors.parse.offwhite;
 
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
-import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.wrapper.CloudflareRequestWrapper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.util.url.UrlHelper;
@@ -20,7 +20,7 @@ public class OffWhite extends AbstractMonitor {
     private String monitorUrl;
     private int delay;
     private AttachmentCreater attachmentCreater;
-    private CloudflareRequestHelper httpRequestHelper;
+    private CloudflareRequestWrapper httpRequestHelper;
     private Notifications notifications;
     private OffWhiteProductAbstractResponseParser offWhiteProductResponseParser;
     private OffWhiteSearchAbstractResponseParser offWhiteSearchResponseParser;
@@ -32,7 +32,7 @@ public class OffWhite extends AbstractMonitor {
         this.delay = delay;
         this.notifications = notifications;
         this.attachmentCreater = attachmentCreater;
-        this.httpRequestHelper = (CloudflareRequestHelper)httpRequestHelper;
+        this.httpRequestHelper = (CloudflareRequestWrapper)httpRequestHelper;
         this.offWhiteProductResponseParser = offWhiteProductResponseParser;
         this.offWhiteSearchResponseParser = offWhiteSearchResponseParser;
     }

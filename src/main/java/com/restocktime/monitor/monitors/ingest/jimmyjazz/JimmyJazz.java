@@ -1,7 +1,7 @@
 package com.restocktime.monitor.monitors.ingest.jimmyjazz;
 
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.wrapper.CloudflareRequestWrapper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.util.url.UrlHelper;
@@ -19,14 +19,14 @@ public class JimmyJazz extends AbstractMonitor {
     final static Logger log = Logger.getLogger(JimmyJazz.class);
 
     private AttachmentCreater attachmentCreater;
-    private CloudflareRequestHelper cloudflareRequestHelper;
+    private CloudflareRequestWrapper cloudflareRequestWrapper;
     private JimmyJazzResponseParser jimmyJazzResponseParser;
 
-    public JimmyJazz(String url, int delay,   AttachmentCreater attachmentCreater, CloudflareRequestHelper cloudflareRequestHelper, JimmyJazzResponseParser jimmyJazzResponseParser){
+    public JimmyJazz(String url, int delay, AttachmentCreater attachmentCreater, CloudflareRequestWrapper cloudflareRequestWrapper, JimmyJazzResponseParser jimmyJazzResponseParser){
         this.url = url;
         this.delay = delay;
         this.attachmentCreater = attachmentCreater;
-        this.cloudflareRequestHelper = cloudflareRequestHelper;
+        this.cloudflareRequestWrapper = cloudflareRequestWrapper;
         this.jimmyJazzResponseParser = jimmyJazzResponseParser;
     }
 
@@ -39,10 +39,10 @@ public class JimmyJazz extends AbstractMonitor {
 
             if(url.contains("search.jimmyjazz")) {
                 basicRequestClient.getCookieStore().clear();
-                cloudflareRequestHelper.performGet(basicRequestClient, "http://www.jimmyjazz.com/mens/footwear/nike-react-element-55/BQ6166-006?color=Black");
+                cloudflareRequestWrapper.performGet(basicRequestClient, "http://www.jimmyjazz.com/mens/footwear/nike-react-element-55/BQ6166-006?color=Black");
                 Timeout.timeout(delay);
             }
-            BasicHttpResponse basicHttpResponse = cloudflareRequestHelper.performGet(basicRequestClient, UrlHelper.urlWithRandParam(url));
+            BasicHttpResponse basicHttpResponse = cloudflareRequestWrapper.performGet(basicRequestClient, UrlHelper.urlWithRandParam(url));
 
 
             jimmyJazzResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);

@@ -1,7 +1,7 @@
 package com.restocktime.monitor.monitors.ingest.oneblockdown;
 
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.util.httprequests.CloudflareRequestHelper;
+import com.restocktime.monitor.util.httprequests.wrapper.CloudflareRequestWrapper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
@@ -19,19 +19,19 @@ public class OneBlockDown extends AbstractMonitor {
     final static Logger logger = Logger.getLogger(JimmyJazz.class);
 
     private AttachmentCreater attachmentCreater;
-    private CloudflareRequestHelper cloudflareRequestHelper;
+    private CloudflareRequestWrapper cloudflareRequestWrapper;
     private OneBlockDownResponseParser oneBlockDownResponseParser;
     private String[] skus;
     private int idx;
     private final String BODY_TEMPLATE = "controller=orders&action=addStockItemToBasket&stockItemId=%s&quantity=1&extension=obd&version=94";
 
-    public OneBlockDown(String url, String skus, int delay, AttachmentCreater attachmentCreater, CloudflareRequestHelper cloudflareRequestHelper, OneBlockDownResponseParser oneBlockDownResponseParser){
+    public OneBlockDown(String url, String skus, int delay, AttachmentCreater attachmentCreater, CloudflareRequestWrapper cloudflareRequestWrapper, OneBlockDownResponseParser oneBlockDownResponseParser){
         this.url = url;
         this.skus = skus.split(":");
         this.idx = 0;
         this.delay = delay;
         this.attachmentCreater = attachmentCreater;
-        this.cloudflareRequestHelper = cloudflareRequestHelper;
+        this.cloudflareRequestWrapper = cloudflareRequestWrapper;
         this.oneBlockDownResponseParser = oneBlockDownResponseParser;
     }
 
@@ -42,13 +42,13 @@ public class OneBlockDown extends AbstractMonitor {
         String sku = skus[idx];
         try {
             basicRequestClient.getHeaderList().clear();
-            BasicHttpResponse basicHttpResponse;// = cloudflareRequestHelper.performGet(basicRequestClient, UrlHelper.urlWithRandParam(url));
+            BasicHttpResponse basicHttpResponse;// = cloudflareRequestWrapper.performGet(basicRequestClient, UrlHelper.urlWithRandParam(url));
             basicRequestClient.getHeaderList().add(new BasicHeader("Content-Type", "application/x-www-form-urlencoded"));
             basicRequestClient.getHeaderList().add(new BasicHeader("x-requested-with", "XMLHttpRequest"));
-            basicHttpResponse = cloudflareRequestHelper.performPost(basicRequestClient, "https://www.oneblockdown.it/index.php", String.format(BODY_TEMPLATE, sku));
+            basicHttpResponse = cloudflareRequestWrapper.performPost(basicRequestClient, "https://www.oneblockdown.it/index.php", String.format(BODY_TEMPLATE, sku));
             oneBlockDownResponseParser.setCurSku(sku);
             oneBlockDownResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
-            //basicHttpResponse = cloudflareRequestHelper.performPost(basicRequestClient, "https://www.oneblockdown.it/index.php", "controller=orders&action=removeStockItemToBasket&stockItemId=60756&quantity=1&extension=obd&version=94");
+            //basicHttpResponse = cloudflareRequestWrapper.performPost(basicRequestClient, "https://www.oneblockdown.it/index.php", "controller=orders&action=removeStockItemToBasket&stockItemId=60756&quantity=1&extension=obd&version=94");
             logger.info(attachmentCreater.isEmpty());
             Notifications.send(attachmentCreater);
         } catch(Exception e){

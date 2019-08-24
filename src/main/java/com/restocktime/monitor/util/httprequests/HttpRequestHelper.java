@@ -39,7 +39,7 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
         CloseableHttpResponse httpResponse = null;
 
         try {
-            httpResponse = basicRequestClient.getCloseableHttpClient().execute(httpGet);
+            httpResponse = basicRequestClient.getCloseableHttpClient().get().execute(httpGet);
 
             HttpEntity entity = httpResponse.getEntity();
             String resp = EntityUtils.toString(entity);
@@ -109,7 +109,7 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
             CloseableHttpResponse httpResponse = null;
             try {
                 httpPost.setEntity(new StringEntity(body));
-                httpResponse = basicRequestClient.getCloseableHttpClient().execute(httpPost);
+                httpResponse = basicRequestClient.getCloseableHttpClient().get().execute(httpPost);
                 HttpEntity entity = httpResponse.getEntity();
 
                 BasicHttpResponse basicHttpResponse = BasicHttpResponse.builder()
