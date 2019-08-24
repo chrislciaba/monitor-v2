@@ -93,7 +93,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() != 503){
             if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
-                DiscordLog.logPrivately("CAP " + url);
+                DiscordLog.log("CAP " + url);
 
                 BasicHttpResponse capResp = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
                 idx = (idx + 1) % apiKeys.length;
@@ -105,7 +105,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
                     }
                 }
             } else {
-                DiscordLog.logPrivately("NO CAP " + url);
+                DiscordLog.log("NO CAP " + url);
 
                 return Optional.of(basicHttpResponse);
             }
@@ -175,12 +175,12 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
         if(!basicHttpResponse.getBody().isPresent() || !basicHttpResponse.getResponseCode().isPresent()){
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
-            DiscordLog.logPrivately("CAP " + url);
+            DiscordLog.log("CAP " + url);
             BasicHttpResponse basicHttpResponse1 = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
             idx = (idx + 1) % apiKeys.length;
             return Optional.of(basicHttpResponse1);
         } else if(basicHttpResponse.getResponseCode().get() != 503){
-            DiscordLog.logPrivately("NO CAP " + url);
+            DiscordLog.log("NO CAP " + url);
 
             return Optional.of(basicHttpResponse);
         }

@@ -1,5 +1,6 @@
 package com.restocktime.monitor.util.captcha;
 
+import com.restocktime.monitor.util.log.DiscordLog;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -113,6 +114,7 @@ public class TwoCaptchaService {
      * @throws IOException, when there is any server issue and the request cannot be completed
      */
     public String solveCaptcha() throws InterruptedException {
+        long t0 = System.currentTimeMillis();
         String parameters = "key=" + apiKey
                 + "&method=userrecaptcha"
                 + "&googlekey=" + googleKey
@@ -134,6 +136,8 @@ public class TwoCaptchaService {
         } while(responseStr.contains("NOT_READY"));
 
         String gRecaptchaResponse = responseStr.replaceAll("OK\\|", "").replaceAll("\\n", "");
+        long t1 = System.currentTimeMillis();
+        DiscordLog.log("Took " + ((t1-t0)/1000) + " seconds to get captcha");
         return gRecaptchaResponse;
     }
 
