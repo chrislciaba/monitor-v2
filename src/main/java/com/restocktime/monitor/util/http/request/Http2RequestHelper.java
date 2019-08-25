@@ -4,6 +4,8 @@ import com.restocktime.monitor.util.http.client.builder.model.BasicRequestClient
 import com.restocktime.monitor.util.http.request.headers.HeaderDecorator;
 import com.restocktime.monitor.util.http.request.model.BasicHttpResponse;
 import com.restocktime.monitor.util.http.request.model.ResponseErrors;
+import com.restocktime.monitor.util.ops.log.DiscordLog;
+import com.restocktime.monitor.util.ops.log.WebhookType;
 import lombok.AllArgsConstructor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -46,6 +48,14 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
             return BasicHttpResponse.builder()
                     .headers(Optional.empty())
                     .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
+                    .responseCode(Optional.empty())
+                    .body(Optional.empty())
+                    .build();
+        } catch (Exception e) {
+            DiscordLog.log(WebhookType.OTHER, e.getMessage());
+            return BasicHttpResponse.builder()
+                    .headers(Optional.empty())
+                    .error(Optional.of(ResponseErrors.UNKNOWN))
                     .responseCode(Optional.empty())
                     .body(Optional.empty())
                     .build();
