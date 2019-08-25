@@ -95,7 +95,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() != 503){
             if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
-                DiscordLog.log(CF,"CAP " + url);
+                DiscordLog.log(CF,"CAP checkCapRoute " + url);
 
                 BasicHttpResponse capResp = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
                 idx = (idx + 1) % apiKeys.length;
@@ -107,7 +107,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
                     }
                 }
             } else {
-                DiscordLog.log(CF,"NO CAP " + url);
+                DiscordLog.log(CF,"NO CAP checkCapRoute " + url);
 
                 return Optional.of(basicHttpResponse);
             }
@@ -177,12 +177,12 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
         if(!basicHttpResponse.getBody().isPresent() || !basicHttpResponse.getResponseCode().isPresent()){
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
-            DiscordLog.log(CF, "CAP " + url);
+            DiscordLog.log(CF, "CAP finalScan " + url);
             BasicHttpResponse basicHttpResponse1 = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
             idx = (idx + 1) % apiKeys.length;
             return Optional.of(basicHttpResponse1);
         } else if(basicHttpResponse.getResponseCode().get() != 503){
-            DiscordLog.log(CF,"NO CAP " + url);
+            DiscordLog.log(CF,"NO CAP finalScan " + url);
 
             return Optional.of(basicHttpResponse);
         }
@@ -195,65 +195,76 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
                                         String url) {
 
         try {
-            while(true) {
-                Optional<BasicHttpResponse> basicHttpResponse = doGet(basicRequestClient, url);
-                if(!basicHttpResponse.isPresent()){
-                    log.error("cf get request failed on initial get");
-                    return BasicHttpResponse.builder()
-                            .body(Optional.empty())
-                            .headers(Optional.empty())
-                            .responseCode(Optional.empty())
-                            .error(Optional.of(ResponseErrors.UNKNOWN))
-                            .build();
+            Optional<BasicHttpResponse> basicHttpResponse = doGet(basicRequestClient, url);
+            if(!basicHttpResponse.isPresent()){
+                log.error("cf get request failed on initial get");
+                return BasicHttpResponse.builder()
+                        .body(Optional.empty())
+                        .headers(Optional.empty())
+                        .responseCode(Optional.empty())
+                        .error(Optional.of(ResponseErrors.UNKNOWN))
+                        .build();
 
-                }
-                basicHttpResponse.get();
-                if(isBanned(basicHttpResponse.get(), url)){
-                    log.error("cf proxy banned");
-
-                    return BasicHttpResponse.builder()
-                            .body(Optional.empty())
-                            .headers(Optional.empty())
-                            .responseCode(Optional.empty())
-                            .error(Optional.of(ResponseErrors.UNKNOWN))
-                            .build();
-                }
-
-                Optional<BasicHttpResponse> basicHttpResponse1 = checkCapRoute(basicHttpResponse.get(), url, basicRequestClient);
-                if(basicHttpResponse1.isPresent())
-                    return basicHttpResponse1.get();
-                Optional<String> resultUrl = getChallengeUrl(basicHttpResponse.get(), url);
-                if(!resultUrl.isPresent()){
-                    log.error("cf captcha failed");
-
-                    return BasicHttpResponse.builder()
-                            .body(Optional.empty())
-                            .headers(Optional.empty())
-                            .responseCode(Optional.empty())
-                            .error(Optional.of(ResponseErrors.UNKNOWN))
-                            .build();
-                }
-
-                Thread.sleep(4000 + (int) (Math.random() * 500));
-                basicHttpResponse = doGet(basicRequestClient, resultUrl.get());
-
-                if(!basicHttpResponse.isPresent()){
-                    log.error("cf couldn't solve challenge URL");
-
-                    return BasicHttpResponse.builder()
-                            .body(Optional.empty())
-                            .headers(Optional.empty())
-                            .responseCode(Optional.empty())
-                            .error(Optional.of(ResponseErrors.UNKNOWN))
-                            .build();
-                }
-
-                basicHttpResponse = finalScan(basicHttpResponse.get(), basicRequestClient, url);
-
-                if(basicHttpResponse.isPresent()){
-                    return basicHttpResponse.get();
-                }
             }
+            basicHttpResponse.get();
+            if(isBanned(basicHttpResponse.get(), url)){
+                DiscordLog.log(CF, "Proxy banned : " + url);
+                log.error("cf proxy banned");
+
+                return BasicHttpResponse.builder()
+                        .body(Optional.empty())
+                        .headers(Optional.empty())
+                        .responseCode(Optional.empty())
+                        .error(Optional.of(ResponseErrors.UNKNOWN))
+                        .build();
+            }
+
+            Optional<BasicHttpResponse> basicHttpResponse1 = checkCapRoute(basicHttpResponse.get(), url, basicRequestClient);
+            if(basicHttpResponse1.isPresent())
+                return basicHttpResponse1.get();
+            Optional<String> resultUrl = getChallengeUrl(basicHttpResponse.get(), url);
+            if(!resultUrl.isPresent()){
+                DiscordLog.log(CF, "Cap failed : " + url);
+
+                log.error("cf captcha failed");
+
+                return BasicHttpResponse.builder()
+                        .body(Optional.empty())
+                        .headers(Optional.empty())
+                        .responseCode(Optional.empty())
+                        .error(Optional.of(ResponseErrors.UNKNOWN))
+                        .build();
+            }
+
+            Thread.sleep(4000 + (int) (Math.random() * 500));
+            basicHttpResponse = doGet(basicRequestClient, resultUrl.get());
+
+            if(!basicHttpResponse.isPresent()){
+                DiscordLog.log(CF, "cf couldn't solve challenge URL : " + url);
+
+                log.error("cf couldn't solve challenge URL");
+
+                return BasicHttpResponse.builder()
+                        .body(Optional.empty())
+                        .headers(Optional.empty())
+                        .responseCode(Optional.empty())
+                        .error(Optional.of(ResponseErrors.UNKNOWN))
+                        .build();
+            }
+
+            basicHttpResponse = finalScan(basicHttpResponse.get(), basicRequestClient, url);
+
+            if(basicHttpResponse.isPresent()){
+                return basicHttpResponse.get();
+            } else {
+                return BasicHttpResponse.builder()
+                        .body(Optional.empty())
+                        .headers(Optional.empty())
+                        .responseCode(Optional.empty())
+                        .error(Optional.of(ResponseErrors.UNKNOWN))
+                        .build();
+            }
+
         } catch(Exception e) {
             DiscordLog.log(CF, e.getMessage());
             log.error(EXCEPTION_LOG_MESSAGE, e);
