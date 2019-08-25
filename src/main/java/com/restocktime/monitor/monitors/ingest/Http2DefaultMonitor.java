@@ -7,6 +7,7 @@ import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.util.hash.MD5;
 import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
+import com.restocktime.monitor.util.log.DiscordLog;
 import com.restocktime.monitor.util.timeout.Timeout;
 import lombok.Builder;
 import org.apache.log4j.Logger;
@@ -44,6 +45,7 @@ public class Http2DefaultMonitor extends AbstractMonitor {
                 abstractResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
                 Notifications.send(attachmentCreater);
             } catch(Exception e){
+                DiscordLog.logPrivately(e.getMessage());
                 log.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }

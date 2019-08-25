@@ -35,7 +35,7 @@ public class MonitorMetrics {
     }
 
     private void checkTotal(){
-        if (failures + success == 5) {
+        if (failures + success + bans >= 5) {
             DiscordLog.log(name + " (Errors=" + failures + ", Successes=" + success + ", Bans=" + bans +")");
             failures = 0;
             success = 0;
