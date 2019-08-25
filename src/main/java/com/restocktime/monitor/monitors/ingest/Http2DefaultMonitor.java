@@ -36,8 +36,10 @@ public class Http2DefaultMonitor extends AbstractMonitor {
                 BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, url);
                 long t1 = System.currentTimeMillis();
                 if (basicHttpResponse.getBody().isPresent()) {
+
                     String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
                     if (md5.equals(hash)) {
+                        DiscordLog.log(WebhookType.OTHER,"Equal to last response, ignoring");
                         return;
                     }
 
