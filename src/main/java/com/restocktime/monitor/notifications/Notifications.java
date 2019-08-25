@@ -1,8 +1,6 @@
 package com.restocktime.monitor.notifications;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.config.model.notifications.SlackObj;
-import com.restocktime.monitor.monitors.parse.supreme.parse.SupremeAllProductResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.attachments.notification.DiscordNotification;
 import com.restocktime.monitor.notifications.attachments.notification.Notification;

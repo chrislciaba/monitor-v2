@@ -1,6 +1,6 @@
 package com.restocktime.monitor.monitors.ingest;
 
-import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
+import com.restocktime.monitor.util.http.client.builder.model.BasicRequestClient;
 
 
 public abstract class AbstractMonitor {

@@ -2,7 +2,7 @@ package com.restocktime.monitor.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.restocktime.monitor.util.url.UrlHelper;
+import com.restocktime.monitor.util.helper.url.UrlHelper;
 import com.restocktime.monitor.config.model.BasicMonitorConfig;
 import com.restocktime.monitor.config.model.Links;
 import com.restocktime.monitor.config.model.MonitorConfig;

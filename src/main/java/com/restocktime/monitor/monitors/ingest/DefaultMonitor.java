@@ -1,10 +1,10 @@
 package com.restocktime.monitor.monitors.ingest;
 
-import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
-import com.restocktime.monitor.util.hash.MD5;
-import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
-import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
-import com.restocktime.monitor.util.timeout.Timeout;
+import com.restocktime.monitor.util.http.client.builder.model.BasicRequestClient;
+import com.restocktime.monitor.util.helper.hash.MD5;
+import com.restocktime.monitor.util.http.request.AbstractHttpRequestHelper;
+import com.restocktime.monitor.util.http.request.model.BasicHttpResponse;
+import com.restocktime.monitor.util.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.Notifications;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;

@@ -1,7 +1,6 @@
 package com.restocktime.monitor.notifications.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.restocktime.monitor.util.timeout.Timeout;
 import com.restocktime.monitor.notifications.model.discord.DiscordMessage;
 import com.restocktime.monitor.notifications.model.discord.Embed;
 import org.apache.http.HttpResponse;
