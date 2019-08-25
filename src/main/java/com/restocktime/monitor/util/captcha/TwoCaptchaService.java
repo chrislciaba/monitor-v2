@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+import static com.restocktime.monitor.util.log.WebhookType.CF;
 
 
 public class TwoCaptchaService {
@@ -137,7 +138,7 @@ public class TwoCaptchaService {
 
         String gRecaptchaResponse = responseStr.replaceAll("OK\\|", "").replaceAll("\\n", "");
         long t1 = System.currentTimeMillis();
-        DiscordLog.log("Took " + ((t1-t0)/1000) + " seconds to get captcha");
+        DiscordLog.log(CF,"Took " + ((t1-t0)/1000) + " seconds to get captcha");
         return gRecaptchaResponse;
     }
 

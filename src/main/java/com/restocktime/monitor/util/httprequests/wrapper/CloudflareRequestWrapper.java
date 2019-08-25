@@ -1,5 +1,6 @@
 package com.restocktime.monitor.util.httprequests.wrapper;
 
+import com.restocktime.monitor.notifications.client.Discord;
 import com.restocktime.monitor.util.clientbuilder.model.BasicRequestClient;
 import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
 import com.restocktime.monitor.util.httprequests.Http2RequestHelper;
@@ -32,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
+import static com.restocktime.monitor.util.log.WebhookType.CF;
 import static org.apache.commons.codec.CharEncoding.UTF_8;
 
 public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
@@ -93,7 +95,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() != 503){
             if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
-                DiscordLog.log("CAP " + url);
+                DiscordLog.log(CF,"CAP " + url);
 
                 BasicHttpResponse capResp = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
                 idx = (idx + 1) % apiKeys.length;
@@ -105,7 +107,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
                     }
                 }
             } else {
-                DiscordLog.log("NO CAP " + url);
+                DiscordLog.log(CF,"NO CAP " + url);
 
                 return Optional.of(basicHttpResponse);
             }
@@ -175,12 +177,12 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
         if(!basicHttpResponse.getBody().isPresent() || !basicHttpResponse.getResponseCode().isPresent()){
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
-            DiscordLog.log("CAP " + url);
+            DiscordLog.log(CF, "CAP " + url);
             BasicHttpResponse basicHttpResponse1 = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
             idx = (idx + 1) % apiKeys.length;
             return Optional.of(basicHttpResponse1);
         } else if(basicHttpResponse.getResponseCode().get() != 503){
-            DiscordLog.log("NO CAP " + url);
+            DiscordLog.log(CF,"NO CAP " + url);
 
             return Optional.of(basicHttpResponse);
         }
@@ -191,6 +193,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
 
     public BasicHttpResponse performGet(BasicRequestClient basicRequestClient,
                                         String url) {
+
         try {
             while(true) {
                 Optional<BasicHttpResponse> basicHttpResponse = doGet(basicRequestClient, url);
@@ -252,6 +255,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
                 }
             }
         } catch(Exception e) {
+            DiscordLog.log(CF, e.getMessage());
             log.error(EXCEPTION_LOG_MESSAGE, e);
 
             return BasicHttpResponse.builder()

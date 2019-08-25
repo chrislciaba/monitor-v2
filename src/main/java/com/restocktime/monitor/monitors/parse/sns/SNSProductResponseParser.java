@@ -7,6 +7,7 @@ import com.restocktime.monitor.monitors.parse.sns.model.SnsSizeModel;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.log.DiscordLog;
+import com.restocktime.monitor.util.log.WebhookType;
 import com.restocktime.monitor.util.metrics.MonitorMetrics;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -40,7 +41,7 @@ public class SNSProductResponseParser implements AbstractResponseParser {
         this.url = url;
         this.formatNames = formatNames;
         this.objectMapper = objectMapper;
-        this.monitorMetrics = new MonitorMetrics(url);
+        this.monitorMetrics = new MonitorMetrics(WebhookType.SNS, url);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){

@@ -3,6 +3,7 @@ package com.restocktime.monitor.monitors.parse.mesh.parse;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.log.DiscordLog;
+import com.restocktime.monitor.util.log.WebhookType;
 import com.restocktime.monitor.util.metrics.MonitorMetrics;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 
@@ -55,7 +56,7 @@ public class MeshFrontEndStockResponseParser implements AbstractResponseParser {
             pattern = patternEnglish;
         }
 
-       monitorMetrics = new MonitorMetrics(url);
+       monitorMetrics = new MonitorMetrics(WebhookType.MESH, url);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {

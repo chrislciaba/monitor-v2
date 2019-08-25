@@ -8,6 +8,7 @@ import com.restocktime.monitor.util.hash.MD5;
 import com.restocktime.monitor.util.httprequests.AbstractHttpRequestHelper;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.log.DiscordLog;
+import com.restocktime.monitor.util.log.WebhookType;
 import com.restocktime.monitor.util.timeout.Timeout;
 import lombok.Builder;
 import org.apache.log4j.Logger;
@@ -31,7 +32,9 @@ public class Http2DefaultMonitor extends AbstractMonitor {
             Timeout.timeout(delay);
 
             try{
+                long t0 = System.currentTimeMillis();
                 BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, url);
+                long t1 = System.currentTimeMillis();
                 if (basicHttpResponse.getBody().isPresent()) {
                     String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
                     if (md5.equals(hash)) {
@@ -44,8 +47,9 @@ public class Http2DefaultMonitor extends AbstractMonitor {
 
                 abstractResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
                 Notifications.send(attachmentCreater);
+                DiscordLog.log(WebhookType.OTHER, "Total time in monitor 2: " + ((t1-t0)/1000));
             } catch(Exception e){
-                DiscordLog.logPrivately(e.getMessage());
+                DiscordLog.log(WebhookType.OTHER, e.getMessage());
                 log.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }

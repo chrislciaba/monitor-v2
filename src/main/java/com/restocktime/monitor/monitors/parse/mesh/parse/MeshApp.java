@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.util.httprequests.ResponseValidator;
 import com.restocktime.monitor.util.httprequests.model.BasicHttpResponse;
 import com.restocktime.monitor.util.log.DiscordLog;
+import com.restocktime.monitor.util.log.WebhookType;
 import com.restocktime.monitor.util.metrics.MonitorMetrics;
 import com.restocktime.monitor.util.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
@@ -33,7 +34,7 @@ public class MeshApp implements AbstractResponseParser {
         this.formatNames = formatNames;
         this.objectMapper = new ObjectMapper();
         this.url = url;
-        this.monitorMetrics = new MonitorMetrics(url);
+        this.monitorMetrics = new MonitorMetrics(WebhookType.MESH, url);
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
