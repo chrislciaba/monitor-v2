@@ -47,7 +47,7 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
 
             logger.info("Canceled call: "
                     + (System.nanoTime() - startNanos) / 1e9f);
-
+            DiscordLog.log(WebhookType.SNS, Thread.currentThread().getName() + ": Cancelled call");
         }, 5, TimeUnit.SECONDS);
         try (Response response = call.execute()) {
             BasicHttpResponse basicHttpResponse = BasicHttpResponse.builder()
@@ -58,7 +58,7 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
                     .error(Optional.empty())
                     .headers(Optional.empty())
                     .build();
-            //response.body().close();
+            response.body().close();
             //client.dispatcher().executorService().shutdown();
             //client.connectionPool().evictAll();
             return basicHttpResponse;
