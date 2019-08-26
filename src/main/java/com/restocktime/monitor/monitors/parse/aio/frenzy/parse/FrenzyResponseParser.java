@@ -11,7 +11,7 @@ import com.restocktime.monitor.notifications.model.discord.DiscordField;
 import com.restocktime.monitor.monitors.parse.aio.frenzy.model.FrenzyProduct;
 import com.restocktime.monitor.monitors.parse.aio.frenzy.model.FrenzyResponse;
 import com.restocktime.monitor.notifications.model.slack.SlackField;
-import com.restocktime.monitor.monitors.parse.important.snkrs.parse.helper.DateHelper;
+import com.restocktime.monitor.monitors.parse.important.nike.snkrs.parse.helper.DateHelper;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import org.apache.log4j.Logger;
 

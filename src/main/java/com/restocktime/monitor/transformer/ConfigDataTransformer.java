@@ -8,6 +8,8 @@ import com.restocktime.monitor.config.model.Page;
 import com.restocktime.monitor.config.model.notifications.NotificationConfig;
 import com.restocktime.monitor.monitors.ingest.Http2DefaultMonitor;
 import com.restocktime.monitor.monitors.ingest.important.mesh.MeshAppMonitor;
+import com.restocktime.monitor.monitors.parse.important.nike.desktop.NikeDesktopResponseParser;
+import com.restocktime.monitor.monitors.parse.important.nike.snkrs.parse.helper.ParseV2Helper;
 import com.restocktime.monitor.monitors.parse.important.panagora.api.PanagoraProductResponseParser;
 import com.restocktime.monitor.monitors.parse.important.svd.parse.SvdAppResponseParser;
 import com.restocktime.monitor.util.http.client.builder.ClientBuilder;
@@ -106,8 +108,8 @@ import com.restocktime.monitor.monitors.ingest.aio.demandware.DemandwareGet;
 import com.restocktime.monitor.monitors.parse.aio.demandware.parse.DemandwareGetResponseParser;
 import com.restocktime.monitor.monitors.parse.important.shopify.parse.*;
 import com.restocktime.monitor.monitors.ingest.important.snkrs.NikeScratch;
-import com.restocktime.monitor.monitors.parse.important.snkrs.parse.HuntResponseParser;
-import com.restocktime.monitor.monitors.parse.important.snkrs.parse.ProductFeedV2ResponseParser;
+import com.restocktime.monitor.monitors.parse.important.nike.snkrs.parse.HuntResponseParser;
+import com.restocktime.monitor.monitors.parse.important.nike.snkrs.parse.ProductFeedV2ResponseParser;
 import com.restocktime.monitor.monitors.parse.important.panagora.sns.SNSProductResponseParser;
 import com.restocktime.monitor.monitors.parse.important.panagora.sns.SnsResponseParser;
 import com.restocktime.monitor.monitors.parse.important.solebox.SoleboxProductPageResponseParser;
@@ -746,6 +748,11 @@ public class ConfigDataTransformer {
             SvdAppResponseParser svdAppResponseParser =
                     new SvdAppResponseParser(new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSvd()), new ObjectMapper());
             return createDefault(svdUrl, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSvd(), notificationsFormatConfig), new HttpRequestHelper(), svdAppResponseParser);
+        } else if (site.equals("nike-desktop")){
+            String nikeUrl = String.format("https://api.nike.com/product_feed/threads/v2?filter=exclusiveAccess(true,false)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=marketplace(US)&filter=language(en)&filter=publishedContent.subType(soldier,officer)&filter=productInfo.merchProduct.styleColor(%s)", page.getSku());
+            NikeDesktopResponseParser nikeDesktopResponseParser =
+                    new NikeDesktopResponseParser(new ObjectMapper(), new StockTracker(new HashMap<>(), 0), new ParseV2Helper(),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getNikeDesktop()));
+            return createDefault(nikeUrl, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNikeDesktop(), notificationsFormatConfig), new HttpRequestHelper(), nikeDesktopResponseParser);
         }
 
         return null;

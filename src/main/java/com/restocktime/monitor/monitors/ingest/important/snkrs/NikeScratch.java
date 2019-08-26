@@ -6,7 +6,7 @@ import com.restocktime.monitor.util.http.request.model.BasicHttpResponse;
 import com.restocktime.monitor.util.bot.protection.nikefrontendlogin.NikeLogin;
 import com.restocktime.monitor.util.helper.timeout.Timeout;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
-import com.restocktime.monitor.monitors.parse.important.snkrs.parse.HuntResponseParser;
+import com.restocktime.monitor.monitors.parse.important.nike.snkrs.parse.HuntResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.Notifications;
 import org.apache.http.Header;

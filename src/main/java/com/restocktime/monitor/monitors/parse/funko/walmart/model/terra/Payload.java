@@ -1,7 +1,7 @@
 package com.restocktime.monitor.monitors.parse.funko.walmart.model.terra;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.restocktime.monitor.monitors.parse.important.snkrs.model.scratch.Images;
+import com.restocktime.monitor.monitors.parse.important.nike.snkrs.model.scratch.Images;
 
 import java.util.Map;
 

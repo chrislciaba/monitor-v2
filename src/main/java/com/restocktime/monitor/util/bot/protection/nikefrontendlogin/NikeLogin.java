@@ -1,7 +1,7 @@
 package com.restocktime.monitor.util.bot.protection.nikefrontendlogin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.util.helper.timeout.Timeout;
-import com.restocktime.monitor.monitors.parse.important.snkrs.model.snkrs.snkrsv2.LoginResponse;
+import com.restocktime.monitor.monitors.parse.important.nike.snkrs.model.snkrs.snkrsv2.LoginResponse;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
