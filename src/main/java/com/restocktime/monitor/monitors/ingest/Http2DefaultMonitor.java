@@ -39,7 +39,7 @@ public class Http2DefaultMonitor extends AbstractMonitor {
 
                     String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
                     if (md5.equals(hash)) {
-                        DiscordLog.log(WebhookType.OTHER,"Equal to last response, ignoring");
+                        DiscordLog.log(WebhookType.OTHER, Thread.currentThread().getName() + ": Equal to last response, ignoring");
                         return;
                     }
 
@@ -49,9 +49,9 @@ public class Http2DefaultMonitor extends AbstractMonitor {
 
                 abstractResponseParser.parse(basicHttpResponse, attachmentCreater, isFirst);
                 Notifications.send(attachmentCreater);
-                DiscordLog.log(WebhookType.OTHER, "Total time in monitor 2: " + ((t1-t0)/1000));
+                DiscordLog.log(WebhookType.OTHER, Thread.currentThread().getName() + ": Total time in monitor 2: " + ((t1-t0)/1000));
             } catch(Exception e){
-                DiscordLog.log(WebhookType.OTHER, e.getMessage());
+                DiscordLog.log(WebhookType.OTHER, Thread.currentThread().getName() + ": " + e.getMessage());
                 log.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }

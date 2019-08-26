@@ -172,12 +172,12 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
         if(!basicHttpResponse.getBody().isPresent() || !basicHttpResponse.getResponseCode().isPresent()){
             return Optional.empty();
         } else if(basicHttpResponse.getResponseCode().get() == 403 && basicHttpResponse.getBody().get().contains("cdn-cgi")){
-            DiscordLog.log(CF, "CAP finalScan " + url);
+            DiscordLog.log(CF, Thread.currentThread().getName() + ": CAP finalScan " + url);
             BasicHttpResponse basicHttpResponse1 = bypassCap(basicRequestClient, url, basicRequestClient.getRequestConfig(), basicHttpResponse.getBody().get(), apiKeys[idx]);
             idx = (idx + 1) % apiKeys.length;
             return Optional.of(basicHttpResponse1);
         } else if(basicHttpResponse.getResponseCode().get() != 503){
-            DiscordLog.log(CF,"NO CAP finalScan " + url);
+            DiscordLog.log(CF,Thread.currentThread().getName() + ": NO CAP finalScan " + url);
 
             return Optional.of(basicHttpResponse);
         }
@@ -203,7 +203,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
             }
             basicHttpResponse.get();
             if(isBanned(basicHttpResponse.get(), url)){
-                DiscordLog.log(CF, "Proxy banned : " + url);
+                DiscordLog.log(CF, Thread.currentThread().getName() + ": Proxy banned");
                 log.error("cf proxy banned");
 
                 return BasicHttpResponse.builder()
@@ -219,7 +219,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
                 return basicHttpResponse1.get();
             Optional<String> resultUrl = getChallengeUrl(basicHttpResponse.get(), url);
             if(!resultUrl.isPresent()){
-                DiscordLog.log(CF, "Cap failed : " + url);
+                DiscordLog.log(CF, Thread.currentThread().getName() + ": Cap failed");
 
                 log.error("cf captcha failed");
 
@@ -235,7 +235,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
             basicHttpResponse = doGet(basicRequestClient, resultUrl.get());
 
             if(!basicHttpResponse.isPresent()){
-                DiscordLog.log(CF, "cf couldn't solve challenge URL : " + url);
+                DiscordLog.log(CF, Thread.currentThread().getName() + "cf couldn't solve challenge URL : " + url);
 
                 log.error("cf couldn't solve challenge URL");
 
@@ -261,7 +261,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
             }
 
         } catch(Exception e) {
-            DiscordLog.log(CF, e.getMessage());
+            DiscordLog.log(CF, Thread.currentThread().getName() + ": " + e.getMessage());
             log.error(EXCEPTION_LOG_MESSAGE, e);
 
             return BasicHttpResponse.builder()
@@ -288,7 +288,6 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
 
         if(rayMatcher.find() && tokenMatcher.find() && sMatcher.find()) {
             TwoCaptchaService t = new TwoCaptchaService(apiKey, tokenMatcher.group(1), url, closeableHttpClient);
-            HttpGet httpGet = null;
             try {
                 URL uri = new URL(url);
                 String extraUrl = uri.getProtocol() + "://" + uri.getHost() + "/cdn-cgi/l/chk_captcha?s=" + URLEncoder.encode(sMatcher.group(1),  UTF_8) + "&id=" + URLEncoder.encode(rayMatcher.group(1), UTF_8) + "&g-recaptcha-response=";
@@ -330,10 +329,7 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
 
             } catch(Exception e) {
                 log.error(EXCEPTION_LOG_MESSAGE, e);
-
-            } finally {
-                if(httpGet != null)
-                    httpGet.releaseConnection();
+                DiscordLog.log(CF, Thread.currentThread().getName() + ": " + e.getMessage());
             }
         }
 
