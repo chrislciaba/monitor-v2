@@ -33,7 +33,6 @@ import static org.apache.commons.codec.CharEncoding.UTF_8;
 
 public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
 
-    final static Logger logger = Logger.getLogger(CloudflareRequestWrapper.class);
     private final String REGEX_0 = "name=\"pass\" value=\"([^\"]*)\"";
     private final String REGEX_1 = "name=\"jschl_vc\" value=\"([^\"]*)\"";
 
@@ -301,7 +300,6 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
 
 
                 if(responseString.contains("<title>Access denied | www.sneakersnstuff.com used Cloudflare to restrict access</title>")) {
-                    log.info("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
 
                     return BasicHttpResponse.builder()
                             .error(Optional.of(ResponseErrors.BANNED))
@@ -310,7 +308,6 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
                             .body(Optional.empty())
                             .build();
                 } else if(responseString.contains("Access denied")){
-                    log.info("banned proxy on sns " + basicRequestClient.getHttpHost().getHostName());
 
                     return BasicHttpResponse.builder()
                             .error(Optional.of(ResponseErrors.BANNED))

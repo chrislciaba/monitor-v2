@@ -28,6 +28,7 @@ public class Http2DefaultMonitor extends AbstractMonitor {
 
 
         public void run(BasicRequestClient basicRequestClient, boolean isFirst) {
+            DiscordLog.log(WebhookType.OTHER, Thread.currentThread().getName() + ": start of monitor");
             attachmentCreater.clearAll();
             Timeout.timeout(delay);
 

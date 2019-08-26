@@ -4,6 +4,8 @@ import com.restocktime.monitor.util.http.client.builder.ClientBuilder;
 import com.restocktime.monitor.util.http.client.builder.model.BasicRequestClient;
 import com.restocktime.monitor.monitors.ingest.AbstractMonitor;
 import com.restocktime.monitor.proxymanager.ProxyManager;
+import com.restocktime.monitor.util.ops.log.DiscordLog;
+import com.restocktime.monitor.util.ops.log.WebhookType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
 
@@ -63,6 +65,7 @@ public class Monitor implements Runnable {
                 proxyIndex = (proxyIndex + 1) % clients.size();
             }
         } catch (Exception e) {
+            DiscordLog.log(WebhookType.OTHER, Thread.currentThread().getName() + ": " + e.getMessage());
             logger.error(EXCEPTION_LOG_MESSAGE, e);
         }
 

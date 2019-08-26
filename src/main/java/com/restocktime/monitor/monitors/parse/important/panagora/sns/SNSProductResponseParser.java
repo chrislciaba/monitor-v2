@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.monitors.parse.important.panagora.sns.attachment.SnsBuilder;
 import com.restocktime.monitor.monitors.parse.important.panagora.sns.model.SizeObj;
 import com.restocktime.monitor.monitors.parse.important.panagora.sns.model.SnsSizeModel;
+import com.restocktime.monitor.notifications.client.Discord;
 import com.restocktime.monitor.util.http.request.ResponseValidator;
 import com.restocktime.monitor.util.http.request.model.BasicHttpResponse;
+import com.restocktime.monitor.util.ops.log.DiscordLog;
 import com.restocktime.monitor.util.ops.log.WebhookType;
 import com.restocktime.monitor.util.ops.metrics.MonitorMetrics;
 import com.restocktime.monitor.util.helper.stocktracker.StockTracker;
@@ -43,6 +45,7 @@ public class SNSProductResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
+        DiscordLog.log(WebhookType.OTHER, Thread.currentThread().getName() + " IN response parser");
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
             monitorMetrics.error();
             return;
