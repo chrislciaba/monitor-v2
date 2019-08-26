@@ -169,9 +169,9 @@ public class ClientBuilder {
                 };
 
                 OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
-                        .connectTimeout(10, TimeUnit.SECONDS)
-                        .writeTimeout(10, TimeUnit.SECONDS)
-                        .readTimeout(10, TimeUnit.SECONDS)
+                        .connectTimeout(5, TimeUnit.SECONDS)
+                        .writeTimeout(5, TimeUnit.SECONDS)
+                        .readTimeout(5, TimeUnit.SECONDS)
                         .cookieJar(cookieJar)
                         .addInterceptor(new LoggingInterceptor())
                         .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));

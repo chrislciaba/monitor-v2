@@ -7,15 +7,22 @@ import com.restocktime.monitor.util.http.request.model.ResponseErrors;
 import com.restocktime.monitor.util.ops.log.DiscordLog;
 import com.restocktime.monitor.util.ops.log.WebhookType;
 import lombok.AllArgsConstructor;
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @AllArgsConstructor
 public class Http2RequestHelper extends AbstractHttpRequestHelper {
+    final static Logger logger = Logger.getLogger(Http2RequestHelper.class);
+
     private HeaderDecorator headerDecorator;
 
 
@@ -26,12 +33,23 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
         requestBuilder = headerDecorator.decorateHeaders(requestBuilder);
 
         Request request = requestBuilder.build();
-
-
-
+        ScheduledExecutorService executor
+                = Executors.newScheduledThreadPool(1);
+        long startNanos = System.nanoTime();
         OkHttpClient client = basicRequestClient.getOkHttpClient().get();
+        Call call = client.newCall(request);
 
-        try (Response response = client.newCall(request).execute()) {
+        executor.schedule(() -> {
+            logger.info("Canceling call: "
+                    + (System.nanoTime() - startNanos) / 1e9f);
+
+            call.cancel();
+
+            logger.info("Canceled call: "
+                    + (System.nanoTime() - startNanos) / 1e9f);
+
+        }, 5, TimeUnit.SECONDS);
+        try (Response response = call.execute()) {
             BasicHttpResponse basicHttpResponse = BasicHttpResponse.builder()
                     .body(
                             Optional.of(response.body().string())
@@ -40,9 +58,9 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
                     .error(Optional.empty())
                     .headers(Optional.empty())
                     .build();
-            response.body().close();
-            client.dispatcher().executorService().shutdown();
-            client.connectionPool().evictAll();
+            //response.body().close();
+            //client.dispatcher().executorService().shutdown();
+            //client.connectionPool().evictAll();
             return basicHttpResponse;
         } catch (IOException e) {
             return BasicHttpResponse.builder()
