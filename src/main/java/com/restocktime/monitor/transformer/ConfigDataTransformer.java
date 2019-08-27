@@ -167,11 +167,11 @@ public class ConfigDataTransformer {
             BSTNParseSearchAbstractResponse bstnParseSearchResponse = new BSTNParseSearchAbstractResponse(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getBstn()));
             BSTNParseProductAbstractResponse bstnParseProductResponse = new BSTNParseProductAbstractResponse(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getBstn()));
             BstnParsePageResponse bstnParsePageResponse = new BstnParsePageResponse(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(page.getSku()), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getBstn()));
-            return new BSTN(url, page.getSku(), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getBstn(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), bstnParseProductResponse, bstnParseSearchResponse, bstnParsePageResponse);
+            return new BSTN(url, page.getSku(), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getBstn(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), bstnParseProductResponse, bstnParseSearchResponse, bstnParsePageResponse);
         } else if(site.equals("naked")){
 
             AbstractResponseParser parseNakedResponse = new NakedResponseParser(new StockTracker(new HashMap<>(), 500000), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getNaked()));
-            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNaked(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), parseNakedResponse);
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNaked(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), parseNakedResponse);
         } else if(site.equals("shopify")){
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
             ShopifyAbstractResponseParser shopifyResponseParser = new ShopifyAbstractResponseParser(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(notificationConfig));
@@ -240,7 +240,7 @@ public class ConfigDataTransformer {
             OffWhiteSearchAbstractResponseParser offWhiteSearchResponseParser = new OffWhiteSearchAbstractResponseParser(new StockTracker(new HashMap<>(), -1), UrlHelper.deriveBaseUrl(url), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffwhite()));
             OffWhiteProductAbstractResponseParser offWhiteProductResponseParser = new OffWhiteProductAbstractResponseParser(new StockTracker(new HashMap<>(), 10000), url, page.getName(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffwhite()));
 
-            return new OffWhite(url + ".json", page.getLocale(), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffwhite(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), offWhiteProductResponseParser, offWhiteSearchResponseParser);
+            return new OffWhite(url + ".json", page.getLocale(), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffwhite(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), offWhiteProductResponseParser, offWhiteSearchResponseParser);
         } else if(site.equals("ssense")){
             PageResponseParser pageResponseParser = new PageResponseParser(new StockTracker(new HashMap<>(), 30000), url,  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSsense()));
             SearchResponseParser searchResponseParser = new SearchResponseParser(page.getLocale(), url, page.getName(), new StockTracker(new HashMap<>(), -1), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSsense()));
@@ -299,7 +299,7 @@ public class ConfigDataTransformer {
             return new Titolo(url, page.getSku(), page.getName(), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getTitolo(), notificationsFormatConfig), new HttpRequestHelper(), titoloProductResponseParser, titoloSearchResponseParser);
         } else if(site.equals("yme")){
             YmeResponseParser ymeResponseParser = new YmeResponseParser(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getYme()));
-            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOneblockdown(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), ymeResponseParser);
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOneblockdown(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), ymeResponseParser);
         } else if(site.equals("supreme")){
             List<String> formats = null;
             NotificationConfig notificationConfig = null;
@@ -397,10 +397,10 @@ public class ConfigDataTransformer {
 
         } else if(site.equals("patta")){
             PattaAbstractResponseParser pattaResponseParser = new PattaAbstractResponseParser(new StockTracker(new HashMap<>(), -1), new KeywordSearchHelper(defaultKw), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getPatta()));
-            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getPatta(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), pattaResponseParser);
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getPatta(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), pattaResponseParser);
         } else if(site.equals("pattaproduct")) {
             PattaProductResponseParser pattaProductResponseParser = new PattaProductResponseParser(url, new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getPatta()));
-            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getPatta(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), pattaProductResponseParser);
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getPatta(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), pattaProductResponseParser);
         } else if(site.equals("thenextdoor")){
             TheNextDoorResponseParser theNextDoorResponseParser = new TheNextDoorResponseParser(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(page.getSku()), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getThenextdoor()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getThenextdoor(), notificationsFormatConfig), new HttpRequestHelper(), theNextDoorResponseParser);
@@ -417,7 +417,7 @@ public class ConfigDataTransformer {
             StockTracker stockTracker = new StockTracker(new HashMap<>(), 30000);
             OffWhiteAtcResponseParser offWhiteAtcResponseParser = new OffWhiteAtcResponseParser(url, stockTracker, new ObjectMapper(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffwhite()));
             OffWhiteAtcIncrementResponseParser offWhiteAtcIncrementResponseParser = new OffWhiteAtcIncrementResponseParser(page.getName(),stockTracker, new ObjectMapper(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffwhite()));
-            return new OffWhiteAtc(url, page.getSku(), page.getLocale(), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffwhite(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), offWhiteAtcResponseParser);
+            return new OffWhiteAtc(url, page.getSku(), page.getLocale(), page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffwhite(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), offWhiteAtcResponseParser);
         } else if(site.equals("frenzy")){
             StockTracker stockTracker = new StockTracker(new HashMap<>(), -1);
             FrenzyResponseParser frenzyResponseParser = new FrenzyResponseParser(stockTracker, new ObjectMapper(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getFrenzy()));
@@ -451,12 +451,12 @@ public class ConfigDataTransformer {
                     .url(url)
                     .delay(page.getDelay())
                     .attachmentCreater(new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig))
-                    .httpRequestHelper(getHttp2RequestHelper())
+                    .httpRequestHelper(new HttpRequestHelper())
                     .abstractResponseParser(snsResponseParser)
                     .build();
         } else if(site.equals("offwhitepage")){
             OffWhiteSoldOutTagResponseParser offWhiteSoldOutTagResponseParser = new OffWhiteSoldOutTagResponseParser(page.getSku(), new StockTracker(new HashMap<>(), 10000),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffwhite()));
-            return new OffWhitePage(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffwhite(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), offWhiteSoldOutTagResponseParser);
+            return new OffWhitePage(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffwhite(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), offWhiteSoldOutTagResponseParser);
         } else if(site.equals("complexcon")){
             StockTracker stockTracker = new StockTracker(new HashMap<>(), 0);
             ComplexconResponseParser complexconResponseParser = new ComplexconResponseParser(stockTracker, new ObjectMapper(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getComplexcon()));
@@ -502,10 +502,10 @@ public class ConfigDataTransformer {
         } else if(site.equals("offwhiteall")){
             OffWhiteAllResponseParser offWhiteAllResponseParser = new OffWhiteAllResponseParser(new StockTracker(new HashMap<>(), 10000), new KeywordSearchHelper(page.getSku()),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffwhite()));
             GetLinksFromPage getLinksFromPage = new GetLinksFromPage(page.getSku());
-            return new OffWhiteAll(url, page.getDelay(),new AttachmentCreater(siteNotificationsConfig.getOffwhite(), notificationsFormatConfig),  new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), offWhiteAllResponseParser);
+            return new OffWhiteAll(url, page.getDelay(),new AttachmentCreater(siteNotificationsConfig.getOffwhite(), notificationsFormatConfig),  new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), offWhiteAllResponseParser);
         } else if(site.equals("jimmyjazz")){
             JimmyJazzResponseParser jimmyJazzResponseParser = new JimmyJazzResponseParser(new StockTracker(new HashMap<>(), 0), url,  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getJimmyjazz()));
-            return new JimmyJazz(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getJimmyjazz(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), jimmyJazzResponseParser);
+            return new JimmyJazz(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getJimmyjazz(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), jimmyJazzResponseParser);
 
         } else if(site.equals("supremekw")){
             SupremeAllProductResponseParser supremeProductParseResponse = new SupremeAllProductResponseParser(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(page.getSku()), page.getLocale(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSupreme()));
@@ -704,11 +704,11 @@ public class ConfigDataTransformer {
                     .delay(page.getDelay())
                     .attachmentCreater(new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig))
                     .httpRequestHelper(
-                            new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault())
+                            new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault())
                     )
                     .abstractResponseParser(snsProductResponseParser)
                     .build();
-            //return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), snsProductResponseParser);
+            //return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), snsProductResponseParser);
         } else if(site.equals("yeezysupply")){
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
             ShopifyAbstractResponseParser shopifyAbstractResponseParser =
@@ -727,7 +727,7 @@ public class ConfigDataTransformer {
         } else if(site.equals("offspring")){
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), new Offspring(new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring()), new ObjectMapper()));
         } else if(site.equals("caliroots")){
-            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault()), new Caliroots(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring())));
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), new Caliroots(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring())));
         } else if(site.equals("7hills")) {
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), new SevenHillsResponseParser(new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring())));
         } else if(site.equals("panagora")) {
@@ -739,7 +739,7 @@ public class ConfigDataTransformer {
                     .delay(page.getDelay())
                     .attachmentCreater(new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig))
                     .httpRequestHelper(
-                            new CloudflareRequestWrapper(apiKeys, getHttp2RequestHelper(), HttpClients.createDefault())
+                            new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault())
                     )
                     .abstractResponseParser(panagoraProductResponseParser)
                     .build();

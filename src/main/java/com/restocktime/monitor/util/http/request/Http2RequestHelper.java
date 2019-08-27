@@ -35,20 +35,24 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
         Request request = requestBuilder.build();
         ScheduledExecutorService executor
                 = Executors.newScheduledThreadPool(1);
+
         long startNanos = System.nanoTime();
         OkHttpClient client = basicRequestClient.getOkHttpClient().get();
         Call call = client.newCall(request);
-
         executor.schedule(() -> {
             logger.info("Canceling call: "
                     + (System.nanoTime() - startNanos) / 1e9f);
-
+            if(call.isExecuted()){
+                logger.info("Canceled call: "
+                        + (System.nanoTime() - startNanos) / 1e9f);
+            }
             call.cancel();
 
             logger.info("Canceled call: "
                     + (System.nanoTime() - startNanos) / 1e9f);
-            DiscordLog.log(WebhookType.SNS, Thread.currentThread().getName() + ": Cancelled call");
-        }, 10, TimeUnit.SECONDS);
+        }, 15, TimeUnit.SECONDS);
+
+
         try (Response response = call.execute()) {
             BasicHttpResponse basicHttpResponse = BasicHttpResponse.builder()
                     .body(
@@ -59,8 +63,6 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
                     .headers(Optional.empty())
                     .build();
             response.body().close();
-            //client.dispatcher().executorService().shutdown();
-            //client.connectionPool().evictAll();
             return basicHttpResponse;
         } catch (IOException e) {
             return BasicHttpResponse.builder()

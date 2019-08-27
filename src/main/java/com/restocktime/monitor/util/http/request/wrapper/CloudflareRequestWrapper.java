@@ -39,11 +39,11 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
     private String[] apiKeys;
     private int idx;
     private static final Logger log = Logger.getLogger(CloudflareRequestWrapper.class);
-    private Http2RequestHelper http2RequestHelper;
+    private AbstractHttpRequestHelper http2RequestHelper;
     private CloseableHttpClient closeableHttpClient;
 
 
-    public CloudflareRequestWrapper(String[] apiKeys, Http2RequestHelper http2RequestHelper, CloseableHttpClient closeableHttpClient){
+    public CloudflareRequestWrapper(String[] apiKeys, AbstractHttpRequestHelper http2RequestHelper, CloseableHttpClient closeableHttpClient){
         this.apiKeys = apiKeys;
         this.idx = 0;
         this.http2RequestHelper = http2RequestHelper;
@@ -63,7 +63,9 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
             }
         }
 
-        return Optional.of(http2RequestHelper.performGet(basicRequestClient, url));
+        BasicHttpResponse basicHttpResponse = http2RequestHelper.performGet(basicRequestClient, url);
+        //log.info(basicHttpResponse.getBody().get().replaceAll(">\\s+<", "><"));
+        return Optional.of(basicHttpResponse);
     }
 
     private boolean isBanned(BasicHttpResponse basicHttpResponse, String url) {
