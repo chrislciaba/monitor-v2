@@ -150,6 +150,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
 
 public class ConfigDataTransformer {
 
@@ -453,6 +454,7 @@ public class ConfigDataTransformer {
                     .attachmentCreater(new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig))
                     .httpRequestHelper(new HttpRequestHelper())
                     .abstractResponseParser(snsResponseParser)
+                    .addUUID(false)
                     .build();
         } else if(site.equals("offwhitepage")){
             OffWhiteSoldOutTagResponseParser offWhiteSoldOutTagResponseParser = new OffWhiteSoldOutTagResponseParser(page.getSku(), new StockTracker(new HashMap<>(), 10000),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffwhite()));
@@ -698,7 +700,7 @@ public class ConfigDataTransformer {
             SupremePageResponseParser supremePageResponseParser = new SupremePageResponseParser(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(defaultKw), page.getLocale(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSupreme()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSupreme(), notificationsFormatConfig), new HttpRequestHelper(), supremePageResponseParser);
         } else if(site.equals("snsproduct")){
-            SNSProductResponseParser snsProductResponseParser = new SNSProductResponseParser(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSns()), new ObjectMapper());
+            SNSProductResponseParser snsProductResponseParser = new SNSProductResponseParser(new StockTracker(new HashMap<>(), 120000), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSns()), new ObjectMapper());
             return Http2DefaultMonitor.builder()
                     .url(url)
                     .delay(page.getDelay())
@@ -707,6 +709,7 @@ public class ConfigDataTransformer {
                             new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault())
                     )
                     .abstractResponseParser(snsProductResponseParser)
+                    .addUUID(true)
                     .build();
             //return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig), new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault()), snsProductResponseParser);
         } else if(site.equals("yeezysupply")){
@@ -742,6 +745,7 @@ public class ConfigDataTransformer {
                             new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault())
                     )
                     .abstractResponseParser(panagoraProductResponseParser)
+                    .addUUID(false)
                     .build();
         } else if (site.equals("svd-app")) {
             String svdUrl = String.format("https://ms-api.sivasdescalzo.com/api/itemDetail/%s", page.getSku().trim());

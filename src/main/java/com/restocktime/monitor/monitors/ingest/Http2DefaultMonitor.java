@@ -13,6 +13,9 @@ import com.restocktime.monitor.util.helper.timeout.Timeout;
 import lombok.Builder;
 import org.apache.log4j.Logger;
 
+import java.util.UUID;
+import java.util.regex.Pattern;
+
 import static com.restocktime.monitor.constants.Constants.EXCEPTION_LOG_MESSAGE;
 
 @Builder
@@ -20,6 +23,7 @@ public class Http2DefaultMonitor extends AbstractMonitor {
         final static Logger log = Logger.getLogger(Http2DefaultMonitor.class);
 
         private String url;
+        private boolean addUUID;
         private int delay;
         private AttachmentCreater attachmentCreater;
         private AbstractHttpRequestHelper httpRequestHelper;
@@ -31,10 +35,14 @@ public class Http2DefaultMonitor extends AbstractMonitor {
             DiscordLog.log(WebhookType.OTHER, Thread.currentThread().getName() + ": start of monitor");
             attachmentCreater.clearAll();
             Timeout.timeout(delay);
+            String cacheUrl = url;
+            if(addUUID){
+                cacheUrl += UUID.randomUUID();
+            }
 
             try{
                 long t0 = System.currentTimeMillis();
-                BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, url);
+                BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, cacheUrl);
                 long t1 = System.currentTimeMillis();
                 if (basicHttpResponse.getBody().isPresent()) {
 
