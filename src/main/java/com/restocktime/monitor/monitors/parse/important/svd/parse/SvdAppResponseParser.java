@@ -9,6 +9,8 @@ import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
 import com.restocktime.monitor.util.http.request.ResponseValidator;
 import com.restocktime.monitor.util.http.request.model.BasicHttpResponse;
 import com.restocktime.monitor.util.helper.stocktracker.StockTracker;
+import com.restocktime.monitor.util.ops.log.DiscordLog;
+import com.restocktime.monitor.util.ops.log.WebhookType;
 import lombok.AllArgsConstructor;
 import org.apache.log4j.Logger;
 
@@ -24,10 +26,10 @@ public class SvdAppResponseParser implements AbstractResponseParser {
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst){
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
+            DiscordLog.log(WebhookType.SVD, "Error");
+
             return;
         }
-
-        logger.info(basicHttpResponse.getBody());
 
         try {
             SvdAppProduct svdAppProduct = objectMapper.readValue(basicHttpResponse.getBody().get(), SvdAppProduct.class);
@@ -45,9 +47,15 @@ public class SvdAppResponseParser implements AbstractResponseParser {
                 stockTracker.setOOS(svdAppProduct.getGeneralData().getSku());
             }
 
+            DiscordLog.log(WebhookType.SVD, "Success");
+
         } catch(IOException e) {
+            DiscordLog.log(WebhookType.SVD, "IOError: " + e.getMessage());
+
             logger.error("Failed to parse svd response", e);
         } catch (Exception e) {
+            DiscordLog.log(WebhookType.SVD, "Error: " + e.getMessage());
+
             logger.error(Constants.EXCEPTION_LOG_MESSAGE, e);
         }
     }

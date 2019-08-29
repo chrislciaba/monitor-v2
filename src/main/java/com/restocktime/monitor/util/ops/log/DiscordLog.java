@@ -24,6 +24,8 @@ public class DiscordLog {
                 s = "https://discordapp.com/api/webhooks/614995736488312844/t9kwBI0v_fgjQBvtYhXC9B5rsIwskAbdmqgKEA1AwHm87TOXq_q56t2538ndETdx9fuT";
             } else if(webhookType.equals(WebhookType.SP)){
                 s = "https://discordapp.com/api/webhooks/616512013119651840/sM5az7kkIL5OAqqbGmYw7hcwIZIITNZ4jdtxIQvw8yGV4IiVvlaGJNgx3y4zTyCF1G96";
+            } else if(webhookType.equals(WebhookType.SVD)){
+                s = "https://discordapp.com/api/webhooks/616527013783535617/SAeQmJyWTnxC0fMYAtpn1PhmuCSZvlas8vCs7ht-G_V2TE0RSaJwXT8QKa9L-0TAZgjA";
             } else {
                 s = "https://discordapp.com/api/webhooks/613613241595330561/x9VMO3xUdd-S2p0T-8My-jfm66esNloAv8S98fIzcWKDB47SEGV32mob6nnALuZNM4wH";
             }
@@ -32,7 +34,6 @@ public class DiscordLog {
             httpPost.setEntity(new StringEntity("{\"content\":\"" + message + "\"}"));
             try {
                 HttpResponse httpResponse = closeableHttpClient.execute(httpPost);
-
             } finally {
                 httpPost.releaseConnection();
             }

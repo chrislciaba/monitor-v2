@@ -1,5 +1,6 @@
 package com.restocktime.monitor.monitors.parse.important.shoepalace;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restocktime.monitor.util.http.request.ResponseValidator;
 import com.restocktime.monitor.util.http.request.model.BasicHttpResponse;
 import com.restocktime.monitor.util.helper.stocktracker.StockTracker;
@@ -17,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ShoepalaceResponseParser implements AbstractResponseParser {
-    final static Logger logger = Logger.getLogger(RimowaResponseParser.class);
+    final static Logger logger = Logger.getLogger(ShoepalaceResponseParser.class);
     private StockTracker stockTracker;
     private String url;
     private final String namePatternStr = "<title class=\"notranslate\">([^<]*)</title>";
@@ -44,6 +45,7 @@ public class ShoepalaceResponseParser implements AbstractResponseParser {
         String responseString = basicHttpResponse.getBody().get();
         String name = "NAME_UNAVAILABLE";
         if(responseString.contains("alt=\"Add to Cart\"")){
+            logger.info("in stock");
             monitorMetrics.success();
             Matcher m = pattern.matcher(responseString);
             logger.info("in stock");
@@ -53,14 +55,26 @@ public class ShoepalaceResponseParser implements AbstractResponseParser {
             if(stockTracker.notifyForObject(url, isFirst)){
                 DefaultBuilder.buildAttachments(attachmentCreater, url, null, "Shoepalace", name, formatNames);
             }
-        } else if(responseString.contains("Currently out-of-stock.")){
+        } else if(responseString.contains("Currently out-of-stock.") || responseString.contains("<title class=\"notranslate\">404 Not Found at Shoe Palace</title>\n")){
+            logger.info("oos");
+
             monitorMetrics.success();
             logger.info("OOS - " + url);
             stockTracker.setOOS(url);
         } else if(responseString.contains("<title>403 Forbidden</title>")){
+            logger.info("ban");
+            DiscordLog.log(WebhookType.SP, "BAN");
+
             monitorMetrics.ban();
+        } else if(responseString.contains("502 Bad Gateway")){
+            logger.info("502");
+            DiscordLog.log(WebhookType.SP, "502");
+
+            monitorMetrics.error();
         } else {
-            DiscordLog.log(WebhookType.SP, responseString.substring(0, Math.min(responseString.length(), 1000)));
+            logger.info("error: " + basicHttpResponse.getResponseCode().get() +  ": " + responseString);
+
+            DiscordLog.log(WebhookType.SP, basicHttpResponse.getResponseCode().get() + ": " + (responseString.length() > 1000 ? responseString.substring(0, 1000) : responseString));
             monitorMetrics.error();
         }
     }
