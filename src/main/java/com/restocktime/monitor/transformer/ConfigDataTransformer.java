@@ -8,6 +8,10 @@ import com.restocktime.monitor.config.model.Page;
 import com.restocktime.monitor.config.model.notifications.NotificationConfig;
 import com.restocktime.monitor.monitors.ingest.Http2DefaultMonitor;
 import com.restocktime.monitor.monitors.ingest.important.mesh.MeshAppMonitor;
+import com.restocktime.monitor.monitors.parse.aio.grosbasket.GrosBasketResponseParser;
+import com.restocktime.monitor.monitors.parse.aio.sneakerbarber.SneakerbarberResponseParser;
+import com.restocktime.monitor.monitors.parse.aio.sportowysklep.SportowysklepResponseParser;
+import com.restocktime.monitor.monitors.parse.aio.suppastore.SuppaStoreResponseParser;
 import com.restocktime.monitor.monitors.parse.important.nike.desktop.NikeDesktopResponseParser;
 import com.restocktime.monitor.monitors.parse.important.nike.snkrs.parse.helper.ParseV2Helper;
 import com.restocktime.monitor.monitors.parse.important.panagora.api.PanagoraProductResponseParser;
@@ -757,6 +761,22 @@ public class ConfigDataTransformer {
             NikeDesktopResponseParser nikeDesktopResponseParser =
                     new NikeDesktopResponseParser(new ObjectMapper(), new StockTracker(new HashMap<>(), 0), new ParseV2Helper(),  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getNikeDesktop()));
             return createDefault(nikeUrl, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getNikeDesktop(), notificationsFormatConfig), new HttpRequestHelper(), nikeDesktopResponseParser);
+        } else if (site.equals("grosbasket")) {
+            GrosBasketResponseParser grosBasketResponseParser =
+                    new GrosBasketResponseParser(new StockTracker(new HashMap<>(), 10000), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring()));
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), grosBasketResponseParser);
+        } else if (site.equals("sklepkoszykarza")) {
+            SportowysklepResponseParser grosBasketResponseParser =
+                    new SportowysklepResponseParser(new StockTracker(new HashMap<>(), 10000), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring()));
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), grosBasketResponseParser);
+        } else if (site.equals("suppastore")) {
+            SuppaStoreResponseParser grosBasketResponseParser =
+                    new SuppaStoreResponseParser(new StockTracker(new HashMap<>(), 10000), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring()));
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), grosBasketResponseParser);
+        } else if (site.equals("sneakerbarber")) {
+            SneakerbarberResponseParser sneakerbarberResponseParser =
+                    new SneakerbarberResponseParser(new StockTracker(new HashMap<>(), 10000), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOffspring()));
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOffspring(), notificationsFormatConfig), new HttpRequestHelper(), sneakerbarberResponseParser);
         }
 
         return null;
