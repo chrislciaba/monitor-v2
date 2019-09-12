@@ -181,6 +181,10 @@ public class ConfigDataTransformer {
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
             ShopifyAbstractResponseParser shopifyResponseParser = new ShopifyAbstractResponseParser(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(notificationConfig));
             return new Shopify(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper() , shopifyResponseParser);
+        } else if(site.equals("shopifyresi")){
+            NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
+            ShopifyAbstractResponseParser shopifyResponseParser = new ShopifyAbstractResponseParser(new StockTracker(new HashMap<>(), 0), url, NotificationsConfigTransformer.transformNotifications(notificationConfig));
+            return new Shopify(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper() , shopifyResponseParser);
         } else if(site.equals("shopifyallproducts")){
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
 
@@ -188,6 +192,12 @@ public class ConfigDataTransformer {
                     new ShopifyProductListingsResponseParser(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(KeywordFormatHelper.getKeywordString(defaultKw, page.getSku())), url, NotificationsConfigTransformer.transformNotifications(notificationConfig));
             return new ShopifyProductListings(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), shopifyProductListingsResponseParser);
         } else if(site.equals("shopifyproducts")){
+            NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
+
+            ShopifyProductsResponseParser shopifyProductsResponseParser =
+                    new ShopifyProductsResponseParser(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(KeywordFormatHelper.getKeywordString(defaultKw, page.getSku())), url, NotificationsConfigTransformer.transformNotifications(notificationConfig));
+            return new ShopifyProducts(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), shopifyProductsResponseParser);
+        } else if(site.equals("shopifyproductsresi")){
             NotificationConfig notificationConfig = getShopifyConfig(url, siteNotificationsConfig);
 
             ShopifyProductsResponseParser shopifyProductsResponseParser =
