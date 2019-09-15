@@ -36,7 +36,7 @@ public class ClientBuilder {
     public List<BasicRequestClient> buildClients(String url, List<String> proxyList, String site){
         List<BasicRequestClient> basicRequestClients = new ArrayList<>();
         for(int i = 0; i < proxyList.size(); i++){
-            if (1==1 || (!site.contains("sns") && !site.contains("bstn") && !site.contains("naked") && !site.contains("panagora"))) {
+            if ( (!site.contains("sns") && !site.contains("bstn") && !site.contains("naked") && !site.contains("panagora"))) {
                 List<Header> headerList = getDefaultHeaders(url, site);
 
                 HttpProxy httpProxy = transformToProxy(proxyList.get(i));
@@ -205,6 +205,7 @@ public class ClientBuilder {
                                 .proxyHost(proxyHost)
                                 .proxyPort(proxyPort)
                                 .cookies(new HashMap<>())
+                                .connectionPool(new ConnectionPool(1, 1, TimeUnit.MINUTES))
                                 .build()))
                         .build()
                  );

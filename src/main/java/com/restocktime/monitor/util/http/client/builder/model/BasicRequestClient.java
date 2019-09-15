@@ -29,7 +29,7 @@ public class BasicRequestClient {
     private RequestConfig noRedirectrequestConfig;
 
 
-    public Optional<OkHttpClient> getOkHttpClient() {
+    public Optional<OkHttpClient> getOkHttpClient(ConnectionPool connectionPool) {
         OkHttpClientConfig okHttpClientConfig = this.okHttpClientConfig.get();
         CookieJar cookieJar = new CookieJar() {
             private final HashMap<String, Map<String, Cookie>> cookieStore = new HashMap<>();
@@ -64,7 +64,7 @@ public class BasicRequestClient {
                 .readTimeout(5, TimeUnit.SECONDS)
                 .cookieJar(cookieJar)
                 .connectionPool(
-                        new ConnectionPool(1, 1, TimeUnit.MICROSECONDS)
+                        connectionPool
                 )
                 .retryOnConnectionFailure(false)
                 .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(okHttpClientConfig.getProxyHost(), okHttpClientConfig.getProxyPort())));

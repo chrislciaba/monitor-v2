@@ -147,6 +147,7 @@ import com.restocktime.monitor.monitors.parse.important.shopify.ys.parse.YsRespo
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.attachments.transformer.NotificationsConfigTransformer;
 import com.restocktime.monitor.proxymanager.ProxyManager;
+import okhttp3.ConnectionPool;
 import org.apache.http.impl.client.HttpClients;
 
 import java.net.URLEncoder;
@@ -154,6 +155,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class ConfigDataTransformer {
@@ -720,7 +722,7 @@ public class ConfigDataTransformer {
                     .delay(page.getDelay())
                     .attachmentCreater(new AttachmentCreater(siteNotificationsConfig.getSns(), notificationsFormatConfig))
                     .httpRequestHelper(
-                            new CloudflareRequestWrapper(apiKeys, new HttpRequestHelper(), HttpClients.createDefault())
+                            new CloudflareRequestWrapper(apiKeys, new Http2RequestHelper(new GoogleChromeHeaderDecorator(GoogleChromeUserAgentGenerator.generateUserAgent()), new ConnectionPool(1, 1, TimeUnit.MINUTES)), HttpClients.createDefault())
                     )
                     .abstractResponseParser(snsProductResponseParser)
                     .addUUID(true)
@@ -850,7 +852,8 @@ public class ConfigDataTransformer {
         return new Http2RequestHelper(
                 ThreadLocalRandom.current().nextInt(0, 2) == 1 ?
                         new FirefoxHeaderDecorator(FirefoxUserAgentGenerator.generateUserAgent()):
-                        new GoogleChromeHeaderDecorator(GoogleChromeUserAgentGenerator.generateUserAgent())
+                        new GoogleChromeHeaderDecorator(GoogleChromeUserAgentGenerator.generateUserAgent()),
+                new ConnectionPool()
         );
     }
 }
