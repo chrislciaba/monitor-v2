@@ -52,26 +52,21 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
 
 
         try (Response response = call.execute()) {
+            String resp  = response.body().string();
             BasicHttpResponse basicHttpResponse = BasicHttpResponse.builder()
                     .body(
-                            Optional.of(response.body().string())
+                            Optional.of(resp)
                     ).responseCode(
                             Optional.of(response.code()))
                     .error(Optional.empty())
                     .headers(Optional.empty())
                     .build();
             response.body().close();
-
-            logger.info("BEFORE: " + client.connectionPool().connectionCount() + ", " + client.connectionPool().idleConnectionCount());
-
             client.connectionPool().evictAll();
-          //  logger.info("AFTER: " + client.connectionPool().connectionCount() + ", " + client.connectionPool().idleConnectionCount());
 
-         //   client.dispatcher().executorService().shutdown();
             return basicHttpResponse;
         } catch (IOException e) {
-            //client.connectionPool().evictAll();
-           // client.dispatcher().executorService().shutdown();
+            e.printStackTrace();
             return BasicHttpResponse.builder()
                     .headers(Optional.empty())
                     .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
@@ -79,8 +74,7 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
                     .body(Optional.empty())
                     .build();
         } catch (Exception e) {
-           // client.connectionPool().evictAll();
-          //  client.dispatcher().executorService().shutdown();
+e.printStackTrace();
             DiscordLog.log(WebhookType.OTHER, e.getMessage());
             return BasicHttpResponse.builder()
                     .headers(Optional.empty())

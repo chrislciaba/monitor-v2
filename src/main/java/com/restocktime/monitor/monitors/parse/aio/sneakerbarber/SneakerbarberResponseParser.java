@@ -35,7 +35,6 @@ public class SneakerbarberResponseParser implements AbstractResponseParser {
 
         while (m.find()) {
             String handle = m.group(1);
-            System.out.println(handle);
             if (stockTracker.notifyForObject(handle, isFirst)) {
 
 

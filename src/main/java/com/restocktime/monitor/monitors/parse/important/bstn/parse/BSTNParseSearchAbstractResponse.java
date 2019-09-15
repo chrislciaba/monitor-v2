@@ -6,6 +6,8 @@ import com.restocktime.monitor.util.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
+import com.restocktime.monitor.util.ops.log.DiscordLog;
+import com.restocktime.monitor.util.ops.log.WebhookType;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -47,12 +49,14 @@ public class BSTNParseSearchAbstractResponse implements AbstractResponseParser {
             }
 
             logger.info("Found product: " + productName);
+            DiscordLog.log(WebhookType.BSTN, "BSTN product found and in stock " + productName);
 
             if (stockTracker.notifyForObject(url, isFirst)) {
                 DefaultBuilder.buildAttachments(attachmentCreater, url, null, "BSTN", productName, formatNames);
             }
 
         } else if (responseString.contains("sorry, we could not find any results for") || responseString.contains("no results for your search") || responseString.contains("wurden keine ergebnisse gefunden")) {
+
             logger.info("OOS");
             stockTracker.setOOS(url);
         } else if (responseString.contains("maximum number")) {

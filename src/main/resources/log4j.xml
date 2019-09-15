@@ -13,7 +13,7 @@
             <param name="MaxFileSize" value="512000000" />
         </triggeringPolicy>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %tid %-5p %m%n" />
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %C{1}:%L %tid %-5p %m%n" />
         </layout>
     </appender>
     <root>

@@ -34,7 +34,7 @@ public class SvdAppResponseParser implements AbstractResponseParser {
         try {
             SvdAppProduct svdAppProduct = objectMapper.readValue(basicHttpResponse.getBody().get(), SvdAppProduct.class);
 
-            if (svdAppProduct.getViewType().equals("product") && !svdAppProduct.getGeneralData().getSoldout() && stockTracker.notifyForObject(svdAppProduct.getGeneralData().getSku(), isFirst)) {
+            if (!svdAppProduct.getGeneralData().getSoldout() && stockTracker.notifyForObject(svdAppProduct.getGeneralData().getSku(), isFirst)) {
                 DefaultBuilder.buildAttachments(
                         attachmentCreater,
                         svdAppProduct.getGeneralData().getUrl(),

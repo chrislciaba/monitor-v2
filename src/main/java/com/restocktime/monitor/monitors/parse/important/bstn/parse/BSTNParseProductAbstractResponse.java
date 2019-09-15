@@ -6,6 +6,8 @@ import com.restocktime.monitor.util.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.monitors.parse.AbstractResponseParser;
 import com.restocktime.monitor.notifications.attachments.AttachmentCreater;
 import com.restocktime.monitor.notifications.defaultattachment.DefaultBuilder;
+import com.restocktime.monitor.util.ops.log.DiscordLog;
+import com.restocktime.monitor.util.ops.log.WebhookType;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -44,7 +46,7 @@ public class BSTNParseProductAbstractResponse implements AbstractResponseParser 
             if (m.find()) {
                 productName = m.group(1).trim().toUpperCase();
             }
-
+            DiscordLog.log(WebhookType.BSTN, "Found and in stock: " + url);
             logger.info("Found product: " + productName);
 
             if (stockTracker.notifyForObject(url, isFirst)) {
@@ -52,12 +54,18 @@ public class BSTNParseProductAbstractResponse implements AbstractResponseParser 
             }
 
         } else if (responseString.contains("maximum number")) {
+            DiscordLog.log(WebhookType.BSTN, "Max number or banned: " + url);
+
             logger.info("Max visitors");
         } else if (responseString.contains("<span>sold out</span>")) {
+            DiscordLog.log(WebhookType.BSTN, "OOS: " + url);
+
             logger.info("OOS");
             stockTracker.setOOS(url);
         } else {
-            logger.info("OOS - " + url);
+            DiscordLog.log(WebhookType.BSTN, "ERROR: " + url);
+
+            logger.info(responseString);
 
         }
     }

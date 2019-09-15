@@ -64,7 +64,6 @@ public class CloudflareRequestWrapper extends AbstractHttpRequestHelper {
         }
 
         BasicHttpResponse basicHttpResponse = http2RequestHelper.performGet(basicRequestClient, url);
-        //log.info(basicHttpResponse.getBody().get().replaceAll(">\\s+<", "><"));
         return Optional.of(basicHttpResponse);
     }
 

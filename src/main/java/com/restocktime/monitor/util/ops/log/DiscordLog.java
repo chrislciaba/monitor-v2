@@ -17,17 +17,21 @@ public class DiscordLog {
                     .build();
             String s;
             if(webhookType.equals(WebhookType.SNS)){
-                s = "https://discordapp.com/api/webhooks/614995190469361684/SQM-MilzQxztQfXlcXYHVioy1blOyaYCRsKesW3NYGv_tWa1Vb1Uy2lId54e_J4BuyT7";
+                s = "https://discordapp.com/api/webhooks/622922205826646036/LlPRMOuNrTjJV_kl4RaGuXzVIRxCwTvHYuphiAXww8WTmKrOZjoCzg-6wjjwxdB4w7d0";
             } else if(webhookType.equals(WebhookType.MESH)){
-                s = "https://discordapp.com/api/webhooks/614995510650077202/HhwvMYPEN1n4VvAj5aTiXBrG8Alm2HkTplUPCYHY4hc5ZWp00xVRpzLvxW1JdnSqYVv6";
+                s = "https://discordapp.com/api/webhooks/622922547985645588/iehzl5fvV4IXDMqK11H9gdPrjbvijZnrTeYMKuUu1kLK1uIz_NRAT-qWUbnQpL8JwmGr";
             } else  if(webhookType.equals(WebhookType.CF)) {
-                s = "https://discordapp.com/api/webhooks/614995736488312844/t9kwBI0v_fgjQBvtYhXC9B5rsIwskAbdmqgKEA1AwHm87TOXq_q56t2538ndETdx9fuT";
+                s = "https://discordapp.com/api/webhooks/622922338379235328/tC0Bs9gEcWXQ97KPwaqX7SMUdDypcr4GFkh9B01JYK2XFXDpbdbrpYrj5gGNfJVuqHP1";
             } else if(webhookType.equals(WebhookType.SP)){
-                s = "https://discordapp.com/api/webhooks/616512013119651840/sM5az7kkIL5OAqqbGmYw7hcwIZIITNZ4jdtxIQvw8yGV4IiVvlaGJNgx3y4zTyCF1G96";
+                s = "https://discordapp.com/api/webhooks/622922919571357697/YBdh92ynelFa_VsDrnO_Zn8XPQWRDbq_N8_fwKbJjtFyiKzf83OXhDJ9BkfSMwj6D0Xp";
             } else if(webhookType.equals(WebhookType.SVD)){
-                s = "https://discordapp.com/api/webhooks/616527013783535617/SAeQmJyWTnxC0fMYAtpn1PhmuCSZvlas8vCs7ht-G_V2TE0RSaJwXT8QKa9L-0TAZgjA";
+                s = "https://discordapp.com/api/webhooks/622922712154767375/NhTH64w6Fandw9D3V2pTUt7XZ-YRY-7DG-0YQ7fDxzoa1vs8dvDoQD37Q96Ai3BBlcYL";
+            } else if(webhookType.equals(WebhookType.BSTN)){
+                s = "https://discordapp.com/api/webhooks/622921838904737814/9DnpMIYNw7Vdbv7m-BaDm3X3u8-XdiSYR6DV9C0Nc2dczf2N6jHIz5kOsn0VcgLT0zFi";
+            } else if(webhookType.equals(WebhookType.NAKED)){
+                s = "https://discordapp.com/api/webhooks/622929166278328351/IPq9lR3Uyjg844jAHRzHaACFvWhLpa-z8Ssbg73snyuexAehtUELHHDaogjXcPBUt4i4";
             } else {
-                s = "https://discordapp.com/api/webhooks/613613241595330561/x9VMO3xUdd-S2p0T-8My-jfm66esNloAv8S98fIzcWKDB47SEGV32mob6nnALuZNM4wH";
+                s = "https://discordapp.com/api/webhooks/622923098475200532/UqjX9b8bCz5RBeS324LrgwKBJG4VkCGZc3PK17tjb1lyBB8QDW5JLfjWhTWdrMIpr4Jx";
             }
             HttpPost httpPost = new HttpPost(s);
             httpPost.addHeader("Content-Type", "application/json");
