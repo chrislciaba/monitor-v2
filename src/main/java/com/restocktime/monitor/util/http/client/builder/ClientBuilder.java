@@ -5,6 +5,7 @@ import com.restocktime.monitor.util.http.client.builder.model.HttpProxy;
 import com.restocktime.monitor.util.helper.url.UrlHelper;
 import com.restocktime.monitor.monitors.ingest.aio.backdoor.BackDoor;
 
+import com.restocktime.monitor.util.http.client.builder.model.OkHttpClientConfig;
 import okhttp3.*;
 import okhttp3.Authenticator;
 import org.apache.http.*;
@@ -141,7 +142,7 @@ public class ClientBuilder {
                 String username = httpProxy.getUsername();
                 String password = httpProxy.getPassword();
 
-                CookieJar cookieJar = new CookieJar() {
+               /* CookieJar cookieJar = new CookieJar() {
                     private final HashMap<String, Map<String, Cookie>> cookieStore = new HashMap<>();
 
                     @Override
@@ -194,11 +195,17 @@ public class ClientBuilder {
                     okHttpClientBuilder.proxyAuthenticator(proxyAuthenticator);
                 }
 
-                OkHttpClient okHttpClient = okHttpClientBuilder.build();
+                OkHttpClient okHttpClient = okHttpClientBuilder.build();*/
 
                  basicRequestClients.add(BasicRequestClient.builder()
                         .closeableHttpClient(Optional.empty())
-                        .okHttpClient(Optional.of(okHttpClient))
+                        .okHttpClientConfig(Optional.of(OkHttpClientConfig.builder()
+                                .password(password)
+                                .username(username)
+                                .proxyHost(proxyHost)
+                                .proxyPort(proxyPort)
+                                .cookies(new HashMap<>())
+                                .build()))
                         .build()
                  );
             }
