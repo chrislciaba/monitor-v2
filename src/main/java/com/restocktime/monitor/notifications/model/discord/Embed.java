@@ -1,7 +1,12 @@
 package com.restocktime.monitor.notifications.model.discord;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class Embed {
     private String title;
     private String color;
@@ -11,6 +16,7 @@ public class Embed {
     private List<DiscordField> fields;
     private Thumbnail thumbnail;
     private Author author;
+    private Image image;
 
     public Embed(String title, String color, String url, Footer footer, String description, List<DiscordField> discordFields, Author author) {
         this.title = title.replaceAll("[^\\x00-\\x7F]", "");
@@ -22,7 +28,7 @@ public class Embed {
         this.author = author;
     }
 
-    public Embed(String title, String color, String url, Footer footer, String description, List<DiscordField> discordFields, Thumbnail thumbnail, Author author) {
+    public Embed(String title, String color, String url, Footer footer, String description, List<DiscordField> discordFields, Thumbnail thumbnail, Author author, Image image) {
         this.title = title.replaceAll("[^\\x00-\\x7F]", "");
         this.color = color;
         this.url = url;
@@ -31,71 +37,9 @@ public class Embed {
         this.fields = discordFields;
         this.thumbnail = thumbnail;
         this.author = author;
+        this.image = image;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Footer getFooter() {
-        return footer;
-    }
-
-    public void setFooter(Footer footer) {
-        this.footer = footer;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<DiscordField> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<DiscordField> fields) {
-        this.fields = fields;
-    }
-
-    public Thumbnail getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(Thumbnail thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
 }
 
 

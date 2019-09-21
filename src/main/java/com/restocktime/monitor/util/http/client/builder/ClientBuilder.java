@@ -218,7 +218,14 @@ public class ClientBuilder {
     private List<Header> getDefaultHeaders(String url, String site){
 
         List<Header> h = new ArrayList<>();
-        if(url.contains("sneakersnstuff.com") || url.contains("oneblockdown.it") || url.contains("https://www.nakedcph.com") || url.contains("bstn")){
+        if (url.contains("api.twitter.com")){
+            h.add(new BasicHeader("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"));
+            h.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"));
+            h.add(new BasicHeader("x-csrf-token", "247ac1b54b3f7d3e4e02cfc454d02671"));
+            h.add(new BasicHeader("x-guest-token", "1175270010324844544"));
+            return h;
+        }
+        else if(url.contains("sneakersnstuff.com") || url.contains("oneblockdown.it") || url.contains("https://www.nakedcph.com") || url.contains("bstn")){
             h.add(new BasicHeader(HttpHeaders.HOST, UrlHelper.getHost(url)));
             h.add(new BasicHeader("Upgrade-Insecure-Requests", "1"));
             String[] s = {

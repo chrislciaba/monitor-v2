@@ -1,6 +1,7 @@
 package com.restocktime.monitor.notifications.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 import com.restocktime.monitor.notifications.model.discord.DiscordMessage;
 import com.restocktime.monitor.notifications.model.discord.Embed;
 import org.apache.http.HttpResponse;
@@ -24,7 +25,7 @@ public class Discord {
     private String webhookUrl;
     private ObjectMapper objectMapper;
     private List<String> messages;
-    private final int MAX_ATTACHMENTS = 20;
+    private final int MAX_ATTACHMENTS = 1;
 
     public Discord(String webhookUrl, List<Embed> embeds, List<String> messages) {
         this.webhookUrl = webhookUrl;
@@ -42,10 +43,13 @@ public class Discord {
         }
 
         if(embeds != null) {
-            for (int i = 0; i < (embeds.size() / MAX_ATTACHMENTS + 1); i++) {
+            /*for (int i = 0; i < (embeds.size() / MAX_ATTACHMENTS + 1); i++) {
                 List<Embed> embedList = embeds.subList(i * MAX_ATTACHMENTS,
                         Math.min(embeds.size(), (i + 1) * MAX_ATTACHMENTS));
                 sendToDiscord(embedList, null, webhookUrl);
+            }*/
+            for(Embed embed  : embeds) {
+                sendToDiscord(ImmutableList.of(embed), null, webhookUrl);
             }
         }
 

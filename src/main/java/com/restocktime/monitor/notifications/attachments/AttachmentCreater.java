@@ -46,7 +46,7 @@ public class AttachmentCreater {
 
     public void addMessages(String url, String author_name, String name, String site, List<SlackField> slackFields, List<DiscordField> discordDiscordFields, String thumbUrl, String imgUrl, String key){
         createSlackAttachment(url, name, author_name, site, slackFields, thumbUrl, imgUrl, key);
-        addEmbed(url, name, site, discordDiscordFields, thumbUrl, author_name, key);
+        addEmbed(url, name, site, discordDiscordFields, thumbUrl, imgUrl, author_name, key);
     }
 
     public void createSlackAttachment(String url, String name, String author_name, String site, List<SlackField> slackFields, String thumbUrl, String imgUrl, String key){
@@ -96,15 +96,15 @@ public class AttachmentCreater {
 
     }
 
-    public void addEmbed(String url, String name, String site, List<DiscordField> discordFields, String imgUrl, String author, String key){
+    public void addEmbed(String url, String name, String site, List<DiscordField> discordFields, String thumbUrl, String imgUrl, String author, String key){
 
         for(DiscordObj discordObj : notificationsConfig.getDiscordList()) {
             if(discordObj.getFormat().equals(key)) {
                 FormatConfig formatConfig = notificationsFormatConfig.getDiscord().get(key);
 
                 Footer footer = new Footer(formatConfig.getFooter(), formatConfig.getFooterUrl());
-                Thumbnail thumbnail = new Thumbnail(imgUrl);
-                Embed embed = new Embed(name, formatConfig.getColor(), url, footer, site, discordFields,thumbnail, new Author(author));
+                Thumbnail thumbnail = new Thumbnail(thumbUrl);
+                Embed embed = new Embed(name, formatConfig.getColor(), url, footer, site, discordFields,thumbnail, new Author(author), imgUrl != null ? Image.builder().url(imgUrl).build() : null);
                 String findKey = discordObj.getWebhook() + discordObj.getFormat();
 
                 if(!notification.getDiscordNotification().containsKey(findKey)){

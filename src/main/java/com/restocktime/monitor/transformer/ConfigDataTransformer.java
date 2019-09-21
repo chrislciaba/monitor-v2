@@ -16,6 +16,7 @@ import com.restocktime.monitor.monitors.parse.important.nike.desktop.NikeDesktop
 import com.restocktime.monitor.monitors.parse.important.nike.snkrs.parse.helper.ParseV2Helper;
 import com.restocktime.monitor.monitors.parse.important.panagora.api.PanagoraProductResponseParser;
 import com.restocktime.monitor.monitors.parse.important.svd.parse.SvdAppResponseParser;
+import com.restocktime.monitor.monitors.parse.social.twitter.parse.TwitterApiResponseParser;
 import com.restocktime.monitor.util.http.client.builder.ClientBuilder;
 import com.restocktime.monitor.util.http.client.builder.model.BasicRequestClient;
 import com.restocktime.monitor.util.bot.protection.hawk.Hawk;
@@ -163,8 +164,9 @@ public class ConfigDataTransformer {
         String[] apiKeys = globalSettings.getApiKeys().split(",");
         String defaultKw = globalSettings.getDefaultShopifyKw();
 
-        String site = page.getSite();
+        String site = page.getSite().trim();
         String url = page.getUrls().get(0).trim();
+
 
         if(site.equals("solebox")){
             SoleboxResponseParser soleboxResponseParser = new SoleboxResponseParser(new StockTracker(new HashMap<>(), 0), url,  NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSolebox()));
@@ -460,7 +462,15 @@ public class ConfigDataTransformer {
 
             TwitterAbstractResponseParser rimowaResponseParser = new TwitterAbstractResponseParser(stockTracker, url, keywordSearchHelper, NotificationsConfigTransformer.transformNotifications(notificationConfig));
             return new Twitter(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), rimowaResponseParser);
-        } else if(site.equals("sns")){
+        }
+
+        else if (site.equals("mobiletwitter")) {
+            NotificationConfig notificationConfig = siteNotificationsConfig.getTwitter();
+            TwitterApiResponseParser twitterApiResponseParser = new TwitterApiResponseParser(new ObjectMapper(), null, new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getTwitter()), page.getName(), new HashMap<>());
+            return  createDefault(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), twitterApiResponseParser);
+        }
+
+        else if(site.equals("sns")){
             StockTracker stockTracker = new StockTracker(new HashMap<>(), -1);
             SnsResponseParser snsResponseParser = new SnsResponseParser(stockTracker, new KeywordSearchHelper(page.getSku()), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSns()));
             return Http2DefaultMonitor.builder()

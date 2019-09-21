@@ -48,7 +48,6 @@ public class Monitor implements Runnable {
             ClientBuilder clientBuilder = new ClientBuilder();
             List<BasicRequestClient> clients = clientBuilder.buildClients(url, proxyList, site);
             Collections.shuffle(clients);
-
             int proxyIndex = 0;
             for(int i = 0; i < 10; i++) { //run 10x to minimize the random spam
                 for (int j = 0; j < abstractMonitor.getNumUrls(); j++) {
