@@ -42,14 +42,13 @@ public class TwitterApiResponseParser implements AbstractResponseParser {
         }
 
         try {
-
             UserResponse userResponse = objectMapper.readValue(basicHttpResponse.getBody().get(), UserResponse.class);
 
             for (String key : userResponse.getGlobalObjects().getTweets().keySet()) {
                 if (isFirst) {
                     seenTweets.put(key, "");
                     continue;
-                } else if (!isFirst && !seenTweets.containsKey(key)) {
+                } else if (!seenTweets.containsKey(key)) {
                     List<User> users = userResponse.getGlobalObjects().getTweets().get(key).getEntities().getUser_mentions().stream()
                             .map(
                                     userMention -> userResponse.getGlobalObjects().getUsers().get(userMention.getId_str())

@@ -8,6 +8,7 @@ import com.restocktime.monitor.config.model.Page;
 import com.restocktime.monitor.config.model.notifications.NotificationConfig;
 import com.restocktime.monitor.monitors.ingest.Http2DefaultMonitor;
 import com.restocktime.monitor.monitors.ingest.important.mesh.MeshAppMonitor;
+import com.restocktime.monitor.monitors.ingest.social.twitter.TwitterApi;
 import com.restocktime.monitor.monitors.parse.aio.grosbasket.GrosBasketResponseParser;
 import com.restocktime.monitor.monitors.parse.aio.sneakerbarber.SneakerbarberResponseParser;
 import com.restocktime.monitor.monitors.parse.aio.sportowysklep.SportowysklepResponseParser;
@@ -467,7 +468,7 @@ public class ConfigDataTransformer {
         else if (site.equals("mobiletwitter")) {
             NotificationConfig notificationConfig = siteNotificationsConfig.getTwitter();
             TwitterApiResponseParser twitterApiResponseParser = new TwitterApiResponseParser(new ObjectMapper(), null, new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getTwitter()), page.getName(), new HashMap<>());
-            return  createDefault(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), twitterApiResponseParser);
+            return  new TwitterApi(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), twitterApiResponseParser, "");
         }
 
         else if(site.equals("sns")){

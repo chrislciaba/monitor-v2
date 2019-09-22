@@ -70,7 +70,7 @@ public class ProductFeedV2ResponseParser implements AbstractResponseParser {
         }
 
         for(ParsedResponse parsedResponse : products){
-            if(!stockTracker.notifyForObject(parsedResponse.getId(), isFirst) && parsedResponse.isAvailable()){
+            if(!stockTracker.notifyForObject(parsedResponse.getId(), isFirst)){
                 continue;
             }
 
