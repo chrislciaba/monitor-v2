@@ -166,7 +166,7 @@ public class ConfigDataTransformer {
         String defaultKw = globalSettings.getDefaultShopifyKw();
 
         String site = page.getSite().trim();
-        String url = page.getUrls().get(0).trim();
+        String url = page.getUrls().size() > 0 ? page.getUrls().get(0).trim() : null;
 
 
         if(site.equals("solebox")){
@@ -466,9 +466,13 @@ public class ConfigDataTransformer {
         }
 
         else if (site.equals("mobiletwitter")) {
+            String tUrl = "https://api.twitter.com/2/timeline/profile/" + page.getSku()
+                    +".json?include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1&include_can_media_tag=1&skip_status=1&cards_platform=Web-12&include_cards=1&include_composer_source=true&include_ext_alt_text=true&include_reply_count=1&tweet_mode=extended&include_entities=true&include_user_entities=true&include_ext_media_color=true&include_ext_media_availability=true&send_error_codes=true&include_tweet_replies=false&userId="
+                    + page.getSku() + "&count=20&ext=mediaStats%2ChighlightedLabel%2CcameraMoment";
+            System.out.println(tUrl);
             NotificationConfig notificationConfig = siteNotificationsConfig.getTwitter();
             TwitterApiResponseParser twitterApiResponseParser = new TwitterApiResponseParser(new ObjectMapper(), null, new StockTracker(new HashMap<>(), 0), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getTwitter()), page.getName(), new HashMap<>());
-            return  new TwitterApi(url, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), twitterApiResponseParser, "");
+            return  new TwitterApi(tUrl, page.getDelay(), new AttachmentCreater(notificationConfig, notificationsFormatConfig), new HttpRequestHelper(), twitterApiResponseParser, "");
         }
 
         else if(site.equals("sns")){

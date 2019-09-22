@@ -12,6 +12,7 @@ import com.restocktime.monitor.util.helper.stocktracker.StockTracker;
 import com.restocktime.monitor.util.http.request.ResponseValidator;
 import com.restocktime.monitor.util.http.request.model.BasicHttpResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,12 +50,25 @@ public class TwitterApiResponseParser implements AbstractResponseParser {
                     seenTweets.put(key, "");
                     continue;
                 } else if (!seenTweets.containsKey(key)) {
-                    List<User> users = userResponse.getGlobalObjects().getTweets().get(key).getEntities().getUser_mentions().stream()
+                    List<User> users = userResponse
+                            .getGlobalObjects()
+                            .getTweets()
+                            .get(key)
+                            .getEntities()
+                            .getUser_mentions() != null ?
+
+                            userResponse
+                            .getGlobalObjects()
+                            .getTweets()
+                            .get(key)
+                            .getEntities()
+                            .getUser_mentions()
+                            .stream()
                             .map(
                                     userMention -> userResponse.getGlobalObjects().getUsers().get(userMention.getId_str())
                             )
                             .filter(Objects::nonNull)
-                            .collect(Collectors.toList());
+                            .collect(Collectors.toList()) : new ArrayList<>();
 
                     users.add(
                             userResponse.getGlobalObjects().getUsers().get(

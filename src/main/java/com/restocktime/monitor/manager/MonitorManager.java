@@ -105,6 +105,7 @@ public class MonitorManager {
                 m.start();
                 monitorMap.put(page.getId(), m);
             } catch (Exception e){
+                e.printStackTrace();
                 logger.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }
@@ -142,6 +143,7 @@ public class MonitorManager {
                 }
                 allKeys.put(page.getId(), ""); //all tasks
             } catch (Exception e){
+                e.printStackTrace();
                 logger.error(EXCEPTION_LOG_MESSAGE, e);
             }
         }

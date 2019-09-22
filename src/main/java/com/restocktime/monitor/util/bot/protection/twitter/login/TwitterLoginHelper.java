@@ -29,6 +29,8 @@ public class TwitterLoginHelper {
         System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("window-size=1500,1500");
+        options.addArguments("--headless");
+        options.addArguments("--disable-gpu");
 
         WebDriver webDriver = new ChromeDriver(options);
         try {
