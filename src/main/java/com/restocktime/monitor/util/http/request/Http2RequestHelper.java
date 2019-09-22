@@ -66,7 +66,6 @@ public class Http2RequestHelper extends AbstractHttpRequestHelper {
 
             return basicHttpResponse;
         } catch (IOException e) {
-            e.printStackTrace();
             return BasicHttpResponse.builder()
                     .headers(Optional.empty())
                     .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
