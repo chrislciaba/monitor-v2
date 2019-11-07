@@ -724,8 +724,18 @@ public class ConfigDataTransformer {
             OnygoSitemapResponseParser onygoSitemapResponseParser = new OnygoSitemapResponseParser(new StockTracker(new HashMap<>(), -1), new KeywordSearchHelper(page.getSku()), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getOnygo()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getOnygo(), notificationsFormatConfig), new HttpRequestHelper(), onygoSitemapResponseParser);
         } else if(site.equals("shoepalace")){
+
+
             ShoepalaceResponseParser shoepalaceResponseParser = new ShoepalaceResponseParser(new StockTracker(new HashMap<>(), 6000), url, NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getShoepalace()));
-            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getShoepalace(), notificationsFormatConfig), new HttpRequestHelper(), shoepalaceResponseParser);
+            /*return Http2DefaultMonitor.builder()
+                    .url(url)
+                    .delay(page.getDelay())
+                    .attachmentCreater(new AttachmentCreater(siteNotificationsConfig.getShoepalace(), notificationsFormatConfig))
+                    .httpRequestHelper(new HttpRequestHelper())
+                    .abstractResponseParser(shoepalaceResponseParser)
+                    .addUUID(false)
+                    .build();*/
+            return createDefault("https://www.shoepalace.com", page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getShoepalace(), notificationsFormatConfig), new HttpRequestHelper(), shoepalaceResponseParser);
         } else if(site.equals("supremepage")){
             SupremePageResponseParser supremePageResponseParser = new SupremePageResponseParser(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(defaultKw), page.getLocale(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSupreme()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSupreme(), notificationsFormatConfig), new HttpRequestHelper(), supremePageResponseParser);

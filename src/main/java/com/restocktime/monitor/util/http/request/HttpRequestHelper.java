@@ -53,6 +53,7 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
 
                     //(resp, httpResponse.getStatusLine().getStatusCode(), Arrays.asList(httpResponse.getAllHeaders()));
         } catch (ConnectTimeoutException cte) {
+            cte.printStackTrace();
             log.error("Connection timed out");
             return BasicHttpResponse.builder()
                     .body(Optional.empty())
@@ -61,6 +62,8 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
                     .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
                     .build();
         }  catch (SocketTimeoutException ste) {
+            ste.printStackTrace();
+
             log.error("Socket timeout");
             return BasicHttpResponse.builder()
                     .body(Optional.empty())
@@ -69,6 +72,7 @@ public class HttpRequestHelper extends AbstractHttpRequestHelper {
                     .error(Optional.of(ResponseErrors.CONNECTION_TIMEOUT))
                     .build();
         } catch(Exception e) {
+            e.printStackTrace();
             log.info(EXCEPTION_LOG_MESSAGE, e);
             throw new MonitorRequestException("get request failed", e);
         } finally {

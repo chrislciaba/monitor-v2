@@ -43,8 +43,10 @@ public class Http2DefaultMonitor extends AbstractMonitor {
             try{
                 long t0 = System.currentTimeMillis();
                 BasicHttpResponse basicHttpResponse = httpRequestHelper.performGet(basicRequestClient, cacheUrl);
+
                 long t1 = System.currentTimeMillis();
                 if (basicHttpResponse.getBody().isPresent()) {
+                    System.out.println(basicHttpResponse.getBody().get());
 
                     String md5 = MD5.getMd5(basicHttpResponse.getBody().get());
                     if (md5.equals(hash)) {

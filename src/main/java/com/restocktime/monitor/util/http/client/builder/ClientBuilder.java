@@ -222,6 +222,16 @@ public class ClientBuilder {
             h.add(new BasicHeader("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"));
             h.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"));
             return h;
+        } else if(url.contains("shoepalace")){
+            h.add(new BasicHeader("Host", "www.shoepalace.com"));
+            h.add(new BasicHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
+            h.add(new BasicHeader("Connection", "keep-alive"));
+            h.add(new BasicHeader("User-Agent", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
+            h.add(new BasicHeader("Accept", "Mozilla/5.0 (iPhone; CPU iPhone OS 13_1_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.1 Mobile/15E148 Safari/604.1"));
+            h.add(new BasicHeader("Accept-Language", "en-us"));
+            h.add(new BasicHeader("Referer", "https://www.google.com/"));
+            h.add(new BasicHeader("Accept-Encoding", "gzip, deflate, br"));
+            return h;
         }
         else if(url.contains("sneakersnstuff.com") || url.contains("oneblockdown.it") || url.contains("https://www.nakedcph.com") || url.contains("bstn")){
             h.add(new BasicHeader(HttpHeaders.HOST, UrlHelper.getHost(url)));

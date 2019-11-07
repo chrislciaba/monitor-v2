@@ -37,10 +37,13 @@ public class ShoepalaceResponseParser implements AbstractResponseParser {
     }
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
+        System.out.println("XXX");
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
             monitorMetrics.error();
             return;
         }
+
+        System.out.println(basicHttpResponse.getBody().get());
 
         String responseString = basicHttpResponse.getBody().get();
         String name = "NAME_UNAVAILABLE";
