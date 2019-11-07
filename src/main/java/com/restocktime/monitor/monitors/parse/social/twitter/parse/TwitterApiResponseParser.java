@@ -38,7 +38,7 @@ public class TwitterApiResponseParser implements AbstractResponseParser {
 
     public void parse(BasicHttpResponse basicHttpResponse, AttachmentCreater attachmentCreater, boolean isFirst) {
         if (ResponseValidator.isInvalid(basicHttpResponse)) {
-            System.out.println(basicHttpResponse.getResponseCode().get());
+           // System.out.println(basicHttpResponse.getResponseCode().get());
             return;
         }
 

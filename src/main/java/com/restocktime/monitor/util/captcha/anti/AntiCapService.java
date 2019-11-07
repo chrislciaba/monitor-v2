@@ -49,7 +49,7 @@ public class AntiCapService {
             Integer taskId = null;
             ResponseObject responseObject = objectMapper.readValue(EntityUtils.toString(httpResponse.getEntity()), ResponseObject.class);
             if(responseObject.getErrorId() > 0 || responseObject.getTaskId() == null){
-                System.out.println("error: " + responseObject.getErrorId());
+                //System.out.println("error: " + responseObject.getErrorId());
             } else {
                 taskId = responseObject.getTaskId();
             }
