@@ -735,7 +735,7 @@ public class ConfigDataTransformer {
                     .abstractResponseParser(shoepalaceResponseParser)
                     .addUUID(false)
                     .build();*/
-            return createDefault("https://www.shoepalace.com", page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getShoepalace(), notificationsFormatConfig), new HttpRequestHelper(), shoepalaceResponseParser);
+            return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getShoepalace(), notificationsFormatConfig), new HttpRequestHelper(), shoepalaceResponseParser);
         } else if(site.equals("supremepage")){
             SupremePageResponseParser supremePageResponseParser = new SupremePageResponseParser(new StockTracker(new HashMap<>(), 0), new KeywordSearchHelper(defaultKw), page.getLocale(), NotificationsConfigTransformer.transformNotifications(siteNotificationsConfig.getSupreme()));
             return createDefault(url, page.getDelay(), new AttachmentCreater(siteNotificationsConfig.getSupreme(), notificationsFormatConfig), new HttpRequestHelper(), supremePageResponseParser);
